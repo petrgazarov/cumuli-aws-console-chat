@@ -22,5 +22,11 @@
   "host_permissions": [
     "*://console.aws.amazon.com/*",
     "*://*.console.aws.amazon.com/*"
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["icons/*.png"],
+      "matches": ["<all_urls>"]
+    }
   ]
 }
