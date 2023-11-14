@@ -11,7 +11,8 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["js/drawer.js"]
+      "js": ["js/drawer.js"],
+      "css": ["css/drawer.css"]
     }
   ],
   "icons": {
@@ -19,14 +20,21 @@
     "48": "icons/logo48.png",
     "128": "icons/logo128.png"
   },
-  "host_permissions": [
-    "*://console.aws.amazon.com/*",
-    "*://*.console.aws.amazon.com/*"
-  ],
+  "host_permissions": ["<all_urls>"],
   "web_accessible_resources": [
     {
       "resources": ["icons/*.png"],
       "matches": ["<all_urls>"]
     }
-  ]
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; style-src 'self'"
+  },
+  "permissions": ["storage", "tabs"],
+  "commands": {
+    "open_chat": {
+      "suggested_key": "Ctrl+K",
+      "description": "Open chat drawer"
+    }
+  }
 }

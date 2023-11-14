@@ -6,6 +6,8 @@
     "node": ">20.0.0"
   },
   "dependencies": {
+    "jotai": "^2.5.1",
+    "openai": "^4.17.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "styled-components": "^6.1.1"
@@ -22,6 +24,7 @@
     "copy-webpack-plugin": "^11.0.0",
     "rimraf": "^5.0.5",
     "ts-loader": "^9.5.0",
+    "tsconfig-paths-webpack-plugin": "^4.1.0",
     "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4"
   }
