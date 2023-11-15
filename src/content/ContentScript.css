@@ -4,9 +4,3 @@
 #app main ~ [class^="awsui_drawer_"] {
   display: none !important;
 }
-
-/* Make the main scrolbar separate from the drawer scrollbar */
-#app main {
-  overflow-y: auto !important;
-  height: calc(100vh - 72px) !important;
-}

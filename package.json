@@ -7,6 +7,7 @@
   },
   "dependencies": {
     "jotai": "^2.5.1",
+    "lodash.debounce": "^4.0.8",
     "openai": "^4.17.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -19,6 +20,8 @@
   },
   "devDependencies": {
     "@types/chrome": "^0.0.251",
+    "@types/lodash": "^4.14.201",
+    "@types/lodash.debounce": "^4.0.9",
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
     "copy-webpack-plugin": "^11.0.0",

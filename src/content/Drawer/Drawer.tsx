@@ -16,7 +16,11 @@ export const Drawer = () => {
   const { drawerOpen, setDrawerOpen, textAreaRef, messages } = useDrawer();
 
   return (
-    <DrawerWrapper onClick={() => setDrawerOpen(true)} showHover={!drawerOpen}>
+    <DrawerWrapper
+      onClick={() => setDrawerOpen(true)}
+      showHover={!drawerOpen}
+      drawerOpen={drawerOpen}
+    >
       <DrawerElement open={drawerOpen}>
         <Header>
           <Logo />

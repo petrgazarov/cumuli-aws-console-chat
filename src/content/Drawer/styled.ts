@@ -1,9 +1,13 @@
 import styled from "styled-components";
 
-export const DrawerWrapper = styled.div<{ showHover: boolean }>`
-  min-width: 22px;
+export const DrawerWrapper = styled.div<{
+  showHover: boolean;
+  drawerOpen: boolean;
+}>`
+  position: sticky;
   height: calc(100vh - 72px);
-  overflow-y: auto;
+  overflow: auto;
+  top: 41px;
   background-color: #2a2e33;
 
   ${(props) =>
@@ -17,16 +21,16 @@ export const DrawerWrapper = styled.div<{ showHover: boolean }>`
         background-color: #545b64;
       }
     }
-  `}
+  `};
 `;
 
 export const DrawerElement = styled.div<{ open: boolean }>`
   display: flex;
   flex-direction: column;
   width: ${(props) => (props.open ? "400px" : "22px")};
-  padding-left: 9px;
-  padding-right: 9px;
-  padding-bottom: 9px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 10px;
 `;
 
 export const LogoContainer = styled.div`
@@ -40,20 +44,20 @@ export const Header = styled.div`
   position: sticky;
   top: 0;
   background-color: #2a2e33;
+  padding-top: 10px;
   padding-bottom: 15px;
-  padding-top: 9px;
 `;
 
 export const Content = styled.div<{ show: boolean }>`
   ${(props) => (props.show ? "display: flex;" : "display: none;")}
   flex-direction: column;
-  height: calc(100% - 300px);
-  overflow-y: auto;
+  padding-bottom: 10px;
 `;
 
 export const Message = styled.div``;
 
 export const NewMessageTextarea = styled.textarea`
+  min-height: 50px;
   background-color: #1a2029;
 `;
 
