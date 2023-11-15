@@ -16,16 +16,28 @@ export type ImageMessageContent = {
   };
 };
 
+export enum LlmChannelAction {
+  initial_state = "initial_state",
+  new_message = "new_message",
+  replace_message = "replace_message",
+  stream = "stream",
+}
+
+export type LlmChannelMessage = {
+  action: LlmChannelAction;
+  payload?: any;
+};
+
 export type ChatMessage = {
   content: string | Array<TextMessageContent | ImageMessageContent>;
   role: Role;
 };
 
-export enum Commands {
+export enum CommandChannelAction {
   "open_chat" = "open_chat",
 }
 
-export type CommandMessage = {
-  action: Commands;
+export type CommandChannelMessage = {
+  action: CommandChannelAction;
   payload?: any;
 };

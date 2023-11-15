@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAtom } from "jotai";
-import { ChatMessage, Role } from "utils/types";
+import { ChatMessage, Role, LlmChannelAction } from "utils/types";
 import { LLM_CHANNEL } from "utils/constants";
 import usePort from "./usePort";
 import { messagesAtom } from "../atoms";
@@ -48,7 +48,10 @@ const useNewMessage = () => {
         ];
       }
 
-      postLlmMessage(chatMessage);
+      postLlmMessage({
+        action: LlmChannelAction.new_message,
+        payload: chatMessage,
+      });
       setTextInput("");
     },
     [postLlmMessage, textInput]

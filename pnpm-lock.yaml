@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  openai@4.18.0:
+    hash: nxm3y7wvl53oaq53cil2ohrp3m
+    path: patches/openai@4.18.0.patch
+
 dependencies:
   jotai:
     specifier: ^2.5.1
@@ -12,8 +17,8 @@ dependencies:
     specifier: ^4.0.8
     version: 4.0.8
   openai:
-    specifier: ^4.17.4
-    version: 4.17.4
+    specifier: ^4.18.0
+    version: 4.18.0(patch_hash=nxm3y7wvl53oaq53cil2ohrp3m)
   react:
     specifier: ^18.2.0
     version: 18.2.0
@@ -1142,8 +1147,8 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
-  /openai@4.17.4:
-    resolution: {integrity: sha512-ThRFkl6snLbcAKS58St7N3CaKuI5WdYUvIjPvf4s+8SdymgNtOfzmZcZXVcCefx04oKFnvZJvIcTh3eAFUUhAQ==}
+  /openai@4.18.0(patch_hash=nxm3y7wvl53oaq53cil2ohrp3m):
+    resolution: {integrity: sha512-0C+waXoU7mvp/1QZzwnmPCkq4t02VJkjL1EXn0Pd7pFuTA0Y4y1LwzSZSiF/tpxw+Pr7diHVJjbfJ8QbdZnEcA==}
     hasBin: true
     dependencies:
       '@types/node': 18.18.9
@@ -1158,6 +1163,7 @@ packages:
     transitivePeerDependencies:
       - encoding
     dev: false
+    patched: true
 
   /p-limit@2.3.0:
     resolution: {integrity: sha512-//88mFWSJx8lxCzwdAABTJL2MyWB12+eIY7MDL2SqLmAkeKU9qxRvWuSyTjm3FUmpBEMuFfckAIqEaVGUDxb6w==}

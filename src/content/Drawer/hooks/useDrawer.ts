@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useAtom } from "jotai";
 import { LLM_CHANNEL, COMMAND_CHANNEL } from "utils/constants";
-import { ChatMessage, CommandMessage, Commands } from "utils/types";
+import { ChatMessage, CommandChannelMessage, CommandChannelAction } from "utils/types";
 import usePort from "./usePort";
 import { messagesAtom } from "../atoms";
 
@@ -14,8 +14,8 @@ const useDrawer = () => {
     removeMessageListener: removeLlmMessageListener,
   } = usePort(LLM_CHANNEL);
   const {
-    addMessageListener: addCommandMessageListener,
-    removeMessageListener: removeCommandMessageListener,
+    addMessageListener: addCommandChannelMessageListener,
+    removeMessageListener: removeCommandChannelMessageListener,
   } = usePort(COMMAND_CHANNEL);
   const [messages, setMessages] = useAtom(messagesAtom);
 
@@ -26,9 +26,9 @@ const useDrawer = () => {
     [setMessages]
   );
 
-  const commandMessageListener = useCallback(
-    (message: CommandMessage) => {
-      if (message.action === Commands.open_chat) {
+  const CommandChannelMessageListener = useCallback(
+    (message: CommandChannelMessage) => {
+      if (message.action === CommandChannelAction.open_chat) {
         setDrawerOpen(true);
       }
     },
@@ -46,11 +46,11 @@ const useDrawer = () => {
 
   useEffect(() => {
     addLlmMessageListener(llmMessageListener);
-    addCommandMessageListener(commandMessageListener);
+    addCommandChannelMessageListener(CommandChannelMessageListener);
     window.addEventListener("keydown", escapeButtonListener);
 
     return () => {
-      removeCommandMessageListener();
+      removeCommandChannelMessageListener();
       removeLlmMessageListener();
       window.removeEventListener("keydown", escapeButtonListener);
     };
