@@ -1,74 +1,57 @@
 import OpenAI from "openai";
 import { LLM_CHANNEL, COMMAND_CHANNEL } from "utils/constants";
-import { ChatMessage, Role, CommandMessage } from "utils/types";
+import { ChatMessage, Role, ImageMessageContent } from "utils/types";
 import { Commands } from "utils/types";
+import { getOpenAiApiKey } from "utils/helpers";
+import { captureVisibleTabPromise } from "./utils";
 
 // In-memory state of all the messages
 let messages: ChatMessage[] = [];
 
 chrome.runtime.onConnect.addListener((port) => {
   if (port.name === LLM_CHANNEL) {
-    port.onMessage.addListener((message: ChatMessage) => {
-      // Add the received message to the in-memory state
-      messages.push({ role: Role.user, content: message.content });
+    port.onMessage.addListener(async (userMessage: ChatMessage) => {
+      if (Array.isArray(userMessage.content)) {
+        const screenshotData = await captureVisibleTabPromise();
 
-      // Fetch API key from chrome.storage.local
-      chrome.storage.local.get(["apiKey"], function (result) {
-        const apiKey = result.apiKey;
+        const imageContent = userMessage.content.find(
+          (content): content is ImageMessageContent =>
+            content.type === "image_url"
+        );
+        if (imageContent) {
+          imageContent.image_url.url = screenshotData;
+        }
+      }
 
-        // Use OpenAI lib to send message to OpenAI API
-        const openai = new OpenAI({ apiKey });
+      // Add the user message to the list of messages, and send it back to the content script
+      messages.push(userMessage);
+      port.postMessage(userMessage);
 
-        const payload = {
-          model: "gpt-4-vision-preview",
-          messages: messages as OpenAI.Chat.ChatCompletionMessageParam[],
-          max_tokens: 4096,
+      const openAiApiKey = await getOpenAiApiKey();
+      const openai = new OpenAI({ apiKey: openAiApiKey });
+
+      const payload = {
+        model: "gpt-4-vision-preview",
+        messages: messages as OpenAI.Chat.ChatCompletionMessageParam[], // TODO: remove this type cast
+        max_tokens: 4096,
+      };
+      console.log("request", payload);
+      openai.chat.completions.create(payload).then((response) => {
+        console.log("response", response);
+        const llmMessage = {
+          role: Role.assistant,
+          content: response.choices[0].message.content || "",
         };
-        console.log("request", payload);
-        openai.chat.completions.create(payload).then((response) => {
-          console.log("response", response);
-          // Add the sent message to the in-memory state
-          const llmMessage = {
-            role: Role.assistant,
-            content: response.choices[0].message.content || "",
-          };
-          messages.push(llmMessage);
 
-          // Send the response back to the sender
-          port.postMessage(llmMessage);
-        });
+        // Add the assistant message to the list of messages, and send it back to the content script
+        messages.push(llmMessage);
+        port.postMessage(llmMessage);
       });
     });
   } else if (port.name === COMMAND_CHANNEL) {
-    port.onMessage.addListener((message: CommandMessage) => {
-      console.log("message", message);
-      if (message.action === Commands.capture_visible_tab) {
-        chrome.tabs.captureVisibleTab(
-          chrome.windows.WINDOW_ID_CURRENT,
-          { format: "jpeg" },
-          (screenshotUrl) => {
-            port.postMessage({
-              action: Commands.capture_visible_tab,
-              payload: screenshotUrl,
-            });
-          }
-        );
-      }
-    });
-  }
-});
-
-chrome.commands.onCommand.addListener((command) => {
-  if (command === Commands.open_chat) {
-    // Query for the active tab in the current window
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      // Check if there's an active tab
-      if (tabs.length > 0 && tabs[0].id !== undefined) {
-        // Send a message to the content script in the active tab
-        const port = chrome.tabs.connect(tabs[0].id, { name: COMMAND_CHANNEL });
+    chrome.commands.onCommand.addListener((command) => {
+      if (command === Commands.open_chat) {
         port.postMessage({ action: Commands.open_chat });
-        // Disconnect
-        port.disconnect();
       }
     });
   }

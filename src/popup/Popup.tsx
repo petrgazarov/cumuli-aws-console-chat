@@ -1,29 +1,26 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import ReactDOM from "react-dom";
+import { getOpenAiApiKey, setOpenAiApiKey } from "utils/helpers";
 
 const Popup = () => {
-  const [apiKey, setApiKey] = useState("");
+  const [inputValue, setInputValue] = useState("");
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    chrome.storage.local.get(["apiKey"], function (result) {
-      setApiKey(result.apiKey || "");
-    });
+    getOpenAiApiKey().then((apiKey) => setInputValue(apiKey));
   }, []);
 
-  const saveApiKey = () => {
-    chrome.storage.local.set({ apiKey: apiKey }, function () {
-      setMessage("Saved!");
-    });
-  };
+  const saveApiKey = useCallback(() => {
+    setOpenAiApiKey(inputValue).then(() => setMessage("Saved!"));
+  }, [inputValue]);
 
   return (
     <div>
       <h1>Cumuli AWS extension</h1>
       <input
         type="text"
-        value={apiKey}
-        onChange={(e) => setApiKey(e.target.value)}
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
         placeholder="Enter OpenAI API Key"
       />
       <button onClick={saveApiKey}>Submit</button>

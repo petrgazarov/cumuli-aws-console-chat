@@ -1,4 +1,3 @@
-import { ChatMessage, Role } from "utils/types";
 import { getTextContentFromMessage } from "utils/helpers";
 import CancelButton from "./CancelButton";
 import Logo from "./Logo";
@@ -12,28 +11,9 @@ import {
   Separator,
 } from "./styled";
 import useDrawer from "./hooks/useDrawer";
-import { useCallback } from "react";
 
 export const Drawer = () => {
-  const {
-    drawerOpen,
-    setDrawerOpen,
-    messages,
-    setMessages,
-    port,
-    textAreaRef,
-  } = useDrawer();
-
-  const onSubmitMessage = useCallback(
-    (message: ChatMessage) => {
-      setMessages((prevMessages) => [...prevMessages, message]);
-
-      if (port) {
-        port.postMessage(message);
-      }
-    },
-    [port, setMessages]
-  );
+  const { drawerOpen, setDrawerOpen, textAreaRef, messages } = useDrawer();
 
   return (
     <DrawerWrapper onClick={() => setDrawerOpen(true)} showHover={!drawerOpen}>
@@ -56,7 +36,7 @@ export const Drawer = () => {
               <Separator />
             </>
           ))}
-          <NewMessage onSubmit={onSubmitMessage} textAreaRef={textAreaRef} />
+          <NewMessage textAreaRef={textAreaRef} />
           Enter to send, Cmd/Ctrl + Enter to include a screenshot
         </Content>
       </DrawerElement>

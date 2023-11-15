@@ -3,12 +3,12 @@ export enum Role {
   assistant = "assistant",
 }
 
-type TextMessageContent = {
+export type TextMessageContent = {
   type: "text";
   text: string;
 };
 
-type ImageMessageContent = {
+export type ImageMessageContent = {
   type: "image_url";
   image_url: {
     url: string;
@@ -23,7 +23,6 @@ export type ChatMessage = {
 
 export enum Commands {
   "open_chat" = "open_chat",
-  "capture_visible_tab" = "capture_visible_tab",
 }
 
 export type CommandMessage = {

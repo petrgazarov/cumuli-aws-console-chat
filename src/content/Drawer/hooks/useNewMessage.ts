@@ -1,70 +1,64 @@
-import { useState, useEffect } from "react";
-import { Commands, ChatMessage, Role, CommandMessage } from "utils/types";
-import { COMMAND_CHANNEL } from "utils/constants";
-
+import { useState, useEffect, useCallback } from "react";
+import { useAtom } from "jotai";
+import { ChatMessage, Role } from "utils/types";
+import { LLM_CHANNEL } from "utils/constants";
 import usePort from "./usePort";
+import { messagesAtom } from "../atoms";
 
-type UseNewMessageProps = {
-  onSubmit: (message: ChatMessage) => void;
-};
-
-const useNewMessage = (props: UseNewMessageProps) => {
+const useNewMessage = () => {
   const [textInput, setTextInput] = useState("");
-  const { postMessage, addMessageListener, removeMessageListener } =
-    usePort(COMMAND_CHANNEL);
+  const {
+    postMessage: postLlmMessage,
+    addMessageListener: addLlmMessageListener,
+    removeMessageListener: removeLlmMessageListener,
+  } = usePort(LLM_CHANNEL);
+  const [_, setMessages] = useAtom(messagesAtom);
 
-  const submitScreenshot = (message: CommandMessage) => {
-    console.log("message", message);
-    if (message.action !== Commands.capture_visible_tab) return;
-
-    const newMessage: ChatMessage = {
-      content: [
-        { type: "text", text: textInput },
-        {
-          type: "image_url",
-          image_url: { url: message.payload, detail: "high" },
-        },
-      ],
-      role: Role.user,
-    };
-
-    props.onSubmit(newMessage);
-    setTextInput("");
-  };
+  const llmChannelListener = useCallback(
+    (message: ChatMessage) => {
+      setMessages((prevMessages) => [...prevMessages, message]);
+    },
+    [setMessages]
+  );
 
   useEffect(() => {
-    const port = chrome.runtime.connect({ name: COMMAND_CHANNEL });
-    setPort(port);
+    addLlmMessageListener(llmChannelListener);
 
-    port.onMessage.addListener(submitScreenshot);
-
-    return () => {
-      if (port) {
-        port.onMessage.removeListener(submitScreenshot);
-      }
-    };
+    return () => removeLlmMessageListener();
   }, []);
 
-  const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (!port) return;
+  const handleKeyDown = useCallback(
+    (event: React.KeyboardEvent) => {
+      if (event.key !== "Enter" || !textInput) return;
 
-    if (event.key === "Enter" && textInput) {
       event.preventDefault();
 
+      const chatMessage: ChatMessage = {
+        role: Role.user,
+        content: textInput,
+      };
+
       if (event.ctrlKey || event.metaKey) {
-        port.postMessage({ action: Commands.capture_visible_tab });
-      } else {
-        props.onSubmit({ role: Role.user, content: textInput });
-        setTextInput("");
+        chatMessage.content = [
+          { type: "text", text: textInput },
+          {
+            type: "image_url",
+            image_url: { url: "", detail: "high" },
+          },
+        ];
       }
-    }
-  };
+
+      postLlmMessage(chatMessage);
+      setTextInput("");
+    },
+    [postLlmMessage, textInput]
+  );
 
   return {
     value: textInput,
     onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) =>
       setTextInput(e.target.value),
-    handleKeyDown,
+    onKeyDown: handleKeyDown,
   };
 };
 
