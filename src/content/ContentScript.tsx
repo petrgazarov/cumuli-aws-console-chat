@@ -1,6 +1,6 @@
 import ReactDOM from "react-dom";
 import debounce from "lodash.debounce";
-import { Drawer } from "./Drawer";
+import Drawer from "content/components/Drawer";
 
 const DrawerRootId = "cumuli-drawer-root";
 

@@ -1,18 +1,18 @@
-import { getTextContentFromMessage } from "utils/helpers";
-import CancelButton from "./CancelButton";
-import Logo from "./Logo";
-import NewMessage from "./NewMessage";
+import ChatMessage from "content/components/ChatMessage";
+import CancelButton from "content/components/CancelButton";
+import Logo from "content/components/Logo";
+import NewMessage from "content/components/NewMessage";
 import {
   DrawerWrapper,
   DrawerElement,
   Header,
   Content,
-  Message,
+  HelpText,
   Separator,
 } from "./styled";
-import useDrawer from "./hooks/useDrawer";
+import useDrawer from "./useDrawer";
 
-export const Drawer = () => {
+const Drawer = () => {
   const { drawerOpen, setDrawerOpen, textAreaRef, messages } = useDrawer();
 
   return (
@@ -36,14 +36,18 @@ export const Drawer = () => {
         <Content show={drawerOpen}>
           {messages.map((message, i) => (
             <>
-              <Message key={i}>{getTextContentFromMessage(message)}</Message>
+              <ChatMessage message={message} key={i} />
               <Separator />
             </>
           ))}
           <NewMessage textAreaRef={textAreaRef} />
-          Enter to send, Cmd/Ctrl + Enter to include a screenshot
+          <HelpText>
+            Enter to send, Cmd/Ctrl + Enter to include a screenshot
+          </HelpText>
         </Content>
       </DrawerElement>
     </DrawerWrapper>
   );
 };
+
+export default Drawer;

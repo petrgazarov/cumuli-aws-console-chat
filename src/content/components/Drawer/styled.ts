@@ -33,11 +33,6 @@ export const DrawerElement = styled.div<{ open: boolean }>`
   padding-bottom: 10px;
 `;
 
-export const LogoContainer = styled.div`
-  display: flex;
-  justify-content: center;
-`;
-
 export const Header = styled.div`
   display: flex;
   justify-content: space-between;
@@ -46,6 +41,7 @@ export const Header = styled.div`
   background-color: #2a2e33;
   padding-top: 10px;
   padding-bottom: 15px;
+  z-index: 1;
 `;
 
 export const Content = styled.div<{ show: boolean }>`
@@ -54,16 +50,15 @@ export const Content = styled.div<{ show: boolean }>`
   padding-bottom: 10px;
 `;
 
-export const Message = styled.div``;
-
-export const NewMessageTextarea = styled.textarea`
-  min-height: 50px;
-  background-color: #1a2029;
-`;
-
 export const Separator = styled.div`
   border-bottom: 1px solid #414750;
   width: 100%;
   padding-top: 10px;
   margin-bottom: 10px;
+`;
+
+export const HelpText = styled.div`
+  color: #95a5a6;
+  font-size: 12px;
+  margin-top: 3px;
 `;

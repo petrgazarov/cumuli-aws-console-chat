@@ -1,6 +1,13 @@
 /* Cumuli CSS overrides */
 
-/* Hide the existing drawer. Not all pages have an existing drawer. */
+/* Hide the existing drawers. Not all pages have an existing drawer. */
 #app main ~ [class^="awsui_drawer_"] {
   display: none !important;
+}
+#app main ~ [class^="awsui_drawer-displayed"] {
+  display: none !important;
+}
+
+#cumuli-drawer-root {
+  color: #d5dbdb;
 }

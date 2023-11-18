@@ -33,15 +33,15 @@ const usePort = (channelName: string) => {
     [port]
   );
 
-  const addMessageListener = useCallback((newListener: ListenerFn) => {
+  const addChannelListener = useCallback((newListener: ListenerFn) => {
     setListener(() => newListener);
   }, []);
 
-  const removeMessageListener = useCallback(() => {
+  const removeChannelListener = useCallback(() => {
     setListener(null);
   }, []);
 
-  return { postMessage, addMessageListener, removeMessageListener };
+  return { postMessage, addChannelListener, removeChannelListener };
 };
 
 export default usePort;

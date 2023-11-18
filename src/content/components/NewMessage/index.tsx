@@ -1,5 +1,5 @@
 import { NewMessageTextarea } from "./styled";
-import useNewMessage from "./hooks/useNewMessage";
+import useNewMessage from "./useNewMessage";
 
 type NewMessageProps = {
   textAreaRef: React.RefObject<HTMLTextAreaElement>;

@@ -28,13 +28,14 @@ export type LlmChannelMessage = {
   payload?: any;
 };
 
-export type ChatMessage = {
+export type ChatMessageType = {
   content: string | Array<TextMessageContent | ImageMessageContent>;
   role: Role;
 };
 
 export enum CommandChannelAction {
   "open_chat" = "open_chat",
+  "close_chat" = "close_chat",
 }
 
 export type CommandChannelMessage = {

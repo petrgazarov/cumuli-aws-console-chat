@@ -1,4 +1,4 @@
-export function captureVisibleTabPromise() {
+export function captureVisibleTab() {
   return new Promise<string>((resolve, reject) => {
     chrome.tabs.captureVisibleTab(
       chrome.windows.WINDOW_ID_CURRENT,
