@@ -2,7 +2,6 @@ import styled from "styled-components";
 
 export const DrawerWrapper = styled.div<{
   showHover: boolean;
-  drawerOpen: boolean;
 }>`
   position: sticky;
   height: calc(100vh - 72px);

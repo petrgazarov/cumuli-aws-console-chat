@@ -7,7 +7,12 @@ module.exports = {
   entry: {
     popup: path.join(__dirname, "src", "popup", "Popup.tsx"),
     drawer: path.join(__dirname, "src", "content", "ContentScript.tsx"),
-    background: path.join(__dirname, "src", "background", "background.ts"),
+    serviceWorker: path.join(
+      __dirname,
+      "src",
+      "background",
+      "serviceWorker.ts"
+    ),
   },
   output: {
     path: path.join(__dirname, "build"),

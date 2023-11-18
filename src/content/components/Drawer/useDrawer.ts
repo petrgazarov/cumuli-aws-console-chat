@@ -25,33 +25,51 @@ const useDrawer = () => {
     removeChannelListener: removeCommandChannelListener,
   } = usePort(COMMAND_CHANNEL);
 
+  const toggleDrawer = useCallback(
+    (open: boolean, sendCommand = true) => {
+      setDrawerOpen(open);
+
+      if (sendCommand) {
+        postCommandMessage({
+          action: open
+            ? CommandChannelAction.open_chat
+            : CommandChannelAction.close_chat,
+        });
+      }
+
+      if (open) {
+        textAreaRef.current?.focus();
+      }
+    },
+    [setDrawerOpen, postCommandMessage]
+  );
+
   const llmChannelListener = useCallback(
     (channelMessage: LlmChannelMessage) => {
       if (channelMessage.action !== LlmChannelAction.initial_state) return;
 
       setMessages(channelMessage.payload.messages);
-      setDrawerOpen(channelMessage.payload.open);
+      toggleDrawer(channelMessage.payload.open, false);
     },
-    [setMessages, setDrawerOpen]
+    [setMessages, toggleDrawer]
   );
 
   const commandChannelListener = useCallback(
     (message: CommandChannelMessage) => {
       if (message.action === CommandChannelAction.open_chat) {
-        setDrawerOpen(true);
+        toggleDrawer(true, false);
       }
     },
-    [setDrawerOpen]
+    [toggleDrawer]
   );
 
   const escapeButtonListener = useCallback(
     (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        setDrawerOpen(false);
-        postCommandMessage({ action: CommandChannelAction.close_chat });
+        toggleDrawer(false);
       }
     },
-    [setDrawerOpen, postCommandMessage]
+    [toggleDrawer, postCommandMessage]
   );
 
   useEffect(() => {
@@ -72,21 +90,9 @@ const useDrawer = () => {
     }
   }, [drawerOpen, messages]);
 
-  const setDrawerOpenAndPostMessage = useCallback(
-    (open: boolean) => {
-      setDrawerOpen(open);
-      postCommandMessage({
-        action: open
-          ? CommandChannelAction.open_chat
-          : CommandChannelAction.close_chat,
-      });
-    },
-    [setDrawerOpen, postCommandMessage]
-  );
-
   return {
     drawerOpen,
-    setDrawerOpen: setDrawerOpenAndPostMessage,
+    setDrawerOpen: toggleDrawer,
     textAreaRef,
     messages,
   };

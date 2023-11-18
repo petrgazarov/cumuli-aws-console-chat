@@ -26,9 +26,8 @@ const Drawer = () => {
 
   return (
     <DrawerWrapper
-      onClick={() => setDrawerOpen(true)}
+      onClick={() => (drawerOpen ? undefined : setDrawerOpen(true))}
       showHover={!drawerOpen}
-      drawerOpen={drawerOpen}
     >
       <DrawerElement open={drawerOpen}>
         <Header>

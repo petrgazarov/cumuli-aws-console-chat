@@ -56,7 +56,7 @@ const useNewMessage = () => {
 
   const handleKeyDown = useCallback(
     (event: React.KeyboardEvent) => {
-      if (event.key !== "Enter" || !textInput) return;
+      if (event.key !== "Enter" || !textInput.trim()) return;
 
       event.preventDefault();
 
