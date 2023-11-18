@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 import Screenshot from "content/components/ScreenshotPreview";
 import { ChatMessageType, TextMessageContent } from "utils/types";
+import { TextContent } from "./styled";
 
 type ChatMessageProps = {
   message: ChatMessageType;
@@ -8,7 +9,7 @@ type ChatMessageProps = {
 
 const ChatMessage = ({ message }: ChatMessageProps) => {
   if (typeof message.content === "string") {
-    return message.content;
+    return <TextContent>{message.content}</TextContent>;
   }
 
   const isTextMessageContent = useCallback(

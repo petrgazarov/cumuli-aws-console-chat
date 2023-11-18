@@ -28,9 +28,9 @@ export const DrawerElement = styled.div<{ open: boolean }>`
   display: flex;
   flex-direction: column;
   width: ${(props) => (props.open ? "400px" : "22px")};
-  padding-left: 10px;
-  padding-right: 10px;
-  padding-bottom: 10px;
+  padding-left: ${(props) => (props.open ? "15px" : "10px")};
+  padding-right: ${(props) => (props.open ? "15px" : "10px")};
+  padding-bottom: ${(props) => (props.open ? "15px" : "10px")};
 `;
 
 export const Header = styled.div`
@@ -39,7 +39,7 @@ export const Header = styled.div`
   position: sticky;
   top: 0;
   background-color: #2a2e33;
-  padding-top: 10px;
+  padding-top: 15px;
   padding-bottom: 15px;
   z-index: 1;
 `;
@@ -55,10 +55,4 @@ export const Separator = styled.div`
   width: 100%;
   padding-top: 10px;
   margin-bottom: 10px;
-`;
-
-export const HelpText = styled.div`
-  color: #95a5a6;
-  font-size: 12px;
-  margin-top: 3px;
 `;

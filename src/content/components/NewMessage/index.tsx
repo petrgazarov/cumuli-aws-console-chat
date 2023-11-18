@@ -1,4 +1,4 @@
-import { NewMessageTextarea } from "./styled";
+import { NewMessageTextarea, HelpText } from "./styled";
 import useNewMessage from "./useNewMessage";
 
 type NewMessageProps = {
@@ -9,12 +9,17 @@ const NewMessage = (props: NewMessageProps) => {
   const { value, onChange, onKeyDown } = useNewMessage();
 
   return (
-    <NewMessageTextarea
-      ref={props.textAreaRef}
-      value={value}
-      onChange={onChange}
-      onKeyDown={onKeyDown}
-    />
+    <>
+      <NewMessageTextarea
+        ref={props.textAreaRef}
+        value={value}
+        onChange={onChange}
+        onKeyDown={onKeyDown}
+      />
+      <HelpText>
+        Enter to send, Cmd/Ctrl + Enter to include a screenshot
+      </HelpText>
+    </>
   );
 };
 

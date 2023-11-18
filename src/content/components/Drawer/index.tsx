@@ -1,3 +1,4 @@
+import React from "react";
 import ChatMessage from "content/components/ChatMessage";
 import CancelButton from "content/components/CancelButton";
 import Logo from "content/components/Logo";
@@ -7,13 +8,21 @@ import {
   DrawerElement,
   Header,
   Content,
-  HelpText,
   Separator,
 } from "./styled";
 import useDrawer from "./useDrawer";
 
 const Drawer = () => {
   const { drawerOpen, setDrawerOpen, textAreaRef, messages } = useDrawer();
+
+  const renderMessage = (message: any, index: number) => {
+    return (
+      <React.Fragment key={index}>
+        <ChatMessage message={message} />
+        <Separator />
+      </React.Fragment>
+    );
+  };
 
   return (
     <DrawerWrapper
@@ -34,16 +43,8 @@ const Drawer = () => {
           ) : null}
         </Header>
         <Content show={drawerOpen}>
-          {messages.map((message, i) => (
-            <>
-              <ChatMessage message={message} key={i} />
-              <Separator />
-            </>
-          ))}
+          {messages.map(renderMessage)}
           <NewMessage textAreaRef={textAreaRef} />
-          <HelpText>
-            Enter to send, Cmd/Ctrl + Enter to include a screenshot
-          </HelpText>
         </Content>
       </DrawerElement>
     </DrawerWrapper>
