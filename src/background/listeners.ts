@@ -5,8 +5,8 @@ import {
   ImageMessageContent,
   CommandChannelMessage,
   CommandChannelAction,
-  LlmChannelMessage,
-  LlmChannelAction,
+  ChatChannelMessage,
+  ChatChannelAction,
 } from "utils/types";
 import { getOpenAiApiKey } from "utils/helpers";
 import { captureVisibleTab } from "./utils";
@@ -16,14 +16,15 @@ export const setupLlmChannelListener = (
   port: chrome.runtime.Port,
   drawerInstance: DrawerInstance
 ) => {
+  console.log("setupLlmChannelListener");
   port.postMessage({
-    action: LlmChannelAction.initial_state,
+    action: ChatChannelAction.initial_state,
     payload: drawerInstance,
   });
 
-  port.onMessage.addListener(async (channelMessage: LlmChannelMessage) => {
+  port.onMessage.addListener(async (channelMessage: ChatChannelMessage) => {
     switch (channelMessage.action) {
-      case LlmChannelAction.new_message:
+      case ChatChannelAction.new_message:
         const userMessage: ChatMessageType = channelMessage.payload;
 
         if (Array.isArray(userMessage.content)) {
@@ -41,7 +42,7 @@ export const setupLlmChannelListener = (
         // Add the user message to the list of messages and send it back to the content script
         drawerInstance.messages.push(userMessage);
         port.postMessage({
-          action: LlmChannelAction.new_message,
+          action: ChatChannelAction.new_message,
           payload: userMessage,
         });
 
@@ -64,13 +65,18 @@ export const setupLlmChannelListener = (
           })
           .on("content", (chunk) => {
             port.postMessage({
-              action: LlmChannelAction.stream,
+              action: ChatChannelAction.stream_chunk,
               payload: chunk,
             });
             const lastMessage =
               drawerInstance.messages[drawerInstance.messages.length - 1];
 
             lastMessage.content += chunk;
+          })
+          .on("chatCompletion", () => {
+            port.postMessage({
+              action: ChatChannelAction.finish_stream,
+            });
           });
     }
   });

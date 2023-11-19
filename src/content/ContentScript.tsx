@@ -1,8 +1,7 @@
 import ReactDOM from "react-dom";
 import debounce from "lodash.debounce";
 import Drawer from "content/components/Drawer";
-
-const DrawerRootId = "cumuli-drawer-root";
+import { DRAWER_ROOT_ID } from "utils/constants";
 
 const appElement = document.getElementById("app");
 
@@ -13,13 +12,13 @@ const renderDrawer = () => {
 
   // AWS UI rendering logic sometimes removes the drawer from the DOM.
   // If the drawer is already present, return.
-  const cumuliRoot = document.getElementById(DrawerRootId);
+  const cumuliRoot = document.getElementById(DRAWER_ROOT_ID);
   if (cumuliRoot) return;
 
   const rootElement = document.createElement("div");
-  rootElement.id = DrawerRootId;
+  rootElement.id = DRAWER_ROOT_ID;
   appMainElement.parentNode.appendChild(rootElement);
-  ReactDOM.render(<Drawer />, document.getElementById(DrawerRootId));
+  ReactDOM.render(<Drawer />, document.getElementById(DRAWER_ROOT_ID));
 };
 
 const observer = new MutationObserver(

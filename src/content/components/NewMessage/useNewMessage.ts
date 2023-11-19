@@ -1,31 +1,36 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAtom } from "jotai";
+import debounce from "lodash.debounce";
 import {
   ChatMessageType,
   Role,
-  LlmChannelAction,
-  LlmChannelMessage,
+  ChatChannelAction,
+  ChatChannelMessage,
 } from "utils/types";
 import { LLM_CHANNEL } from "utils/constants";
 import usePort from "content/utils/usePort";
 import { messagesAtom } from "content/utils/atoms";
+import { scrollDrawerToBottom } from "content/utils/helpers";
 
 const useNewMessage = () => {
   const [textInput, setTextInput] = useState("");
-  const {
-    postMessage: postLlmMessage,
-    addChannelListener: addLlmChannelListener,
-    removeChannelListener: removeLlmChannelListener,
-  } = usePort(LLM_CHANNEL);
-  const [messages, setMessages] = useAtom(messagesAtom);
+  const [loading, setLoading] = useState(false);
+  const [streaming, setStreaming] = useState(false);
+
+  const [_, setMessages] = useAtom(messagesAtom);
 
   const llmChannelListener = useCallback(
-    (channelMessage: LlmChannelMessage) => {
+    (channelMessage: ChatChannelMessage) => {
+      console.log("useNewMessage channelMessage", channelMessage);
+
       switch (channelMessage.action) {
-        case LlmChannelAction.new_message:
-          setMessages([...messages, channelMessage.payload]);
+        case ChatChannelAction.new_message:
+          setMessages((prevMessages) => [
+            ...prevMessages,
+            channelMessage.payload,
+          ]);
           break;
-        case LlmChannelAction.stream:
+        case ChatChannelAction.stream_chunk:
           setMessages((prevMessages) => {
             const newMessages = [...prevMessages];
             let lastMessage = newMessages[newMessages.length - 1];
@@ -41,21 +46,27 @@ const useNewMessage = () => {
                 content: channelMessage.payload,
               });
             }
+            setLoading(false);
             return newMessages;
           });
+          break;
+        case ChatChannelAction.finish_stream:
+          setStreaming(false);
+          break;
       }
     },
-    [messages, setMessages]
+    [setMessages, setLoading]
   );
 
-  useEffect(() => {
-    addLlmChannelListener(llmChannelListener);
-
-    return () => removeLlmChannelListener();
-  }, [llmChannelListener]);
+  const { postMessage: postLlmMessage } = usePort({
+    channelName: LLM_CHANNEL,
+    listener: llmChannelListener,
+  });
 
   const handleKeyDown = useCallback(
     (event: React.KeyboardEvent) => {
+      debounce(scrollDrawerToBottom, 500, { leading: true, trailing: true })();
+
       if (event.key !== "Enter" || !textInput.trim()) return;
 
       event.preventDefault();
@@ -76,10 +87,12 @@ const useNewMessage = () => {
       }
 
       postLlmMessage({
-        action: LlmChannelAction.new_message,
+        action: ChatChannelAction.new_message,
         payload: chatMessage,
       });
       setTextInput("");
+      setLoading(true);
+      setStreaming(true);
     },
     [postLlmMessage, textInput]
   );
@@ -89,6 +102,8 @@ const useNewMessage = () => {
     onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) =>
       setTextInput(e.target.value),
     onKeyDown: handleKeyDown,
+    loading,
+    streaming,
   };
 };
 

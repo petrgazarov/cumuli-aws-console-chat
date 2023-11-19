@@ -2,8 +2,8 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import { useAtom } from "jotai";
 import { LLM_CHANNEL, COMMAND_CHANNEL } from "utils/constants";
 import {
-  LlmChannelMessage,
-  LlmChannelAction,
+  ChatChannelMessage,
+  ChatChannelAction,
   CommandChannelMessage,
   CommandChannelAction,
 } from "utils/types";
@@ -15,84 +15,74 @@ const useDrawer = () => {
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
-  const {
-    addChannelListener: addLlmChannelListener,
-    removeChannelListener: removeLlmChannelListener,
-  } = usePort(LLM_CHANNEL);
-  const {
-    postMessage: postCommandMessage,
-    addChannelListener: addCommandChannelListener,
-    removeChannelListener: removeCommandChannelListener,
-  } = usePort(COMMAND_CHANNEL);
+  const commandChannelListener = useCallback(
+    (message: CommandChannelMessage) => {
+      if (message.action === CommandChannelAction.open_chat) {
+        setDrawerOpen(true);
+        textAreaRef.current?.focus();
+      }
+    },
+    []
+  );
 
-  const toggleDrawer = useCallback(
-    (open: boolean, sendCommand = true) => {
+  const { postMessage: postCommandMessage } = usePort({
+    channelName: COMMAND_CHANNEL,
+    listener: commandChannelListener,
+  });
+
+  const llmChannelListener = useCallback(
+    (channelMessage: ChatChannelMessage) => {
+      console.log("useDrawer channelMessage", channelMessage);
+      if (channelMessage.action !== ChatChannelAction.initial_state) return;
+
+      setMessages(channelMessage.payload.messages);
+      setDrawerOpen(channelMessage.payload.open);
+
+      if (channelMessage.payload.open) {
+        textAreaRef.current?.focus();
+      }
+    },
+    []
+  );
+
+  usePort({ channelName: LLM_CHANNEL, listener: llmChannelListener });
+
+  const toggleDrawerWithCommand = useCallback(
+    (open: boolean) => {
       setDrawerOpen(open);
 
-      if (sendCommand) {
-        postCommandMessage({
-          action: open
-            ? CommandChannelAction.open_chat
-            : CommandChannelAction.close_chat,
-        });
-      }
+      postCommandMessage({
+        action: open
+          ? CommandChannelAction.open_chat
+          : CommandChannelAction.close_chat,
+      });
 
+      console.log("toggleDrawerWithCommand", open);
       if (open) {
         textAreaRef.current?.focus();
       }
     },
-    [setDrawerOpen, postCommandMessage]
-  );
-
-  const llmChannelListener = useCallback(
-    (channelMessage: LlmChannelMessage) => {
-      if (channelMessage.action !== LlmChannelAction.initial_state) return;
-
-      setMessages(channelMessage.payload.messages);
-      toggleDrawer(channelMessage.payload.open, false);
-    },
-    [setMessages, toggleDrawer]
-  );
-
-  const commandChannelListener = useCallback(
-    (message: CommandChannelMessage) => {
-      if (message.action === CommandChannelAction.open_chat) {
-        toggleDrawer(true, false);
-      }
-    },
-    [toggleDrawer]
+    [postCommandMessage]
   );
 
   const escapeButtonListener = useCallback(
     (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        toggleDrawer(false);
+        toggleDrawerWithCommand(false);
       }
     },
-    [toggleDrawer, postCommandMessage]
+    [toggleDrawerWithCommand]
   );
 
   useEffect(() => {
-    addLlmChannelListener(llmChannelListener);
-    addCommandChannelListener(commandChannelListener);
     window.addEventListener("keydown", escapeButtonListener);
 
-    return () => {
-      removeCommandChannelListener();
-      removeLlmChannelListener();
-      window.removeEventListener("keydown", escapeButtonListener);
-    };
-  }, [llmChannelListener, commandChannelListener, escapeButtonListener]);
-
-  useEffect(() => {
-    if (drawerOpen) {
-      textAreaRef.current?.focus();
-    }
-  }, [drawerOpen, messages]);
+    return () => window.removeEventListener("keydown", escapeButtonListener);
+  }, [escapeButtonListener]);
 
   return {
     drawerOpen,
-    setDrawerOpen: toggleDrawer,
+    setDrawerOpen: toggleDrawerWithCommand,
     textAreaRef,
     messages,
   };

@@ -1,4 +1,5 @@
-import { NewMessageTextarea, HelpText } from "./styled";
+import { useEffect } from "react";
+import { NewMessageTextarea, HelpText, LoadingState } from "./styled";
 import useNewMessage from "./useNewMessage";
 
 type NewMessageProps = {
@@ -6,7 +7,21 @@ type NewMessageProps = {
 };
 
 const NewMessage = (props: NewMessageProps) => {
-  const { value, onChange, onKeyDown } = useNewMessage();
+  const { value, onChange, onKeyDown, loading, streaming } = useNewMessage();
+
+  useEffect(() => {
+    if (!streaming && !loading) {
+      props.textAreaRef.current?.focus();
+    }
+  }, [streaming, loading]);
+
+  if (loading) {
+    return <LoadingState />;
+  }
+
+  if (!loading && streaming) {
+    return null;
+  }
 
   return (
     <>

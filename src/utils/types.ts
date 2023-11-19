@@ -16,15 +16,16 @@ export type ImageMessageContent = {
   };
 };
 
-export enum LlmChannelAction {
+export enum ChatChannelAction {
   initial_state = "initial_state",
   new_message = "new_message",
   replace_message = "replace_message",
-  stream = "stream",
+  stream_chunk = "stream_chunk",
+  finish_stream = "finish_stream",
 }
 
-export type LlmChannelMessage = {
-  action: LlmChannelAction;
+export type ChatChannelMessage = {
+  action: ChatChannelAction;
   payload?: any;
 };
 

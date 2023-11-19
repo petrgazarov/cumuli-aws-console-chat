@@ -3,6 +3,7 @@ import ChatMessage from "content/components/ChatMessage";
 import CancelButton from "content/components/CancelButton";
 import Logo from "content/components/Logo";
 import NewMessage from "content/components/NewMessage";
+import { DRAWER_WRAPPER_ID } from "utils/constants";
 import {
   DrawerWrapper,
   DrawerElement,
@@ -28,6 +29,7 @@ const Drawer = () => {
     <DrawerWrapper
       onClick={() => (drawerOpen ? undefined : setDrawerOpen(true))}
       showHover={!drawerOpen}
+      id={DRAWER_WRAPPER_ID}
     >
       <DrawerElement open={drawerOpen}>
         <Header>
