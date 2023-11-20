@@ -10,6 +10,8 @@ import {
 import usePort from "content/utils/usePort";
 import { messagesAtom } from "content/utils/atoms";
 import { scrollDrawerToBottom } from "content/utils/helpers";
+import { detectOS } from "utils/helpers";
+import { OS } from "utils/types";
 
 const useDrawer = () => {
   const [messages, setMessages] = useAtom(messagesAtom);
@@ -42,9 +44,7 @@ const useDrawer = () => {
   }, [postCommandMessage]);
 
   const createNewChat = useCallback(() => {
-    postCommandMessage({
-      action: CommandChannelAction.new_chat,
-    });
+    postCommandMessage({ action: CommandChannelAction.new_chat });
     setMessages([]);
     textAreaRef.current?.focus();
   }, [postCommandMessage]);
@@ -67,20 +67,41 @@ const useDrawer = () => {
     return () => chrome.runtime.onMessage.removeListener(listenerFn);
   }, [toggleDrawerOpen]);
 
-  const escapeButtonListener = useCallback(
+  const keyboardShortcutListener = useCallback(
     (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        toggleDrawerOpen();
+      const isMac = detectOS() === OS.MacOS;
+      const isCtrlOrCmdPressed = isMac ? event.metaKey : event.ctrlKey;
+
+      switch (event.key) {
+        case "Escape":
+          setDrawerOpen(false);
+          postCommandMessage({ action: CommandChannelAction.close_chat });
+          break;
+        case "k":
+          if (isCtrlOrCmdPressed) {
+            event.preventDefault();
+            setDrawerOpen(true);
+            postCommandMessage({ action: CommandChannelAction.open_chat });
+            createNewChat();
+          }
+          break;
+        case "b":
+          if (isCtrlOrCmdPressed) {
+            event.preventDefault();
+            toggleDrawerOpen();
+          }
+          break;
       }
     },
-    [toggleDrawerOpen]
+    [postCommandMessage]
   );
 
   useEffect(() => {
-    window.addEventListener("keydown", escapeButtonListener);
+    window.addEventListener("keydown", keyboardShortcutListener);
 
-    return () => window.removeEventListener("keydown", escapeButtonListener);
-  }, [escapeButtonListener]);
+    return () =>
+      window.removeEventListener("keydown", keyboardShortcutListener);
+  }, [keyboardShortcutListener]);
 
   useEffect(() => {
     if (drawerOpen) {

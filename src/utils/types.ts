@@ -37,6 +37,8 @@ export type ChatMessageType = {
 export enum CommandChannelAction {
   "new_chat" = "new_chat",
   "toggle_chat" = "toggle_chat",
+  "close_chat" = "close_chat",
+  "open_chat" = "open_chat",
   "submit_with_screenshot" = "submit_with_screenshot",
 }
 
@@ -44,3 +46,11 @@ export type CommandChannelMessage = {
   action: CommandChannelAction;
   payload?: any;
 };
+
+export enum OS {
+  Windows = "Windows",
+  MacOS = "MacOS",
+  UNIX = "UNIX",
+  Linux = "Linux",
+  Unknown = "Unknown OS",
+}

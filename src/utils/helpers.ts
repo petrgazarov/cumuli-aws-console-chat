@@ -1,3 +1,5 @@
+import { OS } from "./types";
+
 export function getOpenAiApiKey(): Promise<string> {
   return new Promise((resolve, reject) => {
     chrome.storage.local.get("openAiApiKey", function (result) {
@@ -21,3 +23,16 @@ export function setOpenAiApiKey(apiKey: string): Promise<void> {
     });
   });
 }
+
+// https://tecadmin.net/javascript-detect-os/
+export const detectOS = () => {
+  let os = OS.Unknown;
+  const userAgent = window.navigator.userAgent;
+
+  if (userAgent.indexOf("Win") != -1) os = OS.Windows;
+  if (userAgent.indexOf("Mac") != -1) os = OS.MacOS;
+  if (userAgent.indexOf("X11") != -1) os = OS.UNIX;
+  if (userAgent.indexOf("Linux") != -1) os = OS.Linux;
+
+  return os;
+};

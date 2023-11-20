@@ -35,14 +35,6 @@
   },
   "permissions": ["storage", "tabs", "activeTab"],
   "commands": {
-    "new_chat": {
-      "suggested_key": "Ctrl+K",
-      "description": "Start new chat"
-    },
-    "toggle_chat": {
-      "suggested_key": "Ctrl+B",
-      "description": "Toggle chat drawer"
-    },
     "submit_with_screenshot": {
       "suggested_key": "Ctrl+U",
       "description": "Submit message with screenshot"

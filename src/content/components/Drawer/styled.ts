@@ -13,11 +13,11 @@ export const DrawerWrapper = styled.div<{
     props.showHover &&
     `
     &:hover {
-      background-color: #545b64;
+      background-color: #414750;
       cursor: pointer;
 
       ${Header} {
-        background-color: #545b64;
+        background-color: #414750;
       }
     }
   `};
@@ -27,9 +27,9 @@ export const DrawerElement = styled.div<{ open: boolean }>`
   display: flex;
   flex-direction: column;
   width: ${(props) => (props.open ? "400px" : "22px")};
-  padding-left: ${(props) => (props.open ? "15px" : "10px")};
-  padding-right: ${(props) => (props.open ? "15px" : "10px")};
-  padding-bottom: ${(props) => (props.open ? "100px" : "10px")};
+  padding-left: ${(props) => (props.open ? "15px" : "9px")};
+  padding-right: ${(props) => (props.open ? "15px" : "9px")};
+  padding-bottom: ${(props) => (props.open ? "100px" : "9px")};
 `;
 
 export const Header = styled.div`
@@ -56,7 +56,7 @@ export const CancelIconButton = styled.button`
 
   &:hover {
     svg {
-      stroke: #ec7211;
+      stroke: #fff;
     }
   }
 `;

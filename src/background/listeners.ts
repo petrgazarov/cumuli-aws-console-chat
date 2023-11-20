@@ -92,6 +92,12 @@ export const setupCommandChannelListener = (
       case CommandChannelAction.toggle_chat:
         drawerInstance.open = !drawerInstance.open;
         break;
+      case CommandChannelAction.close_chat:
+        drawerInstance.open = false;
+        break;
+      case CommandChannelAction.open_chat:
+        drawerInstance.open = true;
+        break;
       case CommandChannelAction.new_chat:
         drawerInstance.conversation = NewChatConversation();
         break;
@@ -100,19 +106,21 @@ export const setupCommandChannelListener = (
 };
 
 chrome.commands.onCommand.addListener((command) => {
-  switch (command) {
-    case CommandChannelAction.toggle_chat:
-    case CommandChannelAction.new_chat:
-    case CommandChannelAction.submit_with_screenshot:
-      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        const activeTab = tabs[0];
+  if (command === CommandChannelAction.submit_with_screenshot) {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      const activeTab = tabs[0];
 
-        if (activeTab.id) {
-          chrome.tabs.sendMessage(activeTab.id, {
-            action: command,
-          });
-        }
+      const isPageSupported =
+        activeTab.url?.indexOf("console.aws.amazon.com") &&
+        activeTab.url?.indexOf("console.aws.amazon.com") > -1;
+
+      if (!isPageSupported || !activeTab.id) {
+        return;
+      }
+
+      chrome.tabs.sendMessage(activeTab.id, {
+        action: command,
       });
-      break;
+    });
   }
 });
