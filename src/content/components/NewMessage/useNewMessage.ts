@@ -21,8 +21,6 @@ const useNewMessage = () => {
 
   const llmChannelListener = useCallback(
     (channelMessage: ChatChannelMessage) => {
-      console.log("useNewMessage channelMessage", channelMessage);
-
       switch (channelMessage.action) {
         case ChatChannelAction.new_message:
           setMessages((prevMessages) => [
@@ -66,6 +64,13 @@ const useNewMessage = () => {
   const handleKeyDown = useCallback(
     (event: React.KeyboardEvent) => {
       debounce(scrollDrawerToBottom, 500, { leading: true, trailing: true })();
+
+      // If Shift + Enter is pressed, insert a new line
+      if (event.key === "Enter" && event.shiftKey) {
+        event.preventDefault();
+        setTextInput((prev) => prev + "\n");
+        return;
+      }
 
       if (event.key !== "Enter" || !textInput.trim()) return;
 

@@ -16,7 +16,6 @@ export const setupLlmChannelListener = (
   port: chrome.runtime.Port,
   drawerInstance: DrawerInstance
 ) => {
-  console.log("setupLlmChannelListener");
   port.postMessage({
     action: ChatChannelAction.initial_state,
     payload: drawerInstance,
@@ -86,13 +85,6 @@ export const setupCommandChannelListener = (
   port: chrome.runtime.Port,
   drawerInstance: DrawerInstance
 ) => {
-  chrome.commands.onCommand.addListener((command) => {
-    if (command === CommandChannelAction.open_chat) {
-      port.postMessage({ action: CommandChannelAction.open_chat });
-      drawerInstance.open = true;
-    }
-  });
-
   port.onMessage.addListener((channelMessage: CommandChannelMessage) => {
     switch (channelMessage.action) {
       case CommandChannelAction.close_chat:
@@ -104,3 +96,17 @@ export const setupCommandChannelListener = (
     }
   });
 };
+
+chrome.commands.onCommand.addListener((command) => {
+  if (command === CommandChannelAction.open_chat) {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      const activeTab = tabs[0];
+
+      if (activeTab.id) {
+        chrome.tabs.sendMessage(activeTab.id, {
+          action: CommandChannelAction.open_chat,
+        });
+      }
+    });
+  }
+});

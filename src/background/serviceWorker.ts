@@ -17,6 +17,7 @@ chrome.runtime.onConnect.addListener((port) => {
       createdAt: new Date(),
       open: false,
       messages: [],
+      tabId,
     };
   }
   const drawerInstance = drawerInstances[tabId];

@@ -9,38 +9,23 @@ import {
 } from "utils/types";
 import usePort from "content/utils/usePort";
 import { messagesAtom } from "content/utils/atoms";
+import { scrollDrawerToBottom } from "content/utils/helpers";
 
 const useDrawer = () => {
   const [messages, setMessages] = useAtom(messagesAtom);
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
-  const commandChannelListener = useCallback(
-    (message: CommandChannelMessage) => {
-      if (message.action === CommandChannelAction.open_chat) {
-        setDrawerOpen(true);
-        textAreaRef.current?.focus();
-      }
-    },
-    []
-  );
-
   const { postMessage: postCommandMessage } = usePort({
     channelName: COMMAND_CHANNEL,
-    listener: commandChannelListener,
   });
 
   const llmChannelListener = useCallback(
     (channelMessage: ChatChannelMessage) => {
-      console.log("useDrawer channelMessage", channelMessage);
       if (channelMessage.action !== ChatChannelAction.initial_state) return;
 
       setMessages(channelMessage.payload.messages);
       setDrawerOpen(channelMessage.payload.open);
-
-      if (channelMessage.payload.open) {
-        textAreaRef.current?.focus();
-      }
     },
     []
   );
@@ -56,14 +41,21 @@ const useDrawer = () => {
           ? CommandChannelAction.open_chat
           : CommandChannelAction.close_chat,
       });
-
-      console.log("toggleDrawerWithCommand", open);
-      if (open) {
-        textAreaRef.current?.focus();
-      }
     },
     [postCommandMessage]
   );
+
+  useEffect(() => {
+    const listenerFn = (message: CommandChannelMessage) => {
+      if (message.action === CommandChannelAction.open_chat) {
+        toggleDrawerWithCommand(true);
+      }
+    };
+
+    chrome.runtime.onMessage.addListener(listenerFn);
+
+    return () => chrome.runtime.onMessage.removeListener(listenerFn);
+  }, [toggleDrawerWithCommand]);
 
   const escapeButtonListener = useCallback(
     (event: KeyboardEvent) => {
@@ -79,6 +71,14 @@ const useDrawer = () => {
 
     return () => window.removeEventListener("keydown", escapeButtonListener);
   }, [escapeButtonListener]);
+
+  useEffect(() => {
+    if (drawerOpen) {
+      textAreaRef.current?.focus();
+
+      scrollDrawerToBottom();
+    }
+  }, [drawerOpen]);
 
   return {
     drawerOpen,
