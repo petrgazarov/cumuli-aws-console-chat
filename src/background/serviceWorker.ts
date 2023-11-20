@@ -1,4 +1,4 @@
-import { LLM_CHANNEL, COMMAND_CHANNEL } from "utils/constants";
+import { CHAT_CHANNEL, COMMAND_CHANNEL } from "utils/constants";
 import {
   setupChatChannelListener,
   setupCommandChannelListener,
@@ -22,7 +22,7 @@ chrome.runtime.onConnect.addListener((port) => {
   }
   const drawerInstance = drawerInstances[tabId];
 
-  if (port.name === LLM_CHANNEL) {
+  if (port.name === CHAT_CHANNEL) {
     setupChatChannelListener(port, drawerInstance);
   } else if (port.name === COMMAND_CHANNEL) {
     setupCommandChannelListener(port, drawerInstance);

@@ -17,7 +17,7 @@ import {
 import useDrawer from "./useDrawer";
 
 const Drawer = () => {
-  const { drawerOpen, setDrawerOpen, textAreaRef, messages, createNewChat } =
+  const { drawerOpen, toggleDrawerOpen, textAreaRef, messages, createNewChat } =
     useDrawer();
 
   const renderMessage = (message: any, index: number) => {
@@ -31,7 +31,7 @@ const Drawer = () => {
 
   return (
     <DrawerWrapper
-      onClick={() => (drawerOpen ? undefined : setDrawerOpen(true))}
+      onClick={() => (drawerOpen ? undefined : toggleDrawerOpen())}
       showHover={!drawerOpen}
       id={DRAWER_WRAPPER_ID}
     >
@@ -42,7 +42,7 @@ const Drawer = () => {
             <CancelIconButton
               onClick={(e: React.MouseEvent) => {
                 e.stopPropagation();
-                setDrawerOpen(false);
+                toggleDrawerOpen();
               }}
             >
               <CancelIcon />

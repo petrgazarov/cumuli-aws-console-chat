@@ -20,7 +20,10 @@
     "48": "icons/logo48.png",
     "128": "icons/logo128.png"
   },
-  "host_permissions": ["<all_urls>"],
+  "host_permissions": [
+    "*://console.aws.amazon.com/*",
+    "*://*.console.aws.amazon.com/*"
+  ],
   "web_accessible_resources": [
     {
       "resources": ["icons/*.png"],
@@ -30,11 +33,19 @@
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'; style-src 'self'"
   },
-  "permissions": ["storage", "tabs"],
+  "permissions": ["storage", "tabs", "activeTab"],
   "commands": {
-    "open_chat": {
+    "new_chat": {
       "suggested_key": "Ctrl+K",
-      "description": "Open chat drawer"
+      "description": "Start new chat"
+    },
+    "toggle_chat": {
+      "suggested_key": "Ctrl+B",
+      "description": "Toggle chat drawer"
+    },
+    "submit_with_screenshot": {
+      "suggested_key": "Ctrl+U",
+      "description": "Submit message with screenshot"
     }
   }
 }

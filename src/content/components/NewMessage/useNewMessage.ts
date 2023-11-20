@@ -1,23 +1,34 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useAtom } from "jotai";
 import {
   ChatMessageType,
   Role,
   ChatChannelAction,
   ChatChannelMessage,
+  CommandChannelAction,
+  CommandChannelMessage,
 } from "utils/types";
-import { LLM_CHANNEL } from "utils/constants";
+import { CHAT_CHANNEL } from "utils/constants";
 import usePort from "content/utils/usePort";
 import { messagesAtom } from "content/utils/atoms";
 
-const useNewMessage = () => {
+type useNewMessageProps = {
+  textAreaRef: React.RefObject<HTMLTextAreaElement>;
+};
+
+// Textarea value:
+//   - textAreaRef is used to read the value. This avoids resetting the
+//     onMessage listener on every value change.
+//   - textInput state is used to set the value.
+
+const useNewMessage = ({ textAreaRef }: useNewMessageProps) => {
   const [textInput, setTextInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [streaming, setStreaming] = useState(false);
 
   const [_, setMessages] = useAtom(messagesAtom);
 
-  const llmChannelListener = useCallback(
+  const chatChannelListener = useCallback(
     (channelMessage: ChatChannelMessage) => {
       switch (channelMessage.action) {
         case ChatChannelAction.new_message:
@@ -51,58 +62,85 @@ const useNewMessage = () => {
           break;
       }
     },
-    [setMessages, setLoading]
+    []
   );
 
-  const { postMessage: postLlmMessage } = usePort({
-    channelName: LLM_CHANNEL,
-    listener: llmChannelListener,
+  const { postMessage: postChatMessage } = usePort({
+    channelName: CHAT_CHANNEL,
+    listener: chatChannelListener,
   });
 
-  const handleKeyDown = useCallback(
-    (event: React.KeyboardEvent) => {
-      // If Shift + Enter is pressed, insert a new line
-      if (event.key === "Enter" && event.shiftKey) {
-        event.preventDefault();
-        setTextInput((prev) => prev + "\n");
-        return;
-      }
-
-      if (event.key !== "Enter" || !textInput.trim()) return;
-
-      event.preventDefault();
-
-      const chatMessage: ChatMessageType = {
-        role: Role.user,
-        content: textInput,
-      };
-
-      if (event.ctrlKey || event.metaKey) {
-        chatMessage.content = [
-          { type: "text", text: textInput },
-          {
-            type: "image_url",
-            image_url: { url: "", detail: "high" },
-          },
-        ];
-      }
-
-      postLlmMessage({
+  const handleCreateNewMessage = useCallback(
+    (message: ChatMessageType) => {
+      postChatMessage({
         action: ChatChannelAction.new_message,
-        payload: chatMessage,
+        payload: message,
       });
       setTextInput("");
       setLoading(true);
       setStreaming(true);
     },
-    [postLlmMessage, textInput]
+    [postChatMessage]
+  );
+
+  useEffect(() => {
+    const listenerFn = (message: CommandChannelMessage) => {
+      switch (message.action) {
+        case CommandChannelAction.submit_with_screenshot:
+          handleCreateNewMessage({
+            role: Role.user,
+            content: [
+              { type: "text", text: textAreaRef.current?.value || "" },
+              {
+                type: "image_url",
+                image_url: { url: "", detail: "high" },
+              },
+            ],
+          });
+      }
+    };
+
+    chrome.runtime.onMessage.addListener(listenerFn);
+
+    return () => chrome.runtime.onMessage.removeListener(listenerFn);
+  }, [handleCreateNewMessage]);
+
+  const handleKeyDown = useCallback(
+    (event: React.KeyboardEvent) => {
+      if (event.key !== "Enter") return;
+
+      event.preventDefault();
+
+      // If Shift + Enter is pressed, insert a new line
+      if (event.shiftKey) {
+        setTextInput((prev) => prev + "\n");
+        return;
+      }
+
+      const currentInputValue = textAreaRef.current?.value || "";
+
+      // If the input is empty, do nothing
+      if (!currentInputValue.trim()) return;
+
+      handleCreateNewMessage({
+        role: Role.user,
+        content: currentInputValue,
+      });
+    },
+    [handleCreateNewMessage]
+  );
+
+  const handleChange = useCallback(
+    (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      setTextInput(event.target.value);
+    },
+    []
   );
 
   return {
     value: textInput,
-    onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) =>
-      setTextInput(e.target.value),
-    onKeyDown: handleKeyDown,
+    handleChange,
+    handleKeyDown,
     loading,
     streaming,
   };

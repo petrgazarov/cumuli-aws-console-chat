@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useAtom } from "jotai";
-import { LLM_CHANNEL, COMMAND_CHANNEL } from "utils/constants";
+import { CHAT_CHANNEL, COMMAND_CHANNEL } from "utils/constants";
 import {
   ChatChannelMessage,
   ChatChannelAction,
@@ -20,7 +20,7 @@ const useDrawer = () => {
     channelName: COMMAND_CHANNEL,
   });
 
-  const llmChannelListener = useCallback(
+  const chatChannelListener = useCallback(
     (channelMessage: ChatChannelMessage) => {
       if (channelMessage.action !== ChatChannelAction.initial_state) return;
 
@@ -30,43 +30,50 @@ const useDrawer = () => {
     []
   );
 
-  usePort({ channelName: LLM_CHANNEL, listener: llmChannelListener });
+  usePort({ channelName: CHAT_CHANNEL, listener: chatChannelListener });
 
-  const toggleDrawerWithCommand = useCallback(
-    (open: boolean) => {
-      setDrawerOpen(open);
+  const toggleDrawerOpen = useCallback(() => {
+    setDrawerOpen((prevOpen) => !prevOpen);
 
-      postCommandMessage({
-        action: open
-          ? CommandChannelAction.open_chat
-          : CommandChannelAction.close_chat,
-      });
+    postCommandMessage({ action: CommandChannelAction.toggle_chat });
 
-      textAreaRef.current?.focus();
-      scrollDrawerToBottom();
-    },
-    [postCommandMessage]
-  );
+    textAreaRef.current?.focus();
+    scrollDrawerToBottom();
+  }, [postCommandMessage]);
+
+  const createNewChat = useCallback(() => {
+    postCommandMessage({
+      action: CommandChannelAction.new_chat,
+    });
+    setMessages([]);
+    textAreaRef.current?.focus();
+  }, [postCommandMessage]);
 
   useEffect(() => {
     const listenerFn = (message: CommandChannelMessage) => {
-      if (message.action === CommandChannelAction.open_chat) {
-        toggleDrawerWithCommand(true);
+      switch (message.action) {
+        case CommandChannelAction.toggle_chat:
+          toggleDrawerOpen();
+          break;
+        case CommandChannelAction.new_chat:
+          setDrawerOpen(true);
+          createNewChat();
+          break;
       }
     };
 
     chrome.runtime.onMessage.addListener(listenerFn);
 
     return () => chrome.runtime.onMessage.removeListener(listenerFn);
-  }, [toggleDrawerWithCommand]);
+  }, [toggleDrawerOpen]);
 
   const escapeButtonListener = useCallback(
     (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        toggleDrawerWithCommand(false);
+        toggleDrawerOpen();
       }
     },
-    [toggleDrawerWithCommand]
+    [toggleDrawerOpen]
   );
 
   useEffect(() => {
@@ -83,16 +90,9 @@ const useDrawer = () => {
     }
   }, [drawerOpen]);
 
-  const createNewChat = useCallback(() => {
-    postCommandMessage({
-      action: CommandChannelAction.new_chat,
-    });
-    setMessages([]);
-  }, [postCommandMessage]);
-
   return {
     drawerOpen,
-    setDrawerOpen: toggleDrawerWithCommand,
+    toggleDrawerOpen,
     textAreaRef,
     messages,
     createNewChat,

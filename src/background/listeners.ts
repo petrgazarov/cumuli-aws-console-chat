@@ -89,11 +89,8 @@ export const setupCommandChannelListener = (
 ) => {
   port.onMessage.addListener((channelMessage: CommandChannelMessage) => {
     switch (channelMessage.action) {
-      case CommandChannelAction.close_chat:
-        drawerInstance.open = false;
-        break;
-      case CommandChannelAction.open_chat:
-        drawerInstance.open = true;
+      case CommandChannelAction.toggle_chat:
+        drawerInstance.open = !drawerInstance.open;
         break;
       case CommandChannelAction.new_chat:
         drawerInstance.conversation = NewChatConversation();
@@ -103,15 +100,19 @@ export const setupCommandChannelListener = (
 };
 
 chrome.commands.onCommand.addListener((command) => {
-  if (command === CommandChannelAction.open_chat) {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      const activeTab = tabs[0];
+  switch (command) {
+    case CommandChannelAction.toggle_chat:
+    case CommandChannelAction.new_chat:
+    case CommandChannelAction.submit_with_screenshot:
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        const activeTab = tabs[0];
 
-      if (activeTab.id) {
-        chrome.tabs.sendMessage(activeTab.id, {
-          action: CommandChannelAction.open_chat,
-        });
-      }
-    });
+        if (activeTab.id) {
+          chrome.tabs.sendMessage(activeTab.id, {
+            action: command,
+          });
+        }
+      });
+      break;
   }
 });

@@ -6,12 +6,15 @@ type NewMessageProps = {
   textAreaRef: React.RefObject<HTMLTextAreaElement>;
 };
 
-const NewMessage = (props: NewMessageProps) => {
-  const { value, onChange, onKeyDown, loading, streaming } = useNewMessage();
+const NewMessage = ({ textAreaRef }: NewMessageProps) => {
+  const { value, handleChange, handleKeyDown, loading, streaming } =
+    useNewMessage({
+      textAreaRef,
+    });
 
   useEffect(() => {
     if (!streaming && !loading) {
-      props.textAreaRef.current?.focus();
+      textAreaRef.current?.focus();
     }
   }, [streaming, loading]);
 
@@ -26,14 +29,12 @@ const NewMessage = (props: NewMessageProps) => {
   return (
     <>
       <NewMessageTextarea
-        ref={props.textAreaRef}
+        ref={textAreaRef}
         value={value}
-        onChange={onChange}
-        onKeyDown={onKeyDown}
+        onChange={handleChange}
+        onKeyDown={handleKeyDown}
       />
-      <HelpText>
-        Enter to send, Cmd/Ctrl + Enter to include a screenshot
-      </HelpText>
+      <HelpText>Enter to send, Cmd/Ctrl + U to send with screenshot</HelpText>
     </>
   );
 };
