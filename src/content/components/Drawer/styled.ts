@@ -29,7 +29,7 @@ export const DrawerElement = styled.div<{ open: boolean }>`
   width: ${(props) => (props.open ? "400px" : "22px")};
   padding-left: ${(props) => (props.open ? "15px" : "10px")};
   padding-right: ${(props) => (props.open ? "15px" : "10px")};
-  padding-bottom: ${(props) => (props.open ? "15px" : "10px")};
+  padding-bottom: ${(props) => (props.open ? "100px" : "10px")};
 `;
 
 export const Header = styled.div`
@@ -43,6 +43,24 @@ export const Header = styled.div`
   z-index: 1;
 `;
 
+export const CancelIconButton = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  padding: 0;
+  border: 0;
+  background: none;
+  padding: 3px;
+  margin-top: -3px;
+
+  &:hover {
+    svg {
+      stroke: #ec7211;
+    }
+  }
+`;
+
 export const Content = styled.div<{ show: boolean }>`
   ${(props) => (props.show ? "display: flex;" : "display: none;")}
   flex-direction: column;
@@ -54,4 +72,11 @@ export const Separator = styled.div`
   width: 100%;
   padding-top: 10px;
   margin-bottom: 10px;
+`;
+
+export const NewChatButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px 0;
 `;

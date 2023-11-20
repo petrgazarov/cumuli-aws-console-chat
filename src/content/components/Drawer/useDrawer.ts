@@ -24,7 +24,7 @@ const useDrawer = () => {
     (channelMessage: ChatChannelMessage) => {
       if (channelMessage.action !== ChatChannelAction.initial_state) return;
 
-      setMessages(channelMessage.payload.messages);
+      setMessages(channelMessage.payload.conversation.messages);
       setDrawerOpen(channelMessage.payload.open);
     },
     []
@@ -41,6 +41,9 @@ const useDrawer = () => {
           ? CommandChannelAction.open_chat
           : CommandChannelAction.close_chat,
       });
+
+      textAreaRef.current?.focus();
+      scrollDrawerToBottom();
     },
     [postCommandMessage]
   );
@@ -80,11 +83,19 @@ const useDrawer = () => {
     }
   }, [drawerOpen]);
 
+  const createNewChat = useCallback(() => {
+    postCommandMessage({
+      action: CommandChannelAction.new_chat,
+    });
+    setMessages([]);
+  }, [postCommandMessage]);
+
   return {
     drawerOpen,
     setDrawerOpen: toggleDrawerWithCommand,
     textAreaRef,
     messages,
+    createNewChat,
   };
 };
 

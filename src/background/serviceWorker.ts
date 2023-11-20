@@ -1,9 +1,9 @@
 import { LLM_CHANNEL, COMMAND_CHANNEL } from "utils/constants";
 import {
-  setupLlmChannelListener,
+  setupChatChannelListener,
   setupCommandChannelListener,
 } from "./listeners";
-import { DrawerInstance } from "./types";
+import { DrawerInstance, NewChatConversation } from "./types";
 
 const drawerInstances: { [tabId: number]: DrawerInstance } = {};
 
@@ -14,16 +14,16 @@ chrome.runtime.onConnect.addListener((port) => {
 
   if (!drawerInstances[tabId]) {
     drawerInstances[tabId] = {
-      createdAt: new Date(),
-      open: false,
-      messages: [],
       tabId,
+      open: false,
+      conversation: NewChatConversation(),
+      createdAt: new Date(),
     };
   }
   const drawerInstance = drawerInstances[tabId];
 
   if (port.name === LLM_CHANNEL) {
-    setupLlmChannelListener(port, drawerInstance);
+    setupChatChannelListener(port, drawerInstance);
   } else if (port.name === COMMAND_CHANNEL) {
     setupCommandChannelListener(port, drawerInstance);
   }

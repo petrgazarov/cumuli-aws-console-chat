@@ -37,6 +37,7 @@ export type ChatMessageType = {
 export enum CommandChannelAction {
   "open_chat" = "open_chat",
   "close_chat" = "close_chat",
+  "new_chat" = "new_chat",
 }
 
 export type CommandChannelMessage = {

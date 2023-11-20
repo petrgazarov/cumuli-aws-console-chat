@@ -1,8 +1,9 @@
 import React from "react";
 import ChatMessage from "content/components/ChatMessage";
-import CancelButton from "content/components/CancelButton";
+import CancelIcon from "content/components/icons/CancelIcon";
 import Logo from "content/components/Logo";
 import NewMessage from "content/components/NewMessage";
+import Button from "content/components/Button";
 import { DRAWER_WRAPPER_ID } from "utils/constants";
 import {
   DrawerWrapper,
@@ -10,11 +11,14 @@ import {
   Header,
   Content,
   Separator,
+  NewChatButtonContainer,
+  CancelIconButton,
 } from "./styled";
 import useDrawer from "./useDrawer";
 
 const Drawer = () => {
-  const { drawerOpen, setDrawerOpen, textAreaRef, messages } = useDrawer();
+  const { drawerOpen, setDrawerOpen, textAreaRef, messages, createNewChat } =
+    useDrawer();
 
   const renderMessage = (message: any, index: number) => {
     return (
@@ -35,17 +39,22 @@ const Drawer = () => {
         <Header>
           <Logo />
           {drawerOpen ? (
-            <CancelButton
+            <CancelIconButton
               onClick={(e: React.MouseEvent) => {
                 e.stopPropagation();
                 setDrawerOpen(false);
               }}
-            />
+            >
+              <CancelIcon />
+            </CancelIconButton>
           ) : null}
         </Header>
         <Content show={drawerOpen}>
           {messages.map(renderMessage)}
           <NewMessage textAreaRef={textAreaRef} />
+          <NewChatButtonContainer>
+            <Button onClick={createNewChat}>New Chat</Button>
+          </NewChatButtonContainer>
         </Content>
       </DrawerElement>
     </DrawerWrapper>

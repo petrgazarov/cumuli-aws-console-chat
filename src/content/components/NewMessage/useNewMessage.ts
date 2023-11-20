@@ -1,6 +1,5 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { useAtom } from "jotai";
-import debounce from "lodash.debounce";
 import {
   ChatMessageType,
   Role,
@@ -10,7 +9,6 @@ import {
 import { LLM_CHANNEL } from "utils/constants";
 import usePort from "content/utils/usePort";
 import { messagesAtom } from "content/utils/atoms";
-import { scrollDrawerToBottom } from "content/utils/helpers";
 
 const useNewMessage = () => {
   const [textInput, setTextInput] = useState("");
@@ -63,8 +61,6 @@ const useNewMessage = () => {
 
   const handleKeyDown = useCallback(
     (event: React.KeyboardEvent) => {
-      debounce(scrollDrawerToBottom, 500, { leading: true, trailing: true })();
-
       // If Shift + Enter is pressed, insert a new line
       if (event.key === "Enter" && event.shiftKey) {
         event.preventDefault();

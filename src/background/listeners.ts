@@ -10,9 +10,9 @@ import {
 } from "utils/types";
 import { getOpenAiApiKey } from "utils/helpers";
 import { captureVisibleTab } from "./utils";
-import { DrawerInstance } from "./types";
+import { DrawerInstance, NewChatConversation } from "./types";
 
-export const setupLlmChannelListener = (
+export const setupChatChannelListener = (
   port: chrome.runtime.Port,
   drawerInstance: DrawerInstance
 ) => {
@@ -39,7 +39,7 @@ export const setupLlmChannelListener = (
         }
 
         // Add the user message to the list of messages and send it back to the content script
-        drawerInstance.messages.push(userMessage);
+        drawerInstance.conversation.messages.push(userMessage);
         port.postMessage({
           action: ChatChannelAction.new_message,
           payload: userMessage,
@@ -48,7 +48,7 @@ export const setupLlmChannelListener = (
         const openAiApiKey = await getOpenAiApiKey();
         const openai = new OpenAI({ apiKey: openAiApiKey });
 
-        drawerInstance.messages.push({
+        drawerInstance.conversation.messages.push({
           role: Role.assistant,
           content: "",
         });
@@ -56,8 +56,8 @@ export const setupLlmChannelListener = (
         openai.beta.chat.completions
           .stream({
             model: "gpt-4-vision-preview",
-            messages:
-              drawerInstance.messages as OpenAI.Chat.ChatCompletionMessageParam[], // TODO: remove this type cast
+            messages: drawerInstance.conversation
+              .messages as OpenAI.Chat.ChatCompletionMessageParam[], // TODO: remove this type cast
             max_tokens: 4096,
             stream: true,
             temperature: 0.0,
@@ -68,7 +68,9 @@ export const setupLlmChannelListener = (
               payload: chunk,
             });
             const lastMessage =
-              drawerInstance.messages[drawerInstance.messages.length - 1];
+              drawerInstance.conversation.messages[
+                drawerInstance.conversation.messages.length - 1
+              ];
 
             lastMessage.content += chunk;
           })
@@ -92,6 +94,9 @@ export const setupCommandChannelListener = (
         break;
       case CommandChannelAction.open_chat:
         drawerInstance.open = true;
+        break;
+      case CommandChannelAction.new_chat:
+        drawerInstance.conversation = NewChatConversation();
         break;
     }
   });

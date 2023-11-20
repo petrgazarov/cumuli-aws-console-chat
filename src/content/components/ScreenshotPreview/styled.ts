@@ -9,11 +9,20 @@ export const ScreenshotContainer = styled.div`
   border: 1px solid #414750;
 `;
 
-export const CancelIconContainer = styled.div`
+export const CancelIconButton = styled.button`
   position: absolute;
   top: 0;
   right: 0;
+  display: flex;
   border: none;
   background-color: #ec7211;
   border-radius: 2px;
+  padding: 1px;
+  cursor: pointer;
+
+  &:hover {
+    svg {
+      stroke: #fafafa;
+    }
+  }
 `;

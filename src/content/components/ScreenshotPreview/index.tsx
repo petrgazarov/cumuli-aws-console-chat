@@ -1,5 +1,5 @@
-import CancelButton from "content/components/CancelButton";
-import { ScreenshotContainer, CancelIconContainer } from "./styled";
+import CancelIcon from "content/components/icons/CancelIcon";
+import { ScreenshotContainer, CancelIconButton } from "./styled";
 
 type ScreenshotPreviewProps = {
   url: string;
@@ -14,9 +14,9 @@ const ScreenshotPreview = ({ url, onRemove }: ScreenshotPreviewProps) => {
         style={{ width: "auto", height: "75px" }}
         alt="Screenshot preview"
       />
-      <CancelIconContainer>
-        <CancelButton width="12" height="12" onClick={() => onRemove?.()} />
-      </CancelIconContainer>
+      <CancelIconButton onClick={() => onRemove?.()}>
+        <CancelIcon width={12} height={12} />
+      </CancelIconButton>
     </ScreenshotContainer>
   );
 };
