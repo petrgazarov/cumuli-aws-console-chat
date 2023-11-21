@@ -10,7 +10,7 @@ import {
 } from "utils/types";
 import { CHAT_CHANNEL } from "utils/constants";
 import usePort from "content/utils/usePort";
-import { messagesAtom } from "content/utils/atoms";
+import { messagesAtom, drawerOpenAtom } from "content/utils/atoms";
 
 type useNewMessageProps = {
   textAreaRef: React.RefObject<HTMLTextAreaElement>;
@@ -22,6 +22,7 @@ type useNewMessageProps = {
 //   - textInput state is used to set the value.
 
 const useNewMessage = ({ textAreaRef }: useNewMessageProps) => {
+  const [drawerOpen] = useAtom(drawerOpenAtom);
   const [textInput, setTextInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [streaming, setStreaming] = useState(false);
@@ -84,6 +85,9 @@ const useNewMessage = ({ textAreaRef }: useNewMessageProps) => {
   );
 
   useEffect(() => {
+    // Only set the listener if the drawer is open
+    if (!drawerOpen) return;
+
     const listenerFn = (message: CommandChannelMessage) => {
       switch (message.action) {
         case CommandChannelAction.submit_with_screenshot:
@@ -102,8 +106,12 @@ const useNewMessage = ({ textAreaRef }: useNewMessageProps) => {
 
     chrome.runtime.onMessage.addListener(listenerFn);
 
-    return () => chrome.runtime.onMessage.removeListener(listenerFn);
-  }, [handleCreateNewMessage]);
+    return () => {
+      if (!drawerOpen) return;
+
+      chrome.runtime.onMessage.removeListener(listenerFn);
+    };
+  }, [drawerOpen, handleCreateNewMessage]);
 
   const handleKeyDown = useCallback(
     (event: React.KeyboardEvent) => {

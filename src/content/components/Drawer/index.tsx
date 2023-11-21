@@ -1,10 +1,12 @@
 import React from "react";
+import { useAtom } from "jotai";
 import ChatMessage from "content/components/ChatMessage";
 import CancelIcon from "content/components/icons/CancelIcon";
 import Logo from "content/components/Logo";
 import NewMessage from "content/components/NewMessage";
 import Button from "content/components/Button";
 import { DRAWER_WRAPPER_ID } from "utils/constants";
+import { drawerOpenAtom } from "content/utils/atoms";
 import {
   DrawerWrapper,
   DrawerElement,
@@ -17,7 +19,8 @@ import {
 import useDrawer from "./useDrawer";
 
 const Drawer = () => {
-  const { drawerOpen, toggleDrawerOpen, textAreaRef, messages, createNewChat } =
+  const [drawerOpen] = useAtom(drawerOpenAtom);
+  const { toggleDrawerOpen, textAreaRef, messages, createNewChat } =
     useDrawer();
 
   const renderMessage = (message: any, index: number) => {

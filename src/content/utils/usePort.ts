@@ -91,7 +91,7 @@ const usePort = ({ channelName, listener }: usePortParameters) => {
         port.postMessage(message);
       } catch (e: any) {
         // Service worker can be terminated at any time, this handles port reset in that case.
-        console.warn("Failed to post message to port", e?.message);
+        console.debug("[Cumuli] Failed to post message to port", e?.message);
 
         setPortBuffer((prevBuffer) => ({
           ...prevBuffer,

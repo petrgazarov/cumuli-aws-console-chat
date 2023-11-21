@@ -6,7 +6,7 @@ module.exports = {
   mode: "production",
   entry: {
     popup: path.join(__dirname, "src", "popup", "Popup.tsx"),
-    drawer: path.join(__dirname, "src", "content", "ContentScript.tsx"),
+    drawer: path.join(__dirname, "src", "content"),
     serviceWorker: path.join(
       __dirname,
       "src",
@@ -35,7 +35,7 @@ module.exports = {
     new CopyWebpackPlugin({
       patterns: [
         { from: "public", to: "" },
-        { from: "src/content/ContentScript.css", to: "css/drawer.css" },
+        { from: "src/content/css/global.css", to: "css/drawer.css" },
       ],
     }),
   ],

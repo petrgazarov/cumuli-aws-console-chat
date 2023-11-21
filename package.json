@@ -25,6 +25,7 @@
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
     "copy-webpack-plugin": "^11.0.0",
+    "raw-loader": "^4.0.2",
     "rimraf": "^5.0.5",
     "ts-loader": "^9.5.0",
     "tsconfig-paths-webpack-plugin": "^4.1.0",

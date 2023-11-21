@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { useAtom } from "jotai";
 import { CHAT_CHANNEL, COMMAND_CHANNEL } from "utils/constants";
 import {
@@ -8,14 +8,15 @@ import {
   CommandChannelAction,
 } from "utils/types";
 import usePort from "content/utils/usePort";
-import { messagesAtom } from "content/utils/atoms";
+import { messagesAtom, drawerOpenAtom } from "content/utils/atoms";
 import { scrollDrawerToBottom } from "content/utils/helpers";
 import { detectOS } from "utils/helpers";
 import { OS } from "utils/types";
+import pageListeners from "content/ContentScript/pageListeners";
 
 const useDrawer = () => {
   const [messages, setMessages] = useAtom(messagesAtom);
-  const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
+  const [drawerOpen, setDrawerOpen] = useAtom(drawerOpenAtom);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   const { postMessage: postCommandMessage } = usePort({
@@ -99,8 +100,20 @@ const useDrawer = () => {
   useEffect(() => {
     window.addEventListener("keydown", keyboardShortcutListener);
 
-    return () =>
+    const savedListenerObject = {
+      type: "keydown",
+      func: keyboardShortcutListener,
+    };
+    pageListeners.window.push(savedListenerObject);
+
+    return () => {
       window.removeEventListener("keydown", keyboardShortcutListener);
+
+      const index = pageListeners.window.indexOf(savedListenerObject);
+      if (index > -1) {
+        pageListeners.window.splice(index, 1);
+      }
+    };
   }, [keyboardShortcutListener]);
 
   useEffect(() => {
@@ -112,7 +125,6 @@ const useDrawer = () => {
   }, [drawerOpen]);
 
   return {
-    drawerOpen,
     toggleDrawerOpen,
     textAreaRef,
     messages,

@@ -1,0 +1,11 @@
+/* Hide the existing right-hand information drawers. Not all pages have one. */
+#app main ~ [class^="awsui_drawer_"],
+#app main ~ [class^="awsui_drawer-displayed"] {
+  display: none !important;
+}
+
+/* Cumuli drawer styles */
+#cumuli-drawer-root {
+  color: #d5dbdb;
+  font-family: 'Amazon Ember';
+}
