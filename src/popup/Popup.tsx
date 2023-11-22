@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import ReactDOM from "react-dom";
+
 import { getOpenAiApiKey, setOpenAiApiKey } from "utils/helpers";
 
 const Popup = () => {

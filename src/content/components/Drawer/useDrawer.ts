@@ -1,23 +1,36 @@
-import { useEffect, useRef, useCallback } from "react";
 import { useAtom } from "jotai";
+import { useEffect, useRef, useCallback } from "react";
+
+import {
+  addWindowListener,
+  removeWindowListener,
+  addOnMessageListener,
+  removeOnMessageListener,
+} from "content/ContentScript/listeners";
+import {
+  messagesAtom,
+  drawerOpenAtom,
+  streamingAtom,
+  loadingAtom,
+} from "content/utils/atoms";
+import { scrollDrawerToBottom } from "content/utils/helpers";
+import usePort from "content/utils/usePort";
 import { CHAT_CHANNEL, COMMAND_CHANNEL } from "utils/constants";
+import { detectOS } from "utils/helpers";
 import {
   ChatChannelMessage,
   ChatChannelAction,
   CommandChannelMessage,
   CommandChannelAction,
 } from "utils/types";
-import usePort from "content/utils/usePort";
-import { messagesAtom, drawerOpenAtom } from "content/utils/atoms";
-import { scrollDrawerToBottom } from "content/utils/helpers";
-import { detectOS } from "utils/helpers";
 import { OS } from "utils/types";
-import pageListeners from "content/ContentScript/pageListeners";
 
 const useDrawer = () => {
   const [messages, setMessages] = useAtom(messagesAtom);
   const [drawerOpen, setDrawerOpen] = useAtom(drawerOpenAtom);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  const [, setStreaming] = useAtom(streamingAtom);
+  const [, setLoading] = useAtom(loadingAtom);
 
   const { postMessage: postCommandMessage } = usePort({
     channelName: COMMAND_CHANNEL,
@@ -25,7 +38,9 @@ const useDrawer = () => {
 
   const chatChannelListener = useCallback(
     (channelMessage: ChatChannelMessage) => {
-      if (channelMessage.action !== ChatChannelAction.initial_state) return;
+      if (channelMessage.action !== ChatChannelAction.initial_state) {
+        return;
+      }
 
       setMessages(channelMessage.payload.conversation.messages);
       setDrawerOpen(channelMessage.payload.open);
@@ -47,6 +62,8 @@ const useDrawer = () => {
   const createNewChat = useCallback(() => {
     postCommandMessage({ action: CommandChannelAction.new_chat });
     setMessages([]);
+    setStreaming(false);
+    setLoading(false);
     textAreaRef.current?.focus();
   }, [postCommandMessage]);
 
@@ -63,10 +80,10 @@ const useDrawer = () => {
       }
     };
 
-    chrome.runtime.onMessage.addListener(listenerFn);
+    addOnMessageListener(listenerFn);
 
-    return () => chrome.runtime.onMessage.removeListener(listenerFn);
-  }, [toggleDrawerOpen]);
+    return () => removeOnMessageListener(listenerFn);
+  }, [toggleDrawerOpen, createNewChat]);
 
   const keyboardShortcutListener = useCallback(
     (event: KeyboardEvent) => {
@@ -98,22 +115,9 @@ const useDrawer = () => {
   );
 
   useEffect(() => {
-    window.addEventListener("keydown", keyboardShortcutListener);
+    addWindowListener("keydown", keyboardShortcutListener);
 
-    const savedListenerObject = {
-      type: "keydown",
-      func: keyboardShortcutListener,
-    };
-    pageListeners.window.push(savedListenerObject);
-
-    return () => {
-      window.removeEventListener("keydown", keyboardShortcutListener);
-
-      const index = pageListeners.window.indexOf(savedListenerObject);
-      if (index > -1) {
-        pageListeners.window.splice(index, 1);
-      }
-    };
+    return () => removeWindowListener("keydown", keyboardShortcutListener);
   }, [keyboardShortcutListener]);
 
   useEffect(() => {

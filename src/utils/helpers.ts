@@ -29,10 +29,10 @@ export const detectOS = () => {
   let os = OS.Unknown;
   const userAgent = window.navigator.userAgent;
 
-  if (userAgent.indexOf("Win") != -1) os = OS.Windows;
-  if (userAgent.indexOf("Mac") != -1) os = OS.MacOS;
-  if (userAgent.indexOf("X11") != -1) os = OS.UNIX;
-  if (userAgent.indexOf("Linux") != -1) os = OS.Linux;
+  if (userAgent.indexOf("Win") != -1) {os = OS.Windows;}
+  if (userAgent.indexOf("Mac") != -1) {os = OS.MacOS;}
+  if (userAgent.indexOf("X11") != -1) {os = OS.UNIX;}
+  if (userAgent.indexOf("Linux") != -1) {os = OS.Linux;}
 
   return os;
 };

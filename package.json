@@ -16,7 +16,9 @@
   "scripts": {
     "clean": "rimraf build/*",
     "build": "pnpm clean && webpack --mode production",
-    "watch": "webpack --watch"
+    "watch": "webpack --watch",
+    "lint": "eslint --ext .ts,.tsx src",
+    "lint:fix": "eslint --fix --ext .ts,.tsx src"
   },
   "devDependencies": {
     "@types/chrome": "^0.0.251",
@@ -24,11 +26,18 @@
     "@types/lodash.debounce": "^4.0.9",
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
+    "@typescript-eslint/eslint-plugin": "^6.12.0",
+    "@typescript-eslint/parser": "^6.12.0",
     "copy-webpack-plugin": "^11.0.0",
+    "eslint": "^8.54.0",
+    "eslint-import-resolver-typescript": "^3.6.1",
+    "eslint-import-resolver-webpack": "^0.13.8",
+    "eslint-plugin-import": "^2.29.0",
     "raw-loader": "^4.0.2",
     "rimraf": "^5.0.5",
     "ts-loader": "^9.5.0",
     "tsconfig-paths-webpack-plugin": "^4.1.0",
+    "typescript": "5.2.2",
     "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4"
   },

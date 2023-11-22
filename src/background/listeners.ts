@@ -1,4 +1,11 @@
 import OpenAI from "openai";
+import { APIUserAbortError } from "openai/error";
+import { ChatCompletionStream } from "openai/lib/ChatCompletionStream";
+
+import { DrawerInstance, NewChatConversation } from "./types";
+import { captureVisibleTab } from "./utils";
+
+import { getOpenAiApiKey } from "utils/helpers";
 import {
   ChatMessageType,
   Role,
@@ -8,9 +15,8 @@ import {
   ChatChannelMessage,
   ChatChannelAction,
 } from "utils/types";
-import { getOpenAiApiKey } from "utils/helpers";
-import { captureVisibleTab } from "./utils";
-import { DrawerInstance, NewChatConversation } from "./types";
+
+let streamingRunner: ChatCompletionStream | null = null;
 
 export const setupChatChannelListener = (
   port: chrome.runtime.Port,
@@ -23,7 +29,7 @@ export const setupChatChannelListener = (
 
   port.onMessage.addListener(async (channelMessage: ChatChannelMessage) => {
     switch (channelMessage.action) {
-      case ChatChannelAction.new_message:
+      case ChatChannelAction.new_message: {
         const userMessage: ChatMessageType = channelMessage.payload;
 
         if (Array.isArray(userMessage.content)) {
@@ -53,7 +59,7 @@ export const setupChatChannelListener = (
           content: "",
         });
 
-        openai.beta.chat.completions
+        streamingRunner = openai.beta.chat.completions
           .stream({
             model: "gpt-4-vision-preview",
             messages: drawerInstance.conversation
@@ -78,7 +84,25 @@ export const setupChatChannelListener = (
             port.postMessage({
               action: ChatChannelAction.finish_stream,
             });
+            streamingRunner = null;
+          })
+          .on("error", () => {
+            streamingRunner = null;
           });
+
+        // For some reason, "error" event does not fire on abort.
+        // see https://github.com/openai/openai-node/issues/526
+        await streamingRunner.finalContent().catch((error) => {
+          streamingRunner = null;
+
+          if (error instanceof APIUserAbortError) {
+            console.log("[Cumuli] user aborted request");
+            return;
+          }
+
+          throw error;
+        });
+      }
     }
   });
 };
@@ -100,6 +124,7 @@ export const setupCommandChannelListener = (
         break;
       case CommandChannelAction.new_chat:
         drawerInstance.conversation = NewChatConversation();
+        streamingRunner?.controller.abort();
         break;
     }
   });

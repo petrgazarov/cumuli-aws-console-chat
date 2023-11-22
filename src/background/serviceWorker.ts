@@ -1,15 +1,16 @@
-import { CHAT_CHANNEL, COMMAND_CHANNEL } from "utils/constants";
 import {
   setupChatChannelListener,
   setupCommandChannelListener,
 } from "./listeners";
 import { DrawerInstance, NewChatConversation } from "./types";
 
+import { CHAT_CHANNEL, COMMAND_CHANNEL } from "utils/constants";
+
 const drawerInstances: { [tabId: number]: DrawerInstance } = {};
 
 chrome.runtime.onConnect.addListener((port) => {
   const tabId = port.sender?.tab?.id;
-  if (typeof tabId !== "number") throw new Error("tabId is not a number");
+  if (typeof tabId !== "number") {throw new Error("tabId is not a number");}
   console.log("tabId", tabId);
 
   if (!drawerInstances[tabId]) {

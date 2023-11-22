@@ -1,5 +1,18 @@
-import { useState, useCallback, useEffect } from "react";
 import { useAtom } from "jotai";
+import { useState, useCallback, useEffect } from "react";
+
+import {
+  addOnMessageListener,
+  removeOnMessageListener,
+} from "content/ContentScript/listeners";
+import {
+  messagesAtom,
+  drawerOpenAtom,
+  streamingAtom,
+  loadingAtom,
+} from "content/utils/atoms";
+import usePort from "content/utils/usePort";
+import { CHAT_CHANNEL } from "utils/constants";
 import {
   ChatMessageType,
   Role,
@@ -8,9 +21,6 @@ import {
   CommandChannelAction,
   CommandChannelMessage,
 } from "utils/types";
-import { CHAT_CHANNEL } from "utils/constants";
-import usePort from "content/utils/usePort";
-import { messagesAtom, drawerOpenAtom } from "content/utils/atoms";
 
 type useNewMessageProps = {
   textAreaRef: React.RefObject<HTMLTextAreaElement>;
@@ -24,10 +34,9 @@ type useNewMessageProps = {
 const useNewMessage = ({ textAreaRef }: useNewMessageProps) => {
   const [drawerOpen] = useAtom(drawerOpenAtom);
   const [textInput, setTextInput] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [streaming, setStreaming] = useState(false);
-
-  const [_, setMessages] = useAtom(messagesAtom);
+  const [, setMessages] = useAtom(messagesAtom);
+  const [, setLoading] = useAtom(loadingAtom);
+  const [streaming, setStreaming] = useAtom(streamingAtom);
 
   const chatChannelListener = useCallback(
     (channelMessage: ChatChannelMessage) => {
@@ -41,7 +50,7 @@ const useNewMessage = ({ textAreaRef }: useNewMessageProps) => {
         case ChatChannelAction.stream_chunk:
           setMessages((prevMessages) => {
             const newMessages = [...prevMessages];
-            let lastMessage = newMessages[newMessages.length - 1];
+            const lastMessage = newMessages[newMessages.length - 1];
 
             if (lastMessage?.role === Role.assistant) {
               newMessages[newMessages.length - 1] = {
@@ -86,9 +95,15 @@ const useNewMessage = ({ textAreaRef }: useNewMessageProps) => {
 
   useEffect(() => {
     // Only set the listener if the drawer is open
-    if (!drawerOpen) return;
+    if (!drawerOpen) {
+      return;
+    }
 
     const listenerFn = (message: CommandChannelMessage) => {
+      if (streaming) {
+        return;
+      }
+
       switch (message.action) {
         case CommandChannelAction.submit_with_screenshot:
           handleCreateNewMessage({
@@ -104,18 +119,22 @@ const useNewMessage = ({ textAreaRef }: useNewMessageProps) => {
       }
     };
 
-    chrome.runtime.onMessage.addListener(listenerFn);
+    addOnMessageListener(listenerFn);
 
     return () => {
-      if (!drawerOpen) return;
+      if (!drawerOpen) {
+        return;
+      }
 
-      chrome.runtime.onMessage.removeListener(listenerFn);
+      removeOnMessageListener(listenerFn);
     };
-  }, [drawerOpen, handleCreateNewMessage]);
+  }, [drawerOpen, handleCreateNewMessage, streaming]);
 
   const handleKeyDown = useCallback(
     (event: React.KeyboardEvent) => {
-      if (event.key !== "Enter") return;
+      if (event.key !== "Enter") {
+        return;
+      }
 
       event.preventDefault();
 
@@ -128,7 +147,9 @@ const useNewMessage = ({ textAreaRef }: useNewMessageProps) => {
       const currentInputValue = textAreaRef.current?.value || "";
 
       // If the input is empty, do nothing
-      if (!currentInputValue.trim()) return;
+      if (!currentInputValue.trim()) {
+        return;
+      }
 
       handleCreateNewMessage({
         role: Role.user,
@@ -149,8 +170,6 @@ const useNewMessage = ({ textAreaRef }: useNewMessageProps) => {
     value: textInput,
     handleChange,
     handleKeyDown,
-    loading,
-    streaming,
   };
 };
 

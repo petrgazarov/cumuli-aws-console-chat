@@ -1,12 +1,14 @@
 import debounce from "lodash.debounce";
-import { DRAWER_ROOT_ID } from "utils/constants";
+
 import { renderDrawer, resolveHtmlElements } from "./ContentScript";
-import pageListeners from "./ContentScript/pageListeners";
 import {
   iframeIds,
   getIframesOnPage,
   injectStylesheetIntoIframes,
 } from "./ContentScript/iframes";
+import { clearAllListeners } from "./ContentScript/listeners";
+
+import { DRAWER_ROOT_ID } from "utils/constants";
 
 const renderToDom = () => {
   // Some AWS pages are rendered with iframes.
@@ -26,10 +28,10 @@ const renderToDom = () => {
   }
 
   // If the drawer is already present, do nothing.
-  if (document.getElementById(DRAWER_ROOT_ID)) return;
+  if (document.getElementById(DRAWER_ROOT_ID)) {return;}
 
   // Remove all listeners before re-rendering
-  pageListeners.clear();
+  clearAllListeners();
 
   const { mainElement, observedElement } = resolveHtmlElements();
   if (!mainElement || !observedElement) {

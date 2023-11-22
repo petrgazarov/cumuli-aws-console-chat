@@ -1,12 +1,6 @@
-import React from "react";
 import { useAtom } from "jotai";
-import ChatMessage from "content/components/ChatMessage";
-import CancelIcon from "content/components/icons/CancelIcon";
-import Logo from "content/components/Logo";
-import NewMessage from "content/components/NewMessage";
-import Button from "content/components/Button";
-import { DRAWER_WRAPPER_ID } from "utils/constants";
-import { drawerOpenAtom } from "content/utils/atoms";
+import React from "react";
+
 import {
   DrawerWrapper,
   DrawerElement,
@@ -17,6 +11,14 @@ import {
   CancelIconButton,
 } from "./styled";
 import useDrawer from "./useDrawer";
+
+import Button from "content/components/Button";
+import ChatMessage from "content/components/ChatMessage";
+import CancelIcon from "content/components/icons/CancelIcon";
+import Logo from "content/components/Logo";
+import NewMessage from "content/components/NewMessage";
+import { drawerOpenAtom } from "content/utils/atoms";
+import { DRAWER_WRAPPER_ID } from "utils/constants";
 
 const Drawer = () => {
   const [drawerOpen] = useAtom(drawerOpenAtom);
@@ -55,9 +57,11 @@ const Drawer = () => {
         <Content show={drawerOpen}>
           {messages.map(renderMessage)}
           <NewMessage textAreaRef={textAreaRef} />
-          <NewChatButtonContainer>
-            <Button onClick={createNewChat}>New Chat</Button>
-          </NewChatButtonContainer>
+          {Boolean(messages.length) && (
+            <NewChatButtonContainer>
+              <Button onClick={createNewChat}>New Chat</Button>
+            </NewChatButtonContainer>
+          )}
         </Content>
       </DrawerElement>
     </DrawerWrapper>

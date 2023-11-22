@@ -1,16 +1,23 @@
+import { useAtom } from "jotai";
 import { useEffect } from "react";
+
+
 import { NewMessageTextarea, HelpText, LoadingState } from "./styled";
 import useNewMessage from "./useNewMessage";
+
+import { streamingAtom, loadingAtom } from "content/utils/atoms";
 
 type NewMessageProps = {
   textAreaRef: React.RefObject<HTMLTextAreaElement>;
 };
 
 const NewMessage = ({ textAreaRef }: NewMessageProps) => {
-  const { value, handleChange, handleKeyDown, loading, streaming } =
-    useNewMessage({
-      textAreaRef,
-    });
+  const [streaming] = useAtom(streamingAtom);
+  const [loading] = useAtom(loadingAtom);
+
+  const { value, handleChange, handleKeyDown } = useNewMessage({
+    textAreaRef,
+  });
 
   useEffect(() => {
     if (!streaming && !loading) {
@@ -22,7 +29,7 @@ const NewMessage = ({ textAreaRef }: NewMessageProps) => {
     return <LoadingState />;
   }
 
-  if (!loading && streaming) {
+  if (streaming) {
     return null;
   }
 

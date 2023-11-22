@@ -1,0 +1,36 @@
+---
+extends:
+  - eslint:recommended
+  - plugin:@typescript-eslint/recommended
+  - plugin:import/errors
+parser: "@typescript-eslint/parser"
+parserOptions:
+  project: ./tsconfig.json
+  tsconfigRootDir: .
+plugins:
+  - "@typescript-eslint"
+root: true
+rules:
+  no-console: off
+  strict:
+    - error
+    - global
+  curly: warn
+  "@typescript-eslint/no-explicit-any": "off"
+  import/order:
+    - error
+    - groups: ["builtin", "external", ["sibling", "parent"], "index"]
+      pathGroups:
+        - pattern: $app/**
+          group: external
+        - pattern: ~/**
+          group: sibling
+      alphabetize:
+        order: asc
+        caseInsensitive: true
+      newlines-between: always
+settings:
+  import/resolver:
+    typescript:
+    webpack:
+      config: ./webpack.config.js

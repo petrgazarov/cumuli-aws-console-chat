@@ -1,5 +1,12 @@
 import { useState, useEffect, useCallback } from "react";
 
+import {
+  createPort,
+  removePort,
+  addPortMessageListener,
+  removePortMessageListener,
+} from "content/ContentScript/listeners";
+
 type usePortParameters = {
   channelName: string;
   listener?: (message: any) => void;
@@ -23,12 +30,12 @@ const usePort = ({ channelName, listener }: usePortParameters) => {
 
   useEffect(() => {
     // Only run this effect when portBuffer.resetPortPending is flipped to true.
-    if (!portBuffer.resetPortPending) return;
+    if (!portBuffer.resetPortPending) {return;}
 
-    const newPort = chrome.runtime.connect({ name: channelName });
+    const newPort = createPort(channelName);
 
     if (portBuffer.listener) {
-      newPort.onMessage.addListener(portBuffer.listener);
+      addPortMessageListener(newPort, portBuffer.listener);
     }
     if (portBuffer.pendingMessage) {
       newPort.postMessage(portBuffer.pendingMessage);
@@ -45,38 +52,18 @@ const usePort = ({ channelName, listener }: usePortParameters) => {
       // Since portBuffer.resetPortPending is flipped to false immediately in the effect,
       // this cleanup function will only run when the last value of portBuffer.resetPortPending
       // was false.
-      if (portBuffer.resetPortPending) return;
+      if (portBuffer.resetPortPending) {return;}
 
       // port should never be null here, this is just to satisfy TS.
-      if (!port) return;
+      if (!port) {return;}
 
       // the new port will be set in the effect immediately after this cleanup function runs.
       if (portBuffer.listener) {
-        port.onMessage.removeListener(portBuffer.listener);
+        removePortMessageListener(port, portBuffer.listener);
       }
-      port.disconnect();
+      removePort(port);
     };
   }, [portBuffer.resetPortPending]);
-
-  useEffect(() => {
-    if (!port) return;
-
-    if (listener) {
-      port.onMessage.addListener(listener);
-    }
-
-    setPortBuffer((prevBuffer) => ({
-      ...prevBuffer,
-      listener,
-    }));
-
-    return () => {
-      if (!port) return;
-      if (portBuffer.listener) {
-        port.onMessage.removeListener(portBuffer.listener);
-      }
-    };
-  }, [listener]);
 
   const postMessage = useCallback(
     (message: any) => {
@@ -91,7 +78,7 @@ const usePort = ({ channelName, listener }: usePortParameters) => {
         port.postMessage(message);
       } catch (e: any) {
         // Service worker can be terminated at any time, this handles port reset in that case.
-        console.debug("[Cumuli] Failed to post message to port", e?.message);
+        console.debug("[Cumuli] Failed to post message to port: ", e?.message);
 
         setPortBuffer((prevBuffer) => ({
           ...prevBuffer,

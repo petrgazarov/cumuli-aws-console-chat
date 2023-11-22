@@ -1,7 +1,9 @@
 import ReactDOM from "react-dom";
+
+import { UNSUPPORTED_PATHS } from "./constants";
+
 import Drawer from "content/components/Drawer";
 import { DRAWER_ROOT_ID } from "utils/constants";
-import { UNSUPPORTED_PATHS } from "./constants";
 
 
 export const resolveHtmlElements = () => {
