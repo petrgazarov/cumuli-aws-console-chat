@@ -1,6 +1,14 @@
 import { useAtom } from "jotai";
 import React from "react";
 
+import Button from "content/components/Button";
+import ChatMessage from "content/components/ChatMessage";
+import CancelIcon from "content/components/icons/CancelIcon";
+import Logo from "content/components/Logo";
+import NewMessage from "content/components/NewMessage";
+import { drawerOpenAtom } from "content/utils/atoms";
+import { DRAWER_WRAPPER_ID } from "utils/constants";
+
 import {
   DrawerWrapper,
   DrawerElement,
@@ -11,14 +19,6 @@ import {
   CancelIconButton,
 } from "./styled";
 import useDrawer from "./useDrawer";
-
-import Button from "content/components/Button";
-import ChatMessage from "content/components/ChatMessage";
-import CancelIcon from "content/components/icons/CancelIcon";
-import Logo from "content/components/Logo";
-import NewMessage from "content/components/NewMessage";
-import { drawerOpenAtom } from "content/utils/atoms";
-import { DRAWER_WRAPPER_ID } from "utils/constants";
 
 const Drawer = () => {
   const [drawerOpen] = useAtom(drawerOpenAtom);

@@ -2,10 +2,11 @@ import { useAtom } from "jotai";
 import { useEffect } from "react";
 
 
+import { streamingAtom, loadingAtom } from "content/utils/atoms";
+
 import { NewMessageTextarea, HelpText, LoadingState } from "./styled";
 import useNewMessage from "./useNewMessage";
 
-import { streamingAtom, loadingAtom } from "content/utils/atoms";
 
 type NewMessageProps = {
   textAreaRef: React.RefObject<HTMLTextAreaElement>;

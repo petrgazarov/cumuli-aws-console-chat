@@ -1,10 +1,11 @@
+import { CHAT_CHANNEL, COMMAND_CHANNEL } from "utils/constants";
+
 import {
   setupChatChannelListener,
   setupCommandChannelListener,
 } from "./listeners";
 import { DrawerInstance, NewChatConversation } from "./types";
 
-import { CHAT_CHANNEL, COMMAND_CHANNEL } from "utils/constants";
 
 const drawerInstances: { [tabId: number]: DrawerInstance } = {};
 

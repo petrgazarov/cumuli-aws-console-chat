@@ -1,10 +1,11 @@
-import ReactDOM from "react-dom";
-
-import { UNSUPPORTED_PATHS } from "./constants";
+import { createRoot, Root } from "react-dom/client";
 
 import Drawer from "content/components/Drawer";
 import { DRAWER_ROOT_ID } from "utils/constants";
 
+import { UNSUPPORTED_PATHS } from "./constants";
+
+export let reactRoot: Root | null = null;
 
 export const resolveHtmlElements = () => {
   let mainElement: HTMLElement | null = null;
@@ -57,6 +58,8 @@ export const renderDrawer = (mainElement: HTMLElement) => {
 
   if (mainElement.parentNode) {
     mainElement.parentNode.appendChild(rootElement);
-    ReactDOM.render(<Drawer />, document.getElementById(DRAWER_ROOT_ID));
+
+    reactRoot = createRoot(rootElement);
+    reactRoot.render(<Drawer />);
   }
 };

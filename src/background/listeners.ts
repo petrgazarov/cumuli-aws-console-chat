@@ -2,9 +2,6 @@ import OpenAI from "openai";
 import { APIUserAbortError } from "openai/error";
 import { ChatCompletionStream } from "openai/lib/ChatCompletionStream";
 
-import { DrawerInstance, NewChatConversation } from "./types";
-import { captureVisibleTab } from "./utils";
-
 import { getOpenAiApiKey } from "utils/helpers";
 import {
   ChatMessageType,
@@ -15,6 +12,10 @@ import {
   ChatChannelMessage,
   ChatChannelAction,
 } from "utils/types";
+
+import { DrawerInstance, NewChatConversation } from "./types";
+import { captureVisibleTab } from "./utils";
+
 
 let streamingRunner: ChatCompletionStream | null = null;
 

@@ -19,16 +19,13 @@ rules:
   "@typescript-eslint/no-explicit-any": "off"
   import/order:
     - error
-    - groups: ["builtin", "external", ["sibling", "parent"], "index"]
-      pathGroups:
-        - pattern: $app/**
-          group: external
-        - pattern: ~/**
-          group: sibling
+    - groups:
+        ["builtin", "external", "internal", ["sibling", "parent"], "index"]
       alphabetize:
         order: asc
         caseInsensitive: true
       newlines-between: always
+  "@typescript-eslint/no-unused-vars": off # handled by typescript
 settings:
   import/resolver:
     typescript:

@@ -1,9 +1,10 @@
 import { useCallback } from "react";
 
-import { TextContent } from "./styled";
 
 import Screenshot from "content/components/ScreenshotPreview";
 import { ChatMessageType, TextMessageContent } from "utils/types";
+
+import { TextContent } from "./styled";
 
 type ChatMessageProps = {
   message: ChatMessageType;

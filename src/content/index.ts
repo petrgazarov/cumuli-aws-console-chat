@@ -1,18 +1,17 @@
 import debounce from "lodash.debounce";
 
-import { renderDrawer, resolveHtmlElements } from "./ContentScript";
+import { DRAWER_ROOT_ID } from "utils/constants";
+
+import { renderDrawer, resolveHtmlElements, reactRoot } from "./ContentScript";
 import {
   iframeIds,
   getIframesOnPage,
   injectStylesheetIntoIframes,
 } from "./ContentScript/iframes";
-import { clearAllListeners } from "./ContentScript/listeners";
-
-import { DRAWER_ROOT_ID } from "utils/constants";
 
 const renderToDom = () => {
   // Some AWS pages are rendered with iframes.
-  // Check if there are any new iframes on the page. If so, inject the stylesheet.
+  // Check if there are any new iframes on the page. If so, inject the stylesheet into each new iframe.
   const iframesOnPage = getIframesOnPage();
   const hasNewIframes = iframesOnPage.some(
     (iframe) => !iframeIds.includes(iframe.id)
@@ -28,10 +27,13 @@ const renderToDom = () => {
   }
 
   // If the drawer is already present, do nothing.
-  if (document.getElementById(DRAWER_ROOT_ID)) {return;}
+  if (document.getElementById(DRAWER_ROOT_ID)) {
+    return;
+  }
 
-  // Remove all listeners before re-rendering
-  clearAllListeners();
+  // Very important; makes React unmount the old drawer properly.
+  // https://react.dev/reference/react-dom/client/createRoot#root-unmount
+  reactRoot?.unmount();
 
   const { mainElement, observedElement } = resolveHtmlElements();
   if (!mainElement || !observedElement) {
