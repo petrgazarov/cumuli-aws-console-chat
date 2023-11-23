@@ -16,7 +16,6 @@ import {
 import { DrawerInstance, NewChatConversation } from "./types";
 import { captureVisibleTab } from "./utils";
 
-
 let streamingRunner: ChatCompletionStream | null = null;
 
 export const setupChatChannelListener = (
@@ -70,39 +69,50 @@ export const setupChatChannelListener = (
             temperature: 0.0,
           })
           .on("content", (chunk) => {
-            port.postMessage({
-              action: ChatChannelAction.stream_chunk,
-              payload: chunk,
-            });
             const lastMessage =
               drawerInstance.conversation.messages[
                 drawerInstance.conversation.messages.length - 1
               ];
 
             lastMessage.content += chunk;
+
+            try {
+              port.postMessage({
+                action: ChatChannelAction.stream_chunk,
+                payload: chunk,
+              });
+            } catch (error: any) {
+              console.debug(
+                "[Cumuli] error sending message to content script",
+                error?.message
+              );
+            }
           })
           .on("chatCompletion", () => {
-            port.postMessage({
-              action: ChatChannelAction.finish_stream,
-            });
             streamingRunner = null;
+
+            try {
+              port.postMessage({
+                action: ChatChannelAction.finish_stream,
+              });
+            } catch (error: any) {
+              console.debug(
+                "[Cumuli] error sending message to content script",
+                error?.message
+              );
+            }
           })
-          .on("error", () => {
+          .on("abort", () => {
             streamingRunner = null;
+            console.debug("[Cumuli] user aborted request");
+          })
+          .on("error", (e) => {
+            streamingRunner = null;
+            console.debug(
+              "[Cumuli] unhandled error from stream runner",
+              e.message
+            );
           });
-
-        // For some reason, "error" event does not fire on abort.
-        // see https://github.com/openai/openai-node/issues/526
-        await streamingRunner.finalContent().catch((error) => {
-          streamingRunner = null;
-
-          if (error instanceof APIUserAbortError) {
-            console.log("[Cumuli] user aborted request");
-            return;
-          }
-
-          throw error;
-        });
       }
     }
   });
@@ -144,9 +154,7 @@ chrome.commands.onCommand.addListener((command) => {
         return;
       }
 
-      chrome.tabs.sendMessage(activeTab.id, {
-        action: command,
-      });
+      chrome.tabs.sendMessage(activeTab.id, { action: command });
     });
   }
 });
