@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from "uuid";
+
 export enum Role {
   user = "user",
   assistant = "assistant",
@@ -29,11 +31,6 @@ export type ChatChannelMessage = {
   payload?: any;
 };
 
-export type ChatMessageType = {
-  content: string | Array<TextMessageContent | ImageMessageContent>;
-  role: Role;
-};
-
 export enum CommandChannelAction {
   "new_chat" = "new_chat",
   "toggle_chat" = "toggle_chat",
@@ -54,3 +51,20 @@ export enum OS {
   Linux = "Linux",
   Unknown = "Unknown OS",
 }
+
+export type ChatConversation = {
+  id: string;
+  messages: ChatMessageType[];
+  createdAt: Date;
+};
+
+export type ChatMessageType = {
+  content: string | Array<TextMessageContent | ImageMessageContent>;
+  role: Role;
+};
+
+export const NewChatConversation = (): ChatConversation => ({
+  id: uuidv4(),
+  messages: [],
+  createdAt: new Date(),
+});

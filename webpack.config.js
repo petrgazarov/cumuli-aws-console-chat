@@ -1,18 +1,19 @@
 const path = require("path");
+const crypto = require("crypto");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
+
+function generateNonce() {
+  return crypto.randomBytes(16).toString("base64");
+}
+
+__webpack_nonce__ = generateNonce();
 
 module.exports = {
   mode: "production",
   entry: {
-    popup: path.join(__dirname, "src", "popup", "Popup.tsx"),
-    drawer: path.join(__dirname, "src", "content"),
-    serviceWorker: path.join(
-      __dirname,
-      "src",
-      "background",
-      "serviceWorker.ts"
-    ),
+    sidepanel: path.join(__dirname, "src", "sidepanel"),
+    serviceWorker: path.join(__dirname, "src", "serviceWorker", "index.ts"),
   },
   output: {
     path: path.join(__dirname, "build"),
@@ -33,10 +34,7 @@ module.exports = {
   },
   plugins: [
     new CopyWebpackPlugin({
-      patterns: [
-        { from: "public", to: "" },
-        { from: "src/content/css/global.css", to: "css/drawer.css" },
-      ],
+      patterns: [{ from: "public", to: "" }],
     }),
   ],
 };

@@ -6,12 +6,14 @@
     "node": ">20.0.0"
   },
   "dependencies": {
+    "idb": "^7.1.1",
     "jotai": "^2.5.1",
     "lodash.debounce": "^4.0.8",
     "openai": "^4.18.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "styled-components": "^6.1.1"
+    "styled-components": "^6.1.1",
+    "uuid": "^9.0.1"
   },
   "scripts": {
     "clean": "rimraf build/*",
@@ -26,6 +28,7 @@
     "@types/lodash.debounce": "^4.0.9",
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
+    "@types/uuid": "^9.0.7",
     "@typescript-eslint/eslint-plugin": "^6.12.0",
     "@typescript-eslint/parser": "^6.12.0",
     "copy-webpack-plugin": "^11.0.0",

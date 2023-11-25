@@ -1,5 +1,0 @@
-main ~ [class^="awsui_drawer_"],
-main ~ [class^="awsui-app-layout__tools"],
-main ~ [class^="awsui-app-layout__toggle"] {
-  display: none !important;
-}
