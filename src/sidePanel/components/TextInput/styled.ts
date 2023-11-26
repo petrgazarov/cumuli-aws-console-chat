@@ -2,7 +2,6 @@ import styled from "styled-components";
 
 import {
   BORDER_RADIUS,
-  COLORS,
   FONT_FAMILY,
   FONT_SIZE,
 } from "sidePanel/utils/globalStyles";
@@ -14,8 +13,8 @@ export const StyledTextInput = styled.input`
   box-sizing: border-box;
   margin-top: 1px;
   outline: 2px dotted transparent;
-  border: 1px solid ${COLORS.BORDER};
-  color: ${COLORS.TEXT_MAIN};
+  border: 1px solid ${({ theme }) => theme.BORDER};
+  color: ${({ theme }) => theme.TEXT_MAIN};
   line-height: 22px;
   max-width: 100%;
   resize: none;

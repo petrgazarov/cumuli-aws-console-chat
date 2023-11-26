@@ -25,6 +25,9 @@ rules:
         order: asc
         caseInsensitive: true
       newlines-between: always
+  sort-imports:
+    - error
+    - ignoreDeclarationSort: true
   "@typescript-eslint/no-unused-vars": off # handled by typescript
 settings:
   import/resolver:

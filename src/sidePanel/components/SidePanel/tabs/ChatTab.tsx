@@ -1,37 +1,55 @@
 import { useAtom } from "jotai";
-import React from "react";
+import React, { useCallback } from "react";
 
 import Button from "sidePanel/components/Button";
-import ChatMessage from "sidePanel/components/ChatMessage";
+import ConversationMessage from "sidePanel/components/ConversationMessage";
 import NewMessage from "sidePanel/components/NewMessage";
-import { currentTabAtom } from "sidePanel/utils/atoms";
+import useChatMessages from "sidePanel/hooks/useChatMessages";
+import useConversation from "sidePanel/hooks/useConversation";
+import { currentTabAtom, openaiApiKeyAtom } from "sidePanel/utils/atoms";
 import { TabTitlesEnum } from "sidePanel/utils/types";
+import { ChatMessage } from "utils/types";
 
-import { ChatTabContent, Separator, NewChatButtonContainer } from "./styled";
+import { ChatTabContent, NewChatButtonContainer, Separator } from "./styled";
 import useSidePanel from "../useSidePanel";
 
-const ChatTab = () => {
-  const { textAreaRef, messages, createNewChat } = useSidePanel();
-  const [currentTab] = useAtom(currentTabAtom);
+const NewChat = () => {
+  const { createConversation } = useConversation();
+  const { currentChatMessages } = useChatMessages();
+  const [openaiApiKey] = useAtom(openaiApiKeyAtom);
 
-  const renderMessage = (message: any, index: number) => {
+  if (!currentChatMessages.length) {
+    return null;
+  }
+
+  return (
+    <NewChatButtonContainer>
+      <Button disabled={!openaiApiKey} onClick={createConversation}>
+        New Chat
+      </Button>
+    </NewChatButtonContainer>
+  );
+};
+
+const ChatTab = () => {
+  const { textAreaRef } = useSidePanel();
+  const [currentTab] = useAtom(currentTabAtom);
+  const { currentChatMessages } = useChatMessages();
+
+  const renderMessage = useCallback((message: ChatMessage) => {
     return (
-      <React.Fragment key={index}>
-        <ChatMessage message={message} />
+      <React.Fragment key={message.id}>
+        <ConversationMessage message={message} />
         <Separator />
       </React.Fragment>
     );
-  };
+  }, []);
 
   return (
-    <ChatTabContent show={currentTab == TabTitlesEnum.chat}>
-      {messages.map(renderMessage)}
+    <ChatTabContent $show={currentTab == TabTitlesEnum.chat}>
+      {currentChatMessages.map(renderMessage)}
       <NewMessage textAreaRef={textAreaRef} />
-      {Boolean(messages.length) && (
-        <NewChatButtonContainer>
-          <Button onClick={createNewChat}>New Chat</Button>
-        </NewChatButtonContainer>
-      )}
+      <NewChat />
     </ChatTabContent>
   );
 };

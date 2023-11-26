@@ -1,39 +1,42 @@
 import { useAtom } from "jotai";
-import { useState, useEffect, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 
+import { getConversations } from "indexedDb/conversation";
+import useConversation from "sidePanel/hooks/useConversation";
 import { currentTabAtom } from "sidePanel/utils/atoms";
-import { getConversationPreview } from "sidePanel/utils/helpers";
 import { TabTitlesEnum } from "sidePanel/utils/types";
-import { getConversations } from "utils/indexedDb";
-import { ChatConversation } from "utils/types";
+import { Conversation, Order } from "utils/types";
 
-import { HistoryTabContent, ConversationItem } from "./styled";
+import { ConversationItem, HistoryTabContent } from "./styled";
 
 const HistoryTab = () => {
-  const [currentTab] = useAtom(currentTabAtom);
-  const [conversations, setConversations] = useState<ChatConversation[]>([]);
+  const [currentTab, setCurrentTab] = useAtom(currentTabAtom);
+  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const { setCurrentConversation } = useConversation();
 
   useEffect(() => {
-    getConversations().then((conversations) => {
+    getConversations({ order: Order.desc }).then((conversations) => {
       setConversations(conversations);
     });
   }, []);
 
-  const renderConversation = useCallback(
-    (conversation: ChatConversation) => {
-      const preview = getConversationPreview(conversation);
-
-      return (
-        <ConversationItem key={conversation.id} onClick={() => {}}>
-          {preview}
-        </ConversationItem>
-      );
-    },
-    [conversations]
-  );
+  const renderConversation = useCallback((conversation: Conversation) => {
+    return (
+      <ConversationItem
+        key={conversation.id}
+        onClick={() => {
+          setCurrentConversation(conversation);
+          setCurrentTab(TabTitlesEnum.chat);
+        }}
+      >
+        <div>{conversation.createdAt}</div>
+        <div>{conversation.preview}</div>
+      </ConversationItem>
+    );
+  }, []);
 
   return (
-    <HistoryTabContent show={currentTab == TabTitlesEnum.config}>
+    <HistoryTabContent $show={currentTab == TabTitlesEnum.history}>
       {conversations.map(renderConversation)}
     </HistoryTabContent>
   );

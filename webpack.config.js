@@ -3,14 +3,11 @@ const crypto = require("crypto");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
 
-function generateNonce() {
-  return crypto.randomBytes(16).toString("base64");
-}
-
-__webpack_nonce__ = generateNonce();
+const mode = process.env.NODE_ENV || "production";
 
 module.exports = {
-  mode: "production",
+  mode,
+  devtool: mode === "development" ? "source-map" : false,
   entry: {
     sidepanel: path.join(__dirname, "src", "sidepanel"),
     serviceWorker: path.join(__dirname, "src", "serviceWorker", "index.ts"),

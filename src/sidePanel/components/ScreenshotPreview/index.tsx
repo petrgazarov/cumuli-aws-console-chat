@@ -1,6 +1,6 @@
 import CancelIcon from "sidePanel/components/icons/CancelIcon";
 
-import { ScreenshotContainer, CancelIconButton } from "./styled";
+import { CancelIconButton, ScreenshotContainer } from "./styled";
 
 type ScreenshotPreviewProps = {
   url: string;

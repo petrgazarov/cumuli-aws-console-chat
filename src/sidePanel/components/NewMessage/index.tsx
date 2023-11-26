@@ -1,9 +1,9 @@
 import { useAtom } from "jotai";
 import { useEffect } from "react";
 
-import { streamingAtom, loadingAtom } from "sidePanel/utils/atoms";
+import { loadingAtom, streamingAtom } from "sidePanel/utils/atoms";
 
-import { NewMessageTextarea, HelpText, LoadingState } from "./styled";
+import { HelpText, LoadingState, NewMessageTextarea } from "./styled";
 import useNewMessage from "./useNewMessage";
 
 type NewMessageProps = {

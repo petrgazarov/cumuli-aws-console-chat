@@ -1,11 +1,11 @@
-import { useState, useEffect, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import {
+  addPortMessageListener,
   createPort,
   removePort,
-  addPortMessageListener,
   removePortMessageListener,
-} from "sidePanel/listeners";
+} from "sidePanel/utils/listeners";
 
 type usePortParameters = {
   channelName: string;

@@ -19,7 +19,6 @@ export type ImageMessageContent = {
 };
 
 export enum ChatChannelAction {
-  initial_state = "initial_state",
   new_message = "new_message",
   replace_message = "replace_message",
   stream_chunk = "stream_chunk",
@@ -32,10 +31,6 @@ export type ChatChannelMessage = {
 };
 
 export enum CommandChannelAction {
-  "new_chat" = "new_chat",
-  "toggle_chat" = "toggle_chat",
-  "close_chat" = "close_chat",
-  "open_chat" = "open_chat",
   "submit_with_screenshot" = "submit_with_screenshot",
 }
 
@@ -52,19 +47,38 @@ export enum OS {
   Unknown = "Unknown OS",
 }
 
-export type ChatConversation = {
-  id: string;
-  messages: ChatMessageType[];
-  createdAt: Date;
-};
+export enum Order {
+  asc = "asc",
+  desc = "desc",
+}
 
-export type ChatMessageType = {
+export type ChatMessage = {
+  id: string;
+  conversationId: string;
   content: string | Array<TextMessageContent | ImageMessageContent>;
   role: Role;
+  createdAt: string;
 };
 
-export const NewChatConversation = (): ChatConversation => ({
+export const NewChatMessage = ({
+  content,
+  role,
+  conversationId,
+}: Omit<ChatMessage, "id" | "createdAt">): ChatMessage => ({
   id: uuidv4(),
-  messages: [],
-  createdAt: new Date(),
+  content,
+  role,
+  conversationId,
+  createdAt: new Date().toISOString(),
+});
+
+export type Conversation = {
+  id: string;
+  createdAt: string;
+  preview?: string;
+};
+
+export const NewConversation = (): Conversation => ({
+  id: uuidv4(),
+  createdAt: new Date().toISOString(),
 });

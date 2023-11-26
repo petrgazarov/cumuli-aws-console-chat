@@ -1,15 +1,15 @@
 import { useCallback } from "react";
 
 import Screenshot from "sidePanel/components/ScreenshotPreview";
-import { ChatMessageType, TextMessageContent } from "utils/types";
+import { ChatMessage, TextMessageContent } from "utils/types";
 
 import { TextContent } from "./styled";
 
 type ChatMessageProps = {
-  message: ChatMessageType;
+  message: ChatMessage;
 };
 
-const ChatMessage = ({ message }: ChatMessageProps) => {
+const ConversationMessage = ({ message }: ChatMessageProps) => {
   if (typeof message.content === "string") {
     return <TextContent>{message.content}</TextContent>;
   }
@@ -34,4 +34,4 @@ const ChatMessage = ({ message }: ChatMessageProps) => {
   return <>{contents}</>;
 };
 
-export default ChatMessage;
+export default ConversationMessage;

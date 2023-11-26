@@ -1,16 +1,7 @@
-import { openDB } from "idb";
-
-import {
-  INDEXED_DB_NAME,
-  AWS_CONSOLE_HOST,
-  INDEXED_DB_VERSION,
-} from "utils/constants";
+import { AWS_CONSOLE_HOST } from "utils/constants";
 import { CommandChannelAction } from "utils/types";
 
-export {
-  chatChannelListener,
-  commandChannelListener,
-} from "./channelListeners";
+export { chatChannelListener } from "./channelListeners";
 
 export const commandListener = async (command: string) => {
   if (command === CommandChannelAction.submit_with_screenshot) {
@@ -52,13 +43,4 @@ export const onTabUpdatedListener = async (
       enabled: false,
     });
   }
-};
-
-export const onInstalledListener = async () => {
-  await openDB(INDEXED_DB_NAME, INDEXED_DB_VERSION, {
-    upgrade(db) {
-      const store = db.createObjectStore("conversations", { keyPath: "id" });
-      store.createIndex("createdAt", "createdAt", { unique: false });
-    },
-  });
 };

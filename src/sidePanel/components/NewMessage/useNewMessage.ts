@@ -1,24 +1,23 @@
 import { useAtom } from "jotai";
-import { useState, useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 
+import useChatMessages from "sidePanel/hooks/useChatMessages";
+import useConversation from "sidePanel/hooks/useConversation";
+import usePort from "sidePanel/hooks/usePort";
+import { loadingAtom, streamingAtom } from "sidePanel/utils/atoms";
 import {
   addOnMessageListener,
   removeOnMessageListener,
-} from "sidePanel/listeners";
-import {
-  messagesAtom,
-  streamingAtom,
-  loadingAtom,
-} from "sidePanel/utils/atoms";
-import usePort from "sidePanel/utils/usePort";
+} from "sidePanel/utils/listeners";
 import { CHAT_CHANNEL } from "utils/constants";
 import {
-  ChatMessageType,
-  Role,
   ChatChannelAction,
   ChatChannelMessage,
+  ChatMessage,
   CommandChannelAction,
   CommandChannelMessage,
+  NewChatMessage,
+  Role,
 } from "utils/types";
 
 type useNewMessageProps = {
@@ -32,38 +31,20 @@ type useNewMessageProps = {
 
 const useNewMessage = ({ textAreaRef }: useNewMessageProps) => {
   const [textInput, setTextInput] = useState("");
-  const [, setMessages] = useAtom(messagesAtom);
   const [, setLoading] = useAtom(loadingAtom);
   const [streaming, setStreaming] = useAtom(streamingAtom);
+  const { currentConversation, createConversation } = useConversation();
+  const { appendChunk, appendMessage } = useChatMessages();
 
   const chatChannelListener = useCallback(
     (channelMessage: ChatChannelMessage) => {
       switch (channelMessage.action) {
         case ChatChannelAction.new_message:
-          setMessages((prevMessages) => [
-            ...prevMessages,
-            channelMessage.payload,
-          ]);
+          appendMessage(channelMessage.payload);
           break;
         case ChatChannelAction.stream_chunk:
-          setMessages((prevMessages) => {
-            const newMessages = [...prevMessages];
-            const lastMessage = newMessages[newMessages.length - 1];
-
-            if (lastMessage?.role === Role.assistant) {
-              newMessages[newMessages.length - 1] = {
-                ...lastMessage,
-                content: (lastMessage.content += channelMessage.payload),
-              };
-            } else {
-              newMessages.push({
-                role: Role.assistant,
-                content: channelMessage.payload,
-              });
-            }
-            setLoading(false);
-            return newMessages;
-          });
+          appendChunk(channelMessage.payload);
+          setLoading(false);
           break;
         case ChatChannelAction.finish_stream:
           setStreaming(false);
@@ -79,7 +60,7 @@ const useNewMessage = ({ textAreaRef }: useNewMessageProps) => {
   });
 
   const handleCreateNewMessage = useCallback(
-    (message: ChatMessageType) => {
+    (message: ChatMessage) => {
       postChatMessage({
         action: ChatChannelAction.new_message,
         payload: message,
@@ -91,36 +72,50 @@ const useNewMessage = ({ textAreaRef }: useNewMessageProps) => {
     [postChatMessage]
   );
 
-  useEffect(() => {
-    const listenerFn = (message: CommandChannelMessage) => {
+  const commandChannelListener = useCallback(
+    async (channelMessage: CommandChannelMessage) => {
       if (streaming) {
         return;
       }
-
-      switch (message.action) {
-        case CommandChannelAction.submit_with_screenshot:
-          handleCreateNewMessage({
-            role: Role.user,
-            content: [
-              { type: "text", text: textAreaRef.current?.value || "" },
-              {
-                type: "image_url",
-                image_url: { url: "", detail: "high" },
-              },
-            ],
-          });
+      if (
+        channelMessage.action !== CommandChannelAction.submit_with_screenshot
+      ) {
+        return;
       }
-    };
 
-    addOnMessageListener(listenerFn);
+      let conversationId: string;
+      if (currentConversation) {
+        conversationId = currentConversation.id;
+      } else {
+        const newConversation = await createConversation();
+        conversationId = newConversation.id;
+      }
 
-    return () => {
-      removeOnMessageListener(listenerFn);
-    };
-  }, [handleCreateNewMessage, streaming]);
+      handleCreateNewMessage(
+        NewChatMessage({
+          conversationId,
+          role: Role.user,
+          content: [
+            { type: "text", text: textAreaRef.current?.value || "" },
+            {
+              type: "image_url",
+              image_url: { url: "", detail: "high" },
+            },
+          ],
+        })
+      );
+    },
+    [handleCreateNewMessage, streaming, currentConversation?.id]
+  );
+
+  useEffect(() => {
+    addOnMessageListener(commandChannelListener);
+
+    return () => removeOnMessageListener(commandChannelListener);
+  }, [commandChannelListener]);
 
   const handleKeyDown = useCallback(
-    (event: React.KeyboardEvent) => {
+    async (event: React.KeyboardEvent) => {
       if (event.key !== "Enter") {
         return;
       }
@@ -134,18 +129,28 @@ const useNewMessage = ({ textAreaRef }: useNewMessageProps) => {
       }
 
       const currentInputValue = textAreaRef.current?.value || "";
-
       // If the input is empty, do nothing
       if (!currentInputValue.trim()) {
         return;
       }
 
-      handleCreateNewMessage({
-        role: Role.user,
-        content: currentInputValue,
-      });
+      let conversationId: string;
+      if (currentConversation) {
+        conversationId = currentConversation.id;
+      } else {
+        const newConversation = await createConversation();
+        conversationId = newConversation.id;
+      }
+
+      handleCreateNewMessage(
+        NewChatMessage({
+          conversationId,
+          role: Role.user,
+          content: currentInputValue,
+        })
+      );
     },
-    [handleCreateNewMessage]
+    [handleCreateNewMessage, currentConversation?.id]
   );
 
   const handleChange = useCallback(

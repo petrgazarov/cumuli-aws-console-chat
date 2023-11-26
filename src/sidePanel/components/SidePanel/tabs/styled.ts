@@ -1,19 +1,21 @@
 import styled from "styled-components";
 
-export const ChatTabContent = styled.div<{ show: boolean }>`
-  display: ${({ show }) => (show ? "flex" : "none")};
+export const ChatTabContent = styled.div<{ $show: boolean }>`
+  display: ${({ $show }) => ($show ? "flex" : "none")};
   flex-direction: column;
   padding: 10px 10px 200px;
 `;
 
-export const ConfigTabContent = styled.div<{ show: boolean }>`
-  display: ${({ show }) => (show ? "flex" : "none")};
+export const ConfigTabContent = styled.div<{ $show: boolean }>`
+  display: ${({ $show }) => ($show ? "flex" : "none")};
   flex-direction: column;
+  padding: 10px;
 `;
 
-export const HistoryTabContent = styled.div<{ show: boolean }>`
-  display: ${({ show }) => (show ? "flex" : "none")};
+export const HistoryTabContent = styled.div<{ $show: boolean }>`
+  display: ${({ $show }) => ($show ? "flex" : "none")};
   flex-direction: column;
+  padding: 10px;
 `;
 
 export const Separator = styled.div`

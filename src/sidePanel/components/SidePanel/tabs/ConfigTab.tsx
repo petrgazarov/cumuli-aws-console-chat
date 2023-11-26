@@ -1,29 +1,37 @@
 import { useAtom } from "jotai";
-import { useState, useEffect, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import Button from "sidePanel/components/Button";
 import TextInput from "sidePanel/components/TextInput";
-import { currentTabAtom } from "sidePanel/utils/atoms";
+import { currentTabAtom, openaiApiKeyAtom } from "sidePanel/utils/atoms";
 import { TabTitlesEnum } from "sidePanel/utils/types";
-import { getOpenAiApiKey, setOpenAiApiKey } from "utils/helpers";
+import { getOpenaiApiKey, saveOpenaiApiKey } from "utils/helpers";
 
 import { ConfigTabContent, SubmitApiKeyButtonContainer } from "./styled";
 
 const ConfigTab = () => {
   const [currentTab] = useAtom(currentTabAtom);
+  const [, setOpenaiApiKey] = useAtom(openaiApiKeyAtom);
   const [inputValue, setInputValue] = useState("");
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    getOpenAiApiKey().then((apiKey) => setInputValue(apiKey));
+    getOpenaiApiKey().then((apiKey: string) => {
+      setInputValue(apiKey);
+      setOpenaiApiKey(apiKey);
+    });
   }, []);
 
   const saveApiKey = useCallback(() => {
-    setOpenAiApiKey(inputValue).then(() => setMessage("Saved!"));
+    saveOpenaiApiKey(inputValue).then((maskedKey) => {
+      setInputValue(maskedKey);
+      setOpenaiApiKey(maskedKey);
+      setMessage("Saved!");
+    });
   }, [inputValue]);
 
   return (
-    <ConfigTabContent show={currentTab == TabTitlesEnum.config}>
+    <ConfigTabContent $show={currentTab == TabTitlesEnum.config}>
       <TextInput
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
