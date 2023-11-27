@@ -22,16 +22,16 @@ const SidePanel = () => {
           Chat
         </TabTitle>
         <TabTitle
-          $active={currentTab == TabTitlesEnum.config}
-          onClick={() => setCurrentTab(TabTitlesEnum.config)}
-        >
-          Config
-        </TabTitle>
-        <TabTitle
           $active={currentTab == TabTitlesEnum.history}
           onClick={() => setCurrentTab(TabTitlesEnum.history)}
         >
           History
+        </TabTitle>
+        <TabTitle
+          $active={currentTab == TabTitlesEnum.config}
+          onClick={() => setCurrentTab(TabTitlesEnum.config)}
+        >
+          Config
         </TabTitle>
       </TabTitlesContainer>
       <Content id={PANEL_CONTENT_ID}>

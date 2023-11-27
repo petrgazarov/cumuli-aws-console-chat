@@ -11,7 +11,7 @@ import { ConfigTabContent, SubmitApiKeyButtonContainer } from "./styled";
 
 const ConfigTab = () => {
   const [currentTab] = useAtom(currentTabAtom);
-  const [, setOpenaiApiKey] = useAtom(openaiApiKeyAtom);
+  const [openaiApiKey, setOpenaiApiKey] = useAtom(openaiApiKeyAtom);
   const [inputValue, setInputValue] = useState("");
   const [message, setMessage] = useState("");
 
@@ -30,6 +30,8 @@ const ConfigTab = () => {
     });
   }, [inputValue]);
 
+  const buttonDisabled = !inputValue || inputValue === openaiApiKey;
+
   return (
     <ConfigTabContent $show={currentTab == TabTitlesEnum.config}>
       <TextInput
@@ -38,7 +40,9 @@ const ConfigTab = () => {
         placeholder="Enter OpenAI API Key"
       />
       <SubmitApiKeyButtonContainer>
-        <Button onClick={saveApiKey}>Submit</Button>
+        <Button onClick={saveApiKey} disabled={buttonDisabled}>
+          Submit
+        </Button>
       </SubmitApiKeyButtonContainer>
       <p>{message}</p>
     </ConfigTabContent>

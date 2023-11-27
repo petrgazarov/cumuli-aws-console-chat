@@ -5,8 +5,8 @@ export const Container = styled.div`
   flex-direction: column;
   height: 100%;
   min-height: calc(100% - 20px);
-  background-color: ${({ theme }) => theme.BACKGROUND};
-  color: ${({ theme }) => theme.TEXT_MAIN};
+  background-color: ${({ theme }) => theme.BLACK_2};
+  color: ${({ theme }) => theme.BLUE_1};
 `;
 
 export const Content = styled.div`
@@ -23,12 +23,12 @@ export const TabTitlesContainer = styled.div`
 
 export const TabTitle = styled.div<{ $active: boolean }>`
   padding: 10px 0;
-  cursor: pointer;
-  color: ${({ $active, theme }) =>
-    $active ? theme.TEXT_HIGHLIGHT : theme.TEXT_MAIN};
+  cursor: ${({ $active }) => ($active ? "default" : "pointer")};
+  color: ${({ $active, theme }) => ($active ? theme.BLUE_4 : theme.BLUE_1)};
   font-weight: bold;
 
   &:hover {
-    text-decoration: underline;
+    color: ${({ theme }) => theme.BLUE_4};
+    text-decoration: ${({ $active }) => ($active ? "none" : "underline")};
   }
 `;

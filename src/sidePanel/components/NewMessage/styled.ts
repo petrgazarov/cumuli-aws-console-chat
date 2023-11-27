@@ -1,31 +1,9 @@
 import styled, { keyframes } from "styled-components";
 
-import { FONT_FAMILY, FONT_SIZE } from "sidePanel/utils/globalStyles";
+import { ColorTheme } from "sidePanel/utils/types";
 
-export const NewMessageTextarea = styled.textarea`
-  min-height: 52px;
-  background-color: #1a2029;
-  border-radius: 2px;
-  box-sizing: border-box;
-  margin-top: 1px;
-  outline: 2px dotted transparent;
-  border: 1px solid #879596;
-  color: #d5dbdb;
-  line-height: 22px;
-  max-width: 100%;
-  resize: none;
-  font-family: ${FONT_FAMILY};
-  font-size: ${FONT_SIZE};
-  padding: 4px 8px;
-
-  &:focus {
-    border: 1px solid #00a1c9;
-    box-shadow: 0 0 0 1px #00a1c9;
-  }
-`;
-
-export const HelpText = styled.div`
-  color: #95a5a6;
+export const HelpText = styled.div<{ theme: ColorTheme }>`
+  color: ${({ theme }) => theme.ORANGE_1};
   font-size: 12px;
   margin-top: 3px;
 `;

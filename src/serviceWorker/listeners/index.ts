@@ -12,7 +12,10 @@ export const commandListener = async (command: string) => {
         activeTab.url?.indexOf(AWS_CONSOLE_HOST) &&
         activeTab.url?.indexOf(AWS_CONSOLE_HOST) > -1;
 
-      if (!isPageSupported || !activeTab.id) {
+      if (!isPageSupported) {
+        console.debug(
+          `[Cumuli] Attempted to take screenshot, but page not supported: ${activeTab.url}`
+        );
         return;
       }
 

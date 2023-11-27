@@ -1,28 +1,36 @@
 import styled from "styled-components";
 
-export const ScreenshotContainer = styled.div`
-  display: flex;
-  position: relative;
-  align-self: flex-start;
-  margin-top: 10px;
-  border-radius: 2px;
-  border: 1px solid #414750;
-`;
+import { ColorTheme } from "sidePanel/utils/types";
 
-export const CancelIconButton = styled.button`
+export const CancelIconButton = styled.button<{ theme: ColorTheme }>`
   position: absolute;
-  top: 0;
-  right: 0;
-  display: flex;
+  top: 2px;
+  right: 2px;
+  display: none;
   border: none;
-  background-color: #ec7211;
+  background-color: ${({ theme }) => theme.ORANGE_4};
   border-radius: 2px;
   padding: 1px;
   cursor: pointer;
 
   &:hover {
     svg {
-      stroke: #fafafa;
+      stroke: ${({ theme }) => theme.WHITE_2};
+    }
+  }
+`;
+
+export const ScreenshotContainer = styled.div<{ theme: ColorTheme }>`
+  display: flex;
+  position: relative;
+  align-self: flex-start;
+  margin-top: 10px;
+  border-radius: 2px;
+  border: 1px solid ${({ theme }) => theme.GRAY_2};
+
+  &:hover {
+    ${CancelIconButton} {
+      display: flex;
     }
   }
 `;

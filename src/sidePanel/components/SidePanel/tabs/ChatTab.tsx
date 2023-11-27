@@ -14,7 +14,7 @@ import { ChatTabContent, NewChatButtonContainer, Separator } from "./styled";
 import useSidePanel from "../useSidePanel";
 
 const NewChat = () => {
-  const { createConversation } = useConversation();
+  const { resetConversation } = useConversation();
   const { currentChatMessages } = useChatMessages();
   const [openaiApiKey] = useAtom(openaiApiKeyAtom);
 
@@ -24,7 +24,7 @@ const NewChat = () => {
 
   return (
     <NewChatButtonContainer>
-      <Button disabled={!openaiApiKey} onClick={createConversation}>
+      <Button disabled={!openaiApiKey} onClick={resetConversation}>
         New Chat
       </Button>
     </NewChatButtonContainer>
@@ -32,23 +32,25 @@ const NewChat = () => {
 };
 
 const ChatTab = () => {
-  const { textAreaRef } = useSidePanel();
+  const { textareaRef } = useSidePanel();
   const [currentTab] = useAtom(currentTabAtom);
   const { currentChatMessages } = useChatMessages();
 
-  const renderMessage = useCallback((message: ChatMessage) => {
+  const renderMessage = useCallback((chatMessage: ChatMessage) => {
     return (
-      <React.Fragment key={message.id}>
-        <ConversationMessage message={message} />
+      <React.Fragment key={chatMessage.id}>
+        <ConversationMessage chatMessage={chatMessage} />
         <Separator />
       </React.Fragment>
     );
   }, []);
 
+  console.log("currentChatMessages", currentChatMessages);
+
   return (
     <ChatTabContent $show={currentTab == TabTitlesEnum.chat}>
       {currentChatMessages.map(renderMessage)}
-      <NewMessage textAreaRef={textAreaRef} />
+      <NewMessage textareaRef={textareaRef} />
       <NewChat />
     </ChatTabContent>
   );

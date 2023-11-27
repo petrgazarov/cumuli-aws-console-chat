@@ -12,7 +12,7 @@ const GlobalStyle = createGlobalStyle<{ theme: ColorTheme }>`
 
   body {
     margin: 0;
-    background-color: ${(props) => props.theme.BACKGROUND};
+    background-color: ${({ theme }) => theme.BLACK_2};
     font-size: ${FONT_SIZE};
     font-family: ${FONT_FAMILY};
   }

@@ -2,7 +2,6 @@ import { useAtom } from "jotai";
 import { useCallback, useEffect, useState } from "react";
 
 import useChatMessages from "sidePanel/hooks/useChatMessages";
-import useConversation from "sidePanel/hooks/useConversation";
 import usePort from "sidePanel/hooks/usePort";
 import {
   currentTextareaRefAtom,
@@ -14,30 +13,35 @@ import {
   removeOnMessageListener,
 } from "sidePanel/utils/listeners";
 import { CHAT_CHANNEL } from "utils/constants";
+import { getChatMessageText, getImageContentFromMessage } from "utils/helpers";
 import {
   ChatChannelAction,
   ChatChannelMessage,
+  ChatMessage,
   CommandChannelAction,
   CommandChannelMessage,
-  NewUserChatMessage,
   UserChatMessage,
 } from "utils/types";
 
 type useNewMessageProps = {
   textareaRef: React.RefObject<HTMLTextAreaElement>;
+  chatMessage: UserChatMessage;
 };
 
-const useNewMessage = ({ textareaRef }: useNewMessageProps) => {
-  const [textInput, setTextInput] = useState("");
+const useEditMessage = ({ textareaRef, chatMessage }: useNewMessageProps) => {
+  const [currentTextareaRef] = useAtom(currentTextareaRefAtom);
+  const [textInput, setTextInput] = useState(getChatMessageText(chatMessage));
   const [, setLoading] = useAtom(loadingAtom);
   const [streaming, setStreaming] = useAtom(streamingAtom);
-  const [currentTextareaRef] = useAtom(currentTextareaRefAtom);
-  const { currentConversation, createConversation } = useConversation();
-  const { appendChunk, appendMessage } = useChatMessages();
+  const { appendChunk, appendMessage, replaceMessage, removeImageFromMessage } =
+    useChatMessages();
 
   const chatChannelListener = useCallback(
     (channelMessage: ChatChannelMessage) => {
       switch (channelMessage.action) {
+        case ChatChannelAction.replace_message:
+          replaceMessage(channelMessage.payload);
+          break;
         case ChatChannelAction.new_message:
           appendMessage(channelMessage.payload);
           break;
@@ -58,13 +62,12 @@ const useNewMessage = ({ textareaRef }: useNewMessageProps) => {
     listener: chatChannelListener,
   });
 
-  const handleCreateNewMessage = useCallback(
-    (message: UserChatMessage) => {
+  const handleReplaceMessage = useCallback(
+    (message: ChatMessage) => {
       postChatMessage({
-        action: ChatChannelAction.new_message,
+        action: ChatChannelAction.replace_message,
         payload: message,
       });
-      setTextInput("");
       setLoading(true);
       setStreaming(true);
     },
@@ -90,33 +93,18 @@ const useNewMessage = ({ textareaRef }: useNewMessageProps) => {
         return;
       }
 
-      let conversationId: string;
-      if (currentConversation) {
-        conversationId = currentConversation.id;
-      } else {
-        const newConversation = await createConversation();
-        conversationId = newConversation.id;
-      }
-
-      handleCreateNewMessage(
-        NewUserChatMessage({
-          conversationId,
-          content: [
-            { type: "text", text: currentInputValue },
-            {
-              type: "image_url",
-              image_url: { url: "", detail: "high" },
-            },
-          ],
-        })
-      );
+      handleReplaceMessage({
+        ...chatMessage,
+        content: [
+          { type: "text", text: currentInputValue },
+          {
+            type: "image_url",
+            image_url: { url: "", detail: "high" },
+          },
+        ],
+      });
     },
-    [
-      handleCreateNewMessage,
-      streaming,
-      currentConversation?.id,
-      currentTextareaRef,
-    ]
+    [handleReplaceMessage, streaming, chatMessage.id, currentTextareaRef]
   );
 
   useEffect(() => {
@@ -144,22 +132,20 @@ const useNewMessage = ({ textareaRef }: useNewMessageProps) => {
         return;
       }
 
-      let conversationId: string;
-      if (currentConversation) {
-        conversationId = currentConversation.id;
-      } else {
-        const newConversation = await createConversation();
-        conversationId = newConversation.id;
-      }
-
-      handleCreateNewMessage(
-        NewUserChatMessage({
-          conversationId,
+      const imageContent = getImageContentFromMessage(chatMessage);
+      if (!imageContent) {
+        handleReplaceMessage({
+          ...chatMessage,
           content: currentInputValue,
-        })
-      );
+        });
+      } else {
+        handleReplaceMessage({
+          ...chatMessage,
+          content: [{ type: "text", text: currentInputValue }, imageContent],
+        });
+      }
     },
-    [handleCreateNewMessage, currentConversation?.id]
+    [handleReplaceMessage, chatMessage.id, chatMessage.content]
   );
 
   const handleChange = useCallback(
@@ -173,7 +159,8 @@ const useNewMessage = ({ textareaRef }: useNewMessageProps) => {
     value: textInput,
     handleChange,
     handleKeyDown,
+    removeImageFromMessage,
   };
 };
 
-export default useNewMessage;
+export default useEditMessage;

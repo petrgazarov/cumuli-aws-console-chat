@@ -1,21 +1,17 @@
 import styled from "styled-components";
 
-import {
-  BORDER_RADIUS,
-  FONT_FAMILY,
-  FONT_SIZE,
-} from "sidePanel/utils/globalStyles";
+import { FONT_FAMILY, FONT_SIZE } from "sidePanel/utils/globalStyles";
 import { ColorTheme } from "sidePanel/utils/types";
 
-export const StyledTextInput = styled.input<{ theme: ColorTheme }>`
-  height: 32px;
+export const StyledTextarea = styled.textarea<{ theme: ColorTheme }>`
+  min-height: 52px;
   background-color: ${({ theme }) => theme.BLACK_5};
-  border-radius: ${BORDER_RADIUS};
+  border-radius: 2px;
   box-sizing: border-box;
   margin-top: 1px;
   outline: 2px dotted transparent;
   border: 1px solid ${({ theme }) => theme.BLUE_3};
-  color: ${({ theme }) => theme.BLUE_1};
+  color: #d5dbdb;
   line-height: 22px;
   max-width: 100%;
   resize: none;

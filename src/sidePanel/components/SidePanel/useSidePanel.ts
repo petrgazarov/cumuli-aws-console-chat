@@ -6,7 +6,7 @@ import { loadingAtom, streamingAtom } from "sidePanel/utils/atoms";
 import { scrollPanelToBottom } from "sidePanel/utils/helpers";
 
 const useSidePanel = () => {
-  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [, setStreaming] = useAtom(streamingAtom);
   const [, setLoading] = useAtom(loadingAtom);
 
@@ -15,16 +15,16 @@ const useSidePanel = () => {
   useEffect(() => {
     setLoading(false);
     setStreaming(false);
-    textAreaRef.current?.focus();
+    textareaRef.current?.focus();
   }, [currentConversation?.id]);
 
   useEffect(() => {
-    textAreaRef.current?.focus();
+    textareaRef.current?.focus();
 
     scrollPanelToBottom();
   }, []);
 
-  return { textAreaRef };
+  return { textareaRef };
 };
 
 export default useSidePanel;

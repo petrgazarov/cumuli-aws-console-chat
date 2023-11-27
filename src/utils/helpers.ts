@@ -1,5 +1,11 @@
 import { OPENAI_API_KEY_STORAGE_KEY } from "utils/constants";
-import { OS } from "utils/types";
+import {
+  ChatMessage,
+  ChatMessageImageContent,
+  ChatMessageTextContent,
+  OS,
+  UserChatMessage,
+} from "utils/types";
 
 const maskKey = (key?: string): string => {
   if (!key) {
@@ -61,4 +67,40 @@ export const detectOS = () => {
   }
 
   return os;
+};
+
+export const getImageContentFromMessage = (
+  message: ChatMessage
+): ChatMessageImageContent | null => {
+  if (!Array.isArray(message.content)) {
+    return null;
+  }
+
+  const imageContent = message.content.find(
+    (
+      content: ChatMessageTextContent | ChatMessageImageContent
+    ): content is ChatMessageImageContent => content.type === "image_url"
+  );
+
+  return imageContent || null;
+};
+
+export const isChatMessageTextContent = (
+  content: ChatMessageTextContent | ChatMessageImageContent
+): content is ChatMessageTextContent => {
+  return content.type === "text";
+};
+
+export const getChatMessageText = (chatMessage: ChatMessage): string => {
+  if (typeof chatMessage.content === "string") {
+    return chatMessage.content;
+  }
+
+  const textContent = chatMessage.content.find(isChatMessageTextContent);
+
+  if (textContent) {
+    return textContent.text;
+  }
+
+  return "";
 };

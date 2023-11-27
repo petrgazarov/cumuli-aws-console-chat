@@ -1,4 +1,5 @@
-import { ChatMessage, ImageMessageContent } from "utils/types";
+import { getImageContentFromMessage } from "utils/helpers";
+import { UserChatMessage } from "utils/types";
 
 const captureVisibleTab = () => {
   return new Promise<string>((resolve, reject) => {
@@ -16,15 +17,15 @@ const captureVisibleTab = () => {
   });
 };
 
-export const addScreenshotToMessage = async (message: ChatMessage) => {
-  if (!Array.isArray(message.content)) {
+export const addScreenshotToMessage = async (message: UserChatMessage) => {
+  const imageContent = getImageContentFromMessage(message);
+
+  if (!imageContent) {
     return message;
   }
+
   const screenshotData = await captureVisibleTab();
 
-  const imageContent = message.content.find(
-    (content): content is ImageMessageContent => content.type === "image_url"
-  );
   if (imageContent) {
     imageContent.image_url.url = screenshotData;
   }

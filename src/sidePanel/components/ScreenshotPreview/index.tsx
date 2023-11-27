@@ -4,7 +4,7 @@ import { CancelIconButton, ScreenshotContainer } from "./styled";
 
 type ScreenshotPreviewProps = {
   url: string;
-  onRemove?: () => void;
+  onRemove: () => void;
 };
 
 const ScreenshotPreview = ({ url, onRemove }: ScreenshotPreviewProps) => {
@@ -12,11 +12,11 @@ const ScreenshotPreview = ({ url, onRemove }: ScreenshotPreviewProps) => {
     <ScreenshotContainer>
       <img
         src={url}
-        style={{ width: "auto", height: "85px" }}
+        style={{ width: "auto", height: "95px" }}
         alt="Screenshot preview"
       />
-      <CancelIconButton onClick={() => onRemove?.()}>
-        <CancelIcon width={12} height={12} />
+      <CancelIconButton onClick={onRemove}>
+        <CancelIcon width={14} height={14} />
       </CancelIconButton>
     </ScreenshotContainer>
   );

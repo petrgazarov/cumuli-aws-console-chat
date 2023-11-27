@@ -5,12 +5,12 @@ export enum Role {
   assistant = "assistant",
 }
 
-export type TextMessageContent = {
+export type ChatMessageTextContent = {
   type: "text";
   text: string;
 };
 
-export type ImageMessageContent = {
+export type ChatMessageImageContent = {
   type: "image_url";
   image_url: {
     url: string;
@@ -52,23 +52,43 @@ export enum Order {
   desc = "desc",
 }
 
-export type ChatMessage = {
+export type ChatMessage = UserChatMessage | AssistantChatMessage;
+
+export type UserChatMessage = {
   id: string;
   conversationId: string;
-  content: string | Array<TextMessageContent | ImageMessageContent>;
-  role: Role;
+  content: string | Array<ChatMessageTextContent | ChatMessageImageContent>;
+  role: Role.user;
   createdAt: string;
 };
 
-export const NewChatMessage = ({
-  content,
-  role,
-  conversationId,
-}: Omit<ChatMessage, "id" | "createdAt">): ChatMessage => ({
+export type AssistantChatMessage = {
+  id: string;
+  conversationId: string;
+  content: string;
+  role: Role.assistant;
+  createdAt: string;
+};
+
+export const NewUserChatMessage = (params: {
+  content: string | Array<ChatMessageTextContent | ChatMessageImageContent>;
+  conversationId: string;
+}): UserChatMessage => ({
   id: uuidv4(),
-  content,
-  role,
-  conversationId,
+  content: params.content,
+  role: Role.user,
+  conversationId: params.conversationId,
+  createdAt: new Date().toISOString(),
+});
+
+export const NewAssistantChatMessage = (params: {
+  content: string;
+  conversationId: string;
+}): AssistantChatMessage => ({
+  id: uuidv4(),
+  content: params.content,
+  role: Role.assistant,
+  conversationId: params.conversationId,
   createdAt: new Date().toISOString(),
 });
 

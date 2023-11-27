@@ -12,28 +12,34 @@ import { ConversationItem, HistoryTabContent } from "./styled";
 const HistoryTab = () => {
   const [currentTab, setCurrentTab] = useAtom(currentTabAtom);
   const [conversations, setConversations] = useState<Conversation[]>([]);
-  const { setCurrentConversation } = useConversation();
+  const { currentConversation, setCurrentConversation } = useConversation();
 
   useEffect(() => {
-    getConversations({ order: Order.desc }).then((conversations) => {
+    getConversations({ page: 1, order: Order.desc }).then((conversations) => {
       setConversations(conversations);
     });
   }, []);
 
-  const renderConversation = useCallback((conversation: Conversation) => {
-    return (
-      <ConversationItem
-        key={conversation.id}
-        onClick={() => {
-          setCurrentConversation(conversation);
-          setCurrentTab(TabTitlesEnum.chat);
-        }}
-      >
-        <div>{conversation.createdAt}</div>
-        <div>{conversation.preview}</div>
-      </ConversationItem>
-    );
-  }, []);
+  const renderConversation = useCallback(
+    (conversation: Conversation) => {
+      return (
+        <ConversationItem
+          key={conversation.id}
+          onClick={() => {
+            if (currentConversation?.id === conversation.id) {
+              setCurrentTab(TabTitlesEnum.chat);
+              return;
+            }
+            setCurrentConversation(conversation);
+          }}
+        >
+          <div>{conversation.createdAt}</div>
+          <div>{conversation.preview}</div>
+        </ConversationItem>
+      );
+    },
+    [currentConversation?.id]
+  );
 
   return (
     <HistoryTabContent $show={currentTab == TabTitlesEnum.history}>

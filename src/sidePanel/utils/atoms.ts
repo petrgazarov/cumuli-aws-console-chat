@@ -14,3 +14,6 @@ export const loadingAtom = atom<boolean>(false);
 export const currentTabAtom = atom<string>(TabTitlesEnum.chat);
 
 export const openaiApiKeyAtom = atom<string>("");
+
+export const currentTextareaRefAtom =
+  atom<React.RefObject<HTMLTextAreaElement> | null>(null);
