@@ -24,16 +24,16 @@ import {
 } from "utils/types";
 
 type useNewMessageProps = {
-  textareaRef: React.RefObject<HTMLTextAreaElement>;
   chatMessage: UserChatMessage;
+  textareaRef: React.RefObject<HTMLTextAreaElement>;
 };
 
-const useEditMessage = ({ textareaRef, chatMessage }: useNewMessageProps) => {
+const useEditMessage = ({ chatMessage, textareaRef }: useNewMessageProps) => {
   const [currentTextareaRef] = useAtom(currentTextareaRefAtom);
   const [textInput, setTextInput] = useState(getChatMessageText(chatMessage));
   const [, setLoading] = useAtom(loadingAtom);
   const [streaming, setStreaming] = useAtom(streamingAtom);
-  const { appendChunk, appendMessage, replaceMessage, removeImageFromMessage } =
+  const { appendChunk, appendMessage, removeImageFromMessage, replaceMessage } =
     useChatMessages();
 
   const chatChannelListener = useCallback(

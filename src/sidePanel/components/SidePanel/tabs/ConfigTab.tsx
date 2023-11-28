@@ -7,13 +7,18 @@ import { currentTabAtom, openaiApiKeyAtom } from "sidePanel/utils/atoms";
 import { TabTitlesEnum } from "sidePanel/utils/types";
 import { getOpenaiApiKey, saveOpenaiApiKey } from "utils/helpers";
 
-import { ConfigTabContent, SubmitApiKeyButtonContainer } from "./styled";
+import {
+  ConfigTabContent,
+  SubmitApiKeyButtonContainer,
+  TextInputRow,
+} from "./styled";
 
 const ConfigTab = () => {
   const [currentTab] = useAtom(currentTabAtom);
   const [openaiApiKey, setOpenaiApiKey] = useAtom(openaiApiKeyAtom);
   const [inputValue, setInputValue] = useState("");
-  const [message, setMessage] = useState("");
+  const [showSavedStatus, setShowSavedStatus] = useState(true);
+  const [inputDirty, setInputDirty] = useState(false);
 
   useEffect(() => {
     getOpenaiApiKey().then((apiKey: string) => {
@@ -26,25 +31,44 @@ const ConfigTab = () => {
     saveOpenaiApiKey(inputValue).then((maskedKey) => {
       setInputValue(maskedKey);
       setOpenaiApiKey(maskedKey);
-      setMessage("Saved!");
+      setShowSavedStatus(true);
     });
   }, [inputValue]);
 
   const buttonDisabled = !inputValue || inputValue === openaiApiKey;
 
+  const showContent = currentTab === TabTitlesEnum.config;
+
+  useEffect(() => {
+    if (showContent) {
+      setInputValue(openaiApiKey);
+    }
+  }, [showContent]);
+
   return (
-    <ConfigTabContent $show={currentTab == TabTitlesEnum.config}>
-      <TextInput
-        value={inputValue}
-        onChange={(e) => setInputValue(e.target.value)}
-        placeholder="Enter OpenAI API Key"
-      />
-      <SubmitApiKeyButtonContainer>
-        <Button onClick={saveApiKey} disabled={buttonDisabled}>
-          Submit
-        </Button>
-      </SubmitApiKeyButtonContainer>
-      <p>{message}</p>
+    <ConfigTabContent $show={showContent}>
+      <TextInputRow>
+        <TextInput
+          label="OpenAI API Key"
+          value={inputValue}
+          onChange={(value) => {
+            setShowSavedStatus(false);
+            setInputValue(value);
+          }}
+          onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+            if (e.key === "Backspace" && !inputDirty) {
+              setInputDirty(true);
+            }
+          }}
+          placeholder="Enter OpenAI API Key"
+          showSavedStatus={showSavedStatus}
+        />
+        <SubmitApiKeyButtonContainer>
+          <Button onClick={saveApiKey} disabled={buttonDisabled}>
+            Submit
+          </Button>
+        </SubmitApiKeyButtonContainer>
+      </TextInputRow>
     </ConfigTabContent>
   );
 };

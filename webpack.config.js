@@ -1,7 +1,7 @@
 const path = require("path");
-const crypto = require("crypto");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
+const StylelintPlugin = require("stylelint-webpack-plugin");
 
 const mode = process.env.NODE_ENV || "production";
 
@@ -33,5 +33,6 @@ module.exports = {
     new CopyWebpackPlugin({
       patterns: [{ from: "public", to: "" }],
     }),
+    new StylelintPlugin({ files: "src/**/*.{ts,tsx}" }),
   ],
 };

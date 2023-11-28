@@ -1,30 +1,31 @@
 import styled from "styled-components";
 
-import { ColorTheme } from "sidePanel/utils/types";
+import { COLORS } from "sidePanel/utils/globalStyles";
+import { Theme } from "sidePanel/utils/types";
 
 export const StyledButton = styled.button<{
   disabled: boolean;
-  theme: ColorTheme;
+  theme: Theme;
 }>`
   padding: 4px 20px;
-  color: ${({ theme }) => theme.BLUE_1};
   font-weight: 700;
-  border: 1px solid ${({ theme }) => theme.BLUE_3};
+  border: 1px solid ${COLORS.BLUE_3};
   border-radius: 2px;
   line-height: 22px;
   background-color: transparent;
+  color: ${COLORS.BLUE_1};
   cursor: pointer;
 
   &:hover {
-    background-color: ${({ theme }) => theme.BLACK_4};
-    border: 1px solid ${({ theme }) => theme.BLUE_2};
-    color: ${({ theme }) => theme.WHITE_2};
+    border: 1px solid ${COLORS.BLUE_2};
+    background-color: ${COLORS.BLACK_4};
+    color: ${COLORS.WHITE_2};
   }
 
   &:disabled {
-    cursor: default;
+    border: 1px solid ${COLORS.ORANGE_3};
     background-color: transparent;
-    border: 1px solid ${({ theme }) => theme.ORANGE_3};
-    color: ${({ theme }) => theme.ORANGE_2};
+    color: ${COLORS.ORANGE_2};
+    cursor: default;
   }
 `;

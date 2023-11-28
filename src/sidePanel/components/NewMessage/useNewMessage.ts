@@ -32,7 +32,7 @@ const useNewMessage = ({ textareaRef }: useNewMessageProps) => {
   const [, setLoading] = useAtom(loadingAtom);
   const [streaming, setStreaming] = useAtom(streamingAtom);
   const [currentTextareaRef] = useAtom(currentTextareaRefAtom);
-  const { currentConversation, createConversation } = useConversation();
+  const { createConversation, currentConversation } = useConversation();
   const { appendChunk, appendMessage } = useChatMessages();
 
   const chatChannelListener = useCallback(

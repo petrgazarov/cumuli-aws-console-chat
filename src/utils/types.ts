@@ -1,28 +1,28 @@
 import { v4 as uuidv4 } from "uuid";
 
 export enum Role {
-  user = "user",
   assistant = "assistant",
+  user = "user"
 }
 
 export type ChatMessageTextContent = {
-  type: "text";
   text: string;
+  type: "text";
 };
 
 export type ChatMessageImageContent = {
-  type: "image_url";
   image_url: {
-    url: string;
     detail: "high" | "low" | "auto";
+    url: string;
   };
+  type: "image_url";
 };
 
 export enum ChatChannelAction {
+  finish_stream = "finish_stream",
   new_message = "new_message",
   replace_message = "replace_message",
-  stream_chunk = "stream_chunk",
-  finish_stream = "finish_stream",
+  stream_chunk = "stream_chunk"
 }
 
 export type ChatChannelMessage = {
@@ -40,11 +40,11 @@ export type CommandChannelMessage = {
 };
 
 export enum OS {
-  Windows = "Windows",
+  Linux = "Linux",
   MacOS = "MacOS",
   UNIX = "UNIX",
-  Linux = "Linux",
   Unknown = "Unknown OS",
+  Windows = "Windows"
 }
 
 export enum Order {
@@ -55,19 +55,19 @@ export enum Order {
 export type ChatMessage = UserChatMessage | AssistantChatMessage;
 
 export type UserChatMessage = {
-  id: string;
-  conversationId: string;
   content: string | Array<ChatMessageTextContent | ChatMessageImageContent>;
-  role: Role.user;
+  conversationId: string;
   createdAt: string;
+  id: string;
+  role: Role.user;
 };
 
 export type AssistantChatMessage = {
-  id: string;
-  conversationId: string;
   content: string;
-  role: Role.assistant;
+  conversationId: string;
   createdAt: string;
+  id: string;
+  role: Role.assistant;
 };
 
 export const NewUserChatMessage = (params: {
@@ -93,8 +93,8 @@ export const NewAssistantChatMessage = (params: {
 });
 
 export type Conversation = {
-  id: string;
   createdAt: string;
+  id: string;
   preview?: string;
 };
 

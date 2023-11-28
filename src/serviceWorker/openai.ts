@@ -12,15 +12,15 @@ const initializeOpenai = async () => {
 
 export const streamLlmResponse = async ({
   messages,
-  onContent,
-  onChatCompletion,
   onAbort,
+  onChatCompletion,
+  onContent,
   onError,
 }: {
   messages: ChatMessage[];
-  onContent: (chunk: string) => void;
-  onChatCompletion: () => void;
   onAbort: () => void;
+  onChatCompletion: () => void;
+  onContent: (chunk: string) => void;
   onError: (error: any) => void;
 }) => {
   const openai = await initializeOpenai();
@@ -29,7 +29,7 @@ export const streamLlmResponse = async ({
     .stream({
       model: OPENAI_MODEL_ID,
       messages: messages.map(
-        ({ id, createdAt, conversationId, ...rest }) => rest
+        ({ conversationId, createdAt, id, ...rest }) => rest
       ) as OpenAI.Chat.ChatCompletionMessageParam[],
       max_tokens: 4096,
       stream: true,

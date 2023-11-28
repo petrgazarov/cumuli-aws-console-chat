@@ -3,11 +3,11 @@ import CancelIcon from "sidePanel/components/icons/CancelIcon";
 import { CancelIconButton, ScreenshotContainer } from "./styled";
 
 type ScreenshotPreviewProps = {
-  url: string;
   onRemove: () => void;
+  url: string;
 };
 
-const ScreenshotPreview = ({ url, onRemove }: ScreenshotPreviewProps) => {
+const ScreenshotPreview = ({ onRemove, url }: ScreenshotPreviewProps) => {
   return (
     <ScreenshotContainer>
       <img

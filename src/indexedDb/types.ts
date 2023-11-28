@@ -7,14 +7,14 @@ import {
 import { ChatMessage, Conversation } from "utils/types";
 
 export type DBSchema = {
-  [CONVERSATION_STORE]: {
-    key: string;
-    value: Conversation;
-    indexes: { [CONVERSATION_STORE_INDEX]: string };
-  };
   [CHAT_MESSAGE_STORE]: {
+    indexes: { [CHAT_MESSAGE_STORE_INDEX]: [string, string] };
     key: string;
     value: ChatMessage;
-    indexes: { [CHAT_MESSAGE_STORE_INDEX]: [string, string] };
+  };
+  [CONVERSATION_STORE]: {
+    indexes: { [CONVERSATION_STORE_INDEX]: string };
+    key: string;
+    value: Conversation;
   };
 };

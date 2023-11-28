@@ -4,7 +4,6 @@ import {
   ChatMessageImageContent,
   ChatMessageTextContent,
   OS,
-  UserChatMessage,
 } from "utils/types";
 
 const maskKey = (key?: string): string => {
@@ -14,7 +13,7 @@ const maskKey = (key?: string): string => {
   if (key.length < 13) {
     return key;
   }
-  return `${key.slice(0, 5)}...${key.slice(-5)}`;
+  return `${key.slice(0, 3)}...${key.slice(-4)}`;
 };
 
 export function getOpenaiApiKey(masked = true): Promise<string> {

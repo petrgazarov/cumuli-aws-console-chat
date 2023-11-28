@@ -3,18 +3,19 @@ import { ThemeProvider, createGlobalStyle } from "styled-components";
 
 import SidePanel from "sidePanel/components/SidePanel";
 import { COLORS, FONT_FAMILY, FONT_SIZE } from "sidePanel/utils/globalStyles";
-import { ColorTheme } from "sidePanel/utils/types";
+import { ColorThemeEnum, Theme } from "sidePanel/utils/types";
 
-const GlobalStyle = createGlobalStyle<{ theme: ColorTheme }>`
+const GlobalStyle = createGlobalStyle<{ theme: Theme }>`
   html, body, #root {
     height: 100%;
   }
 
   body {
     margin: 0;
-    background-color: ${({ theme }) => theme.BLACK_2};
-    font-size: ${FONT_SIZE};
+    background-color: ${COLORS.BLACK_2};
     font-family: ${FONT_FAMILY};
+    font-size: ${FONT_SIZE};
+    line-height: 22px;
   }
 
   #root {
@@ -23,7 +24,7 @@ const GlobalStyle = createGlobalStyle<{ theme: ColorTheme }>`
 `;
 
 const App = () => {
-  const [theme] = useState(COLORS.dark);
+  const [theme] = useState<Theme>({ selected: ColorThemeEnum.dark });
 
   return (
     <ThemeProvider theme={theme}>

@@ -1,18 +1,19 @@
 import styled from "styled-components";
 
-import { ColorTheme } from "sidePanel/utils/types";
+import { COLORS } from "sidePanel/utils/globalStyles";
+import { Theme } from "sidePanel/utils/types";
 
-const StyledSvg = styled.svg<{ theme: ColorTheme }>`
+const StyledSvg = styled.svg<{ theme: Theme }>`
   stroke-width: 2px;
-  stroke: ${({ theme }) => theme.BLUE_1};
+  stroke: ${COLORS.BLUE_1};
 `;
 
 type CancelIconProps = {
-  width?: number;
   height?: number;
+  width?: number;
 };
 
-const CancelIcon = ({ width = 16, height = 16 }: CancelIconProps) => {
+const CancelIcon = ({ height = 16, width = 16 }: CancelIconProps) => {
   return (
     <StyledSvg
       xmlns="http://www.w3.org/2000/svg"

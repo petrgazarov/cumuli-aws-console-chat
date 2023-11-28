@@ -15,7 +15,7 @@ const NewMessage = ({ textareaRef }: NewMessageProps) => {
   const [streaming] = useAtom(streamingAtom);
   const [loading] = useAtom(loadingAtom);
 
-  const { value, handleChange, handleKeyDown } = useNewMessage({
+  const { handleChange, handleKeyDown, value } = useNewMessage({
     textareaRef,
   });
 

@@ -13,9 +13,9 @@ type usePortParameters = {
 };
 
 type PortBuffer = {
-  resetPortPending: boolean;
-  pendingMessage: any;
   listener?: (message: any) => void;
+  pendingMessage: any;
+  resetPortPending: boolean;
 };
 
 const usePort = ({ channelName, listener }: usePortParameters) => {

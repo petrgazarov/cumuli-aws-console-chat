@@ -1,9 +1,10 @@
 import styled, { keyframes } from "styled-components";
 
-import { ColorTheme } from "sidePanel/utils/types";
+import { COLORS } from "sidePanel/utils/globalStyles";
+import { Theme } from "sidePanel/utils/types";
 
-export const HelpText = styled.div<{ theme: ColorTheme }>`
-  color: ${({ theme }) => theme.ORANGE_1};
+export const HelpText = styled.div<{ theme: Theme }>`
+  color: ${COLORS.ORANGE_1};
   font-size: 12px;
   margin-top: 3px;
 `;
@@ -16,9 +17,9 @@ export const LoadingAnimation = keyframes`
 `;
 
 export const LoadingState = styled.div`
-  &:after {
-    content: "";
+  &::after {
     display: inline-block;
     animation: ${LoadingAnimation} 0.8s steps(4, end) infinite;
+    content: "";
   }
 `;

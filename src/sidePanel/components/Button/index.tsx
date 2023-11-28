@@ -2,11 +2,11 @@ import { StyledButton } from "./styled";
 
 type ButtonProps = {
   children: React.ReactNode;
-  onClick: () => void;
   disabled?: boolean;
+  onClick: () => void;
 };
 
-const Button = ({ onClick, children, disabled = false }: ButtonProps) => {
+const Button = ({ children, disabled = false, onClick }: ButtonProps) => {
   return (
     <StyledButton onClick={onClick} disabled={disabled}>
       {children}

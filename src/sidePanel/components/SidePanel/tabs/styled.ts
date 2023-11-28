@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
-import { ColorTheme } from "sidePanel/utils/types";
+import { COLORS } from "sidePanel/utils/globalStyles";
+import { Theme } from "sidePanel/utils/types";
 
 export const ChatTabContent = styled.div<{ $show: boolean }>`
   display: ${({ $show }) => ($show ? "flex" : "none")};
@@ -20,8 +21,8 @@ export const HistoryTabContent = styled.div<{ $show: boolean }>`
   padding: 10px;
 `;
 
-export const Separator = styled.div<{ theme: ColorTheme }>`
-  border-bottom: 1px solid ${({ theme }) => theme.GRAY_2};
+export const Separator = styled.div<{ theme: Theme }>`
+  border-bottom: 1px solid ${COLORS.GRAY_2};
   width: 100%;
   padding-top: 10px;
   margin-bottom: 10px;
@@ -35,10 +36,7 @@ export const NewChatButtonContainer = styled.div`
 `;
 
 export const SubmitApiKeyButtonContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
+  margin-left: 8px;
 `;
 
 export const ConversationItem = styled.div`
@@ -46,4 +44,10 @@ export const ConversationItem = styled.div`
   justify-content: space-between;
   height: 50px;
   cursor: pointer;
+`;
+
+export const TextInputRow = styled.div`
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
 `;

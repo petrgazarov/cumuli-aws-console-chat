@@ -5,10 +5,10 @@ import { currentTextareaRefAtom } from "sidePanel/utils/atoms";
 import { StyledTextarea } from "./styled";
 
 type TextareaProps = {
-  textareaRef: React.RefObject<HTMLTextAreaElement>;
-  value: string;
   onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
   onKeyDown: (event: React.KeyboardEvent<HTMLTextAreaElement>) => void;
+  textareaRef: React.RefObject<HTMLTextAreaElement>;
+  value: string;
 };
 
 // Textarea value:
@@ -17,10 +17,10 @@ type TextareaProps = {
 //   - textInput state is used to set the value.
 
 const Textarea = ({
-  textareaRef,
-  value,
   onChange,
   onKeyDown,
+  textareaRef,
+  value,
 }: TextareaProps) => {
   const [, setCurrentTextareaRef] = useAtom(currentTextareaRefAtom);
 

@@ -10,7 +10,7 @@ import useEditMessage from "./useEditMessage";
 const UserMessage = ({ chatMessage }: { chatMessage: UserChatMessage }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const { value, handleChange, handleKeyDown, removeImageFromMessage } =
+  const { handleChange, handleKeyDown, removeImageFromMessage, value } =
     useEditMessage({
       textareaRef,
       chatMessage,
