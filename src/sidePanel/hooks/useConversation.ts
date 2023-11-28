@@ -16,12 +16,14 @@ const useConversation = () => {
   const createConversation = useCallback(async () => {
     const newConversation = await createConversationDb();
     setCurrentConversation(newConversation);
+
     setCurrentChatMessages([]);
     return newConversation;
   }, []);
 
   const resetConversation = useCallback(() => {
     setCurrentConversation(null);
+    setCurrentChatMessages([]);
   }, []);
 
   return {

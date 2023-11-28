@@ -1,61 +1,27 @@
 import { useAtom } from "jotai";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
+import useChatChannelListener from "sidePanel/hooks/useChatChannelListener";
 import useChatMessages from "sidePanel/hooks/useChatMessages";
+import useCommandChannelListener from "sidePanel/hooks/useCommandChannelListener";
 import usePort from "sidePanel/hooks/usePort";
-import {
-  currentTextareaRefAtom,
-  loadingAtom,
-  streamingAtom,
-} from "sidePanel/utils/atoms";
-import {
-  addOnMessageListener,
-  removeOnMessageListener,
-} from "sidePanel/utils/listeners";
+import { loadingAtom, streamingAtom } from "sidePanel/utils/atoms";
 import { CHAT_CHANNEL } from "utils/constants";
 import { getChatMessageText, getImageContentFromMessage } from "utils/helpers";
-import {
-  ChatChannelAction,
-  ChatChannelMessage,
-  ChatMessage,
-  CommandChannelAction,
-  CommandChannelMessage,
-  UserChatMessage,
-} from "utils/types";
+import { ChatChannelAction, ChatMessage, UserChatMessage } from "utils/types";
 
-type useNewMessageProps = {
+type UseNewMessageProps = {
   chatMessage: UserChatMessage;
   textareaRef: React.RefObject<HTMLTextAreaElement>;
 };
 
-const useEditMessage = ({ chatMessage, textareaRef }: useNewMessageProps) => {
-  const [currentTextareaRef] = useAtom(currentTextareaRefAtom);
+const useEditMessage = ({ chatMessage, textareaRef }: UseNewMessageProps) => {
   const [textInput, setTextInput] = useState(getChatMessageText(chatMessage));
   const [, setLoading] = useAtom(loadingAtom);
-  const [streaming, setStreaming] = useAtom(streamingAtom);
-  const { appendChunk, appendMessage, removeImageFromMessage, replaceMessage } =
-    useChatMessages();
+  const [, setStreaming] = useAtom(streamingAtom);
+  const { removeImageFromMessage } = useChatMessages();
 
-  const chatChannelListener = useCallback(
-    (channelMessage: ChatChannelMessage) => {
-      switch (channelMessage.action) {
-        case ChatChannelAction.replace_message:
-          replaceMessage(channelMessage.payload);
-          break;
-        case ChatChannelAction.new_message:
-          appendMessage(channelMessage.payload);
-          break;
-        case ChatChannelAction.stream_chunk:
-          appendChunk(channelMessage.payload);
-          setLoading(false);
-          break;
-        case ChatChannelAction.finish_stream:
-          setStreaming(false);
-          break;
-      }
-    },
-    []
-  );
+  const chatChannelListener = useChatChannelListener();
 
   const { postMessage: postChatMessage } = usePort({
     channelName: CHAT_CHANNEL,
@@ -74,29 +40,12 @@ const useEditMessage = ({ chatMessage, textareaRef }: useNewMessageProps) => {
     [postChatMessage]
   );
 
-  const commandChannelListener = useCallback(
-    async (channelMessage: CommandChannelMessage) => {
-      if (
-        channelMessage.action !== CommandChannelAction.submit_with_screenshot
-      ) {
-        return;
-      }
-      if (streaming) {
-        return;
-      }
-      if (currentTextareaRef !== textareaRef) {
-        return;
-      }
-
-      const currentInputValue = textareaRef.current?.value || "";
-      if (!currentInputValue.trim()) {
-        return;
-      }
-
+  const handleSubmitWithScreenshotCommand = useCallback(
+    async (value: string) => {
       handleReplaceMessage({
         ...chatMessage,
         content: [
-          { type: "text", text: currentInputValue },
+          { type: "text", text: value },
           {
             type: "image_url",
             image_url: { url: "", detail: "high" },
@@ -104,14 +53,13 @@ const useEditMessage = ({ chatMessage, textareaRef }: useNewMessageProps) => {
         ],
       });
     },
-    [handleReplaceMessage, streaming, chatMessage.id, currentTextareaRef]
+    [handleReplaceMessage, chatMessage]
   );
 
-  useEffect(() => {
-    addOnMessageListener(commandChannelListener);
-
-    return () => removeOnMessageListener(commandChannelListener);
-  }, [commandChannelListener]);
+  useCommandChannelListener({
+    handleSubmitWithScreenshotCommand,
+    textareaRef,
+  });
 
   const handleKeyDown = useCallback(
     async (event: React.KeyboardEvent) => {

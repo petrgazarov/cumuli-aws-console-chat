@@ -1,37 +1,15 @@
 import { useAtom } from "jotai";
 import cloneDeep from "lodash.clonedeep";
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 
-import { getChatMessages } from "indexedDb/chatMessage";
-import {
-  currentChatMessagesAtom,
-  currentConversationAtom,
-  currentTabAtom,
-} from "sidePanel/utils/atoms";
-import { TabTitlesEnum } from "sidePanel/utils/types";
+import { currentChatMessagesAtom } from "sidePanel/utils/atoms";
 import { getChatMessageText, getImageContentFromMessage } from "utils/helpers";
-import { ChatMessage, Order, Role, UserChatMessage } from "utils/types";
+import { ChatMessage, Role, UserChatMessage } from "utils/types";
 
 const useChatMessages = () => {
   const [currentChatMessages, setCurrentChatMessages] = useAtom(
     currentChatMessagesAtom
   );
-  const [currentConversation] = useAtom(currentConversationAtom);
-  const [, setCurrentTab] = useAtom(currentTabAtom);
-
-  useEffect(() => {
-    if (currentConversation) {
-      getChatMessages({
-        conversationId: currentConversation.id,
-        order: Order.asc,
-      }).then((chatMessages) => {
-        setCurrentChatMessages(chatMessages);
-        setCurrentTab(TabTitlesEnum.chat);
-      });
-    } else {
-      setCurrentChatMessages([]);
-    }
-  }, [currentConversation?.id]);
 
   const appendMessage = useCallback((chatMessage: ChatMessage) => {
     setCurrentChatMessages((prevChatMessages) => [

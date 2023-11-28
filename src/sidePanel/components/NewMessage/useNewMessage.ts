@@ -1,57 +1,29 @@
 import { useAtom } from "jotai";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
-import useChatMessages from "sidePanel/hooks/useChatMessages";
+import useChatChannelListener from "sidePanel/hooks/useChatChannelListener";
+import useCommandChannelListener from "sidePanel/hooks/useCommandChannelListener";
 import useConversation from "sidePanel/hooks/useConversation";
 import usePort from "sidePanel/hooks/usePort";
-import {
-  currentTextareaRefAtom,
-  loadingAtom,
-  streamingAtom,
-} from "sidePanel/utils/atoms";
-import {
-  addOnMessageListener,
-  removeOnMessageListener,
-} from "sidePanel/utils/listeners";
+import { loadingAtom, streamingAtom } from "sidePanel/utils/atoms";
 import { CHAT_CHANNEL } from "utils/constants";
 import {
   ChatChannelAction,
-  ChatChannelMessage,
-  CommandChannelAction,
-  CommandChannelMessage,
   NewUserChatMessage,
   UserChatMessage,
 } from "utils/types";
 
-type useNewMessageProps = {
+type UseNewMessageProps = {
   textareaRef: React.RefObject<HTMLTextAreaElement>;
 };
 
-const useNewMessage = ({ textareaRef }: useNewMessageProps) => {
+const useNewMessage = ({ textareaRef }: UseNewMessageProps) => {
   const [textInput, setTextInput] = useState("");
   const [, setLoading] = useAtom(loadingAtom);
-  const [streaming, setStreaming] = useAtom(streamingAtom);
-  const [currentTextareaRef] = useAtom(currentTextareaRefAtom);
+  const [, setStreaming] = useAtom(streamingAtom);
   const { createConversation, currentConversation } = useConversation();
-  const { appendChunk, appendMessage } = useChatMessages();
 
-  const chatChannelListener = useCallback(
-    (channelMessage: ChatChannelMessage) => {
-      switch (channelMessage.action) {
-        case ChatChannelAction.new_message:
-          appendMessage(channelMessage.payload);
-          break;
-        case ChatChannelAction.stream_chunk:
-          appendChunk(channelMessage.payload);
-          setLoading(false);
-          break;
-        case ChatChannelAction.finish_stream:
-          setStreaming(false);
-          break;
-      }
-    },
-    []
-  );
+  const chatChannelListener = useChatChannelListener();
 
   const { postMessage: postChatMessage } = usePort({
     channelName: CHAT_CHANNEL,
@@ -71,25 +43,8 @@ const useNewMessage = ({ textareaRef }: useNewMessageProps) => {
     [postChatMessage]
   );
 
-  const commandChannelListener = useCallback(
-    async (channelMessage: CommandChannelMessage) => {
-      if (
-        channelMessage.action !== CommandChannelAction.submit_with_screenshot
-      ) {
-        return;
-      }
-      if (streaming) {
-        return;
-      }
-      if (currentTextareaRef !== textareaRef) {
-        return;
-      }
-
-      const currentInputValue = textareaRef.current?.value || "";
-      if (!currentInputValue.trim()) {
-        return;
-      }
-
+  const handleSubmitWithScreenshotCommand = useCallback(
+    async (value: string) => {
       let conversationId: string;
       if (currentConversation) {
         conversationId = currentConversation.id;
@@ -102,7 +57,7 @@ const useNewMessage = ({ textareaRef }: useNewMessageProps) => {
         NewUserChatMessage({
           conversationId,
           content: [
-            { type: "text", text: currentInputValue },
+            { type: "text", text: value },
             {
               type: "image_url",
               image_url: { url: "", detail: "high" },
@@ -111,19 +66,13 @@ const useNewMessage = ({ textareaRef }: useNewMessageProps) => {
         })
       );
     },
-    [
-      handleCreateNewMessage,
-      streaming,
-      currentConversation?.id,
-      currentTextareaRef,
-    ]
+    [handleCreateNewMessage, currentConversation?.id]
   );
 
-  useEffect(() => {
-    addOnMessageListener(commandChannelListener);
-
-    return () => removeOnMessageListener(commandChannelListener);
-  }, [commandChannelListener]);
+  useCommandChannelListener({
+    handleSubmitWithScreenshotCommand,
+    textareaRef,
+  });
 
   const handleKeyDown = useCallback(
     async (event: React.KeyboardEvent) => {

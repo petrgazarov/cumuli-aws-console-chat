@@ -6,7 +6,7 @@ import {
   INDEXED_DB_NAME,
   INDEXED_DB_VERSION,
 } from "indexedDb/constants";
-import { ChatMessage, Order, UserChatMessage } from "utils/types";
+import { ChatMessage, Conversation, Order, UserChatMessage } from "utils/types";
 
 import { DBSchema } from "./types";
 

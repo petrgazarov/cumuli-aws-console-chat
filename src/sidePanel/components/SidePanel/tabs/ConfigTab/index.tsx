@@ -1,11 +1,10 @@
 import { useAtom } from "jotai";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
 import Button from "sidePanel/components/Button";
 import TextInput from "sidePanel/components/TextInput";
-import { currentTabAtom, openaiApiKeyAtom } from "sidePanel/utils/atoms";
-import { TabTitlesEnum } from "sidePanel/utils/types";
-import { getOpenaiApiKey, saveOpenaiApiKey } from "utils/helpers";
+import { openaiApiKeyAtom } from "sidePanel/utils/atoms";
+import { saveOpenaiApiKey } from "utils/helpers";
 
 import {
   ConfigTabContent,
@@ -14,18 +13,10 @@ import {
 } from "./styled";
 
 const ConfigTab = () => {
-  const [currentTab] = useAtom(currentTabAtom);
   const [openaiApiKey, setOpenaiApiKey] = useAtom(openaiApiKeyAtom);
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState(openaiApiKey);
   const [showSavedStatus, setShowSavedStatus] = useState(true);
   const [inputDirty, setInputDirty] = useState(false);
-
-  useEffect(() => {
-    getOpenaiApiKey().then((apiKey: string) => {
-      setInputValue(apiKey);
-      setOpenaiApiKey(apiKey);
-    });
-  }, []);
 
   const saveApiKey = useCallback(() => {
     saveOpenaiApiKey(inputValue).then((maskedKey) => {
@@ -35,31 +26,45 @@ const ConfigTab = () => {
     });
   }, [inputValue]);
 
+  const onKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (inputDirty) {
+        return;
+      }
+
+      e.preventDefault();
+
+      if (e.key === "Backspace") {
+        setInputValue("");
+        setShowSavedStatus(false);
+        setInputDirty(true);
+      }
+    },
+    [inputDirty]
+  );
+
+  const onChange = useCallback(
+    (value: string) => {
+      if (!inputDirty) {
+        return;
+      }
+
+      setShowSavedStatus(false);
+      setInputValue(value);
+    },
+    [inputDirty]
+  );
+
   const buttonDisabled = !inputValue || inputValue === openaiApiKey;
 
-  const showContent = currentTab === TabTitlesEnum.config;
-
-  useEffect(() => {
-    if (showContent) {
-      setInputValue(openaiApiKey);
-    }
-  }, [showContent]);
-
   return (
-    <ConfigTabContent $show={showContent}>
+    <ConfigTabContent>
       <TextInputRow>
         <TextInput
           label="OpenAI API Key"
           value={inputValue}
-          onChange={(value) => {
-            setShowSavedStatus(false);
-            setInputValue(value);
-          }}
-          onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-            if (e.key === "Backspace" && !inputDirty) {
-              setInputDirty(true);
-            }
-          }}
+          onChange={onChange}
+          onKeyDown={onKeyDown}
           placeholder="Enter OpenAI API Key"
           showSavedStatus={showSavedStatus}
         />

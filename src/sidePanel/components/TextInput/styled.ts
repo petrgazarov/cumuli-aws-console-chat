@@ -53,4 +53,5 @@ export const SavedStatus = styled.div`
   color: ${COLORS.GREEN};
   font-weight: 600;
   font-size: 13px;
+  user-select: none;
 `;

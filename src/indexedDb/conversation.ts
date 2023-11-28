@@ -99,3 +99,47 @@ export const createConversation = async () => {
 
   return conversation;
 };
+
+export const deleteAllConversations = async () => {
+  const db = await openDB<DBSchema>(INDEXED_DB_NAME, INDEXED_DB_VERSION);
+
+  const tx = db.transaction(
+    [CONVERSATION_STORE, CHAT_MESSAGE_STORE],
+    "readwrite"
+  );
+  const conversationStore = tx.objectStore(CONVERSATION_STORE);
+  const chatMessageStore = tx.objectStore(CHAT_MESSAGE_STORE);
+
+  await conversationStore.clear();
+  await chatMessageStore.clear();
+  await tx.done;
+};
+
+export const deleteConversation = async (conversation: Conversation) => {
+  const db = await openDB<DBSchema>(INDEXED_DB_NAME, INDEXED_DB_VERSION);
+
+  const tx = db.transaction(
+    [CONVERSATION_STORE, CHAT_MESSAGE_STORE],
+    "readwrite"
+  );
+  const conversationStore = tx.objectStore(CONVERSATION_STORE);
+  const chatMessageStore = tx.objectStore(CHAT_MESSAGE_STORE);
+
+  // Delete the conversation
+  await conversationStore.delete(conversation.id);
+
+  // Delete all chat messages belonging to the conversation
+  const chatMessageIndex = chatMessageStore.index(CHAT_MESSAGE_STORE_INDEX);
+  const range = IDBKeyRange.bound(
+    [conversation.id, new Date(0).toISOString()],
+    [conversation.id, new Date().toISOString()]
+  );
+  let chatMessageCursor = await chatMessageIndex.openCursor(range);
+
+  while (chatMessageCursor) {
+    await chatMessageStore.delete(chatMessageCursor.primaryKey);
+    chatMessageCursor = await chatMessageCursor.continue();
+  }
+
+  await tx.done;
+};

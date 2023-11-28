@@ -1,5 +1,5 @@
 import { useAtom } from "jotai";
-import { useEffect } from "react";
+import { RefObject, useEffect } from "react";
 
 import useNewMessage from "sidePanel/components/NewMessage/useNewMessage";
 import Textarea from "sidePanel/components/Textarea";
@@ -7,11 +7,11 @@ import { loadingAtom, streamingAtom } from "sidePanel/utils/atoms";
 
 import { HelpText, LoadingState } from "./styled";
 
-type NewMessageProps = {
-  textareaRef: React.RefObject<HTMLTextAreaElement>;
-};
-
-const NewMessage = ({ textareaRef }: NewMessageProps) => {
+const NewMessage = ({
+  textareaRef,
+}: {
+  textareaRef: RefObject<HTMLTextAreaElement>;
+}) => {
   const [streaming] = useAtom(streamingAtom);
   const [loading] = useAtom(loadingAtom);
 

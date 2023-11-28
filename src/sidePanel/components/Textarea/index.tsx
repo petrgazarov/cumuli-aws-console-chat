@@ -29,7 +29,6 @@ const Textarea = ({
       ref={textareaRef}
       value={value}
       onFocus={() => setCurrentTextareaRef(textareaRef)}
-      onBlur={() => setCurrentTextareaRef(null)}
       onChange={onChange}
       onKeyDown={onKeyDown}
     />

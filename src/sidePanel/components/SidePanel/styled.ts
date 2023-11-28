@@ -26,7 +26,7 @@ export const TabTitlesContainer = styled.div`
 export const TabTitle = styled.div<{ $active: boolean }>`
   padding: 10px 0;
   cursor: ${({ $active }) => ($active ? "default" : "pointer")};
-  color: ${({ $active, theme }) => ($active ? theme.BLUE_4 : theme.BLUE_1)};
+  color: ${({ $active }) => ($active ? COLORS.BLUE_4 : COLORS.BLUE_1)};
   font-weight: bold;
 
   &:hover {
