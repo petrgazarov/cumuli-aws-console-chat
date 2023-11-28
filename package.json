@@ -6,6 +6,7 @@
     "node": ">20.0.0"
   },
   "dependencies": {
+    "date-fns": "^2.30.0",
     "idb": "^7.1.1",
     "jotai": "^2.5.1",
     "lodash.clonedeep": "^4.5.0",

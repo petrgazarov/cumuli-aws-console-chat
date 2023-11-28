@@ -14,12 +14,7 @@ import HistoryTab from "./tabs/HistoryTab";
 
 const SidePanel = () => {
   const [, setOpenaiApiKey] = useAtom(openaiApiKeyAtom);
-  const { getConversations } = useConversations();
   const [currentTab, setCurrentTab] = useAtom(currentTabAtom);
-
-  useEffect(() => {
-    getConversations();
-  }, []);
 
   useEffect(() => {
     getOpenaiApiKey().then((apiKey: string) => {
@@ -52,7 +47,7 @@ const SidePanel = () => {
       </TabTitlesContainer>
       <Content id={PANEL_CONTENT_ID}>
         <ChatTab />
-        <HistoryTab />
+        {currentTab == TabTitlesEnum.history && <HistoryTab />}
         {currentTab == TabTitlesEnum.config && <ConfigTab />}
       </Content>
     </Container>

@@ -4,9 +4,8 @@ import { useCallback, useState } from "react";
 import useChatChannelListener from "sidePanel/hooks/useChatChannelListener";
 import useChatMessages from "sidePanel/hooks/useChatMessages";
 import useCommandChannelListener from "sidePanel/hooks/useCommandChannelListener";
-import usePort from "sidePanel/hooks/usePort";
+import useKeyDownChatMessageListener from "sidePanel/hooks/useKeyDownChatMessageListener";
 import { loadingAtom, streamingAtom } from "sidePanel/utils/atoms";
-import { CHAT_CHANNEL } from "utils/constants";
 import { getChatMessageText, getImageContentFromMessage } from "utils/helpers";
 import { ChatChannelAction, ChatMessage, UserChatMessage } from "utils/types";
 
@@ -21,12 +20,7 @@ const useEditMessage = ({ chatMessage, textareaRef }: UseNewMessageProps) => {
   const [, setStreaming] = useAtom(streamingAtom);
   const { removeImageFromMessage } = useChatMessages();
 
-  const chatChannelListener = useChatChannelListener();
-
-  const { postMessage: postChatMessage } = usePort({
-    channelName: CHAT_CHANNEL,
-    listener: chatChannelListener,
-  });
+  const { postChatMessage } = useChatChannelListener();
 
   const handleReplaceMessage = useCallback(
     (message: ChatMessage) => {
@@ -61,40 +55,30 @@ const useEditMessage = ({ chatMessage, textareaRef }: UseNewMessageProps) => {
     textareaRef,
   });
 
-  const handleKeyDown = useCallback(
-    async (event: React.KeyboardEvent) => {
-      if (event.key !== "Enter") {
-        return;
-      }
-
-      event.preventDefault();
-
-      // If Shift + Enter is pressed, insert a new line
-      if (event.shiftKey) {
-        setTextInput((prev) => prev + "\n");
-        return;
-      }
-
-      const currentInputValue = textareaRef.current?.value || "";
-      if (!currentInputValue.trim()) {
-        return;
-      }
-
+  const handleSubmitMessage = useCallback(
+    (value: string) => {
       const imageContent = getImageContentFromMessage(chatMessage);
+
       if (!imageContent) {
         handleReplaceMessage({
           ...chatMessage,
-          content: currentInputValue,
+          content: value,
         });
       } else {
         handleReplaceMessage({
           ...chatMessage,
-          content: [{ type: "text", text: currentInputValue }, imageContent],
+          content: [{ type: "text", text: value }, imageContent],
         });
       }
     },
-    [handleReplaceMessage, chatMessage.id, chatMessage.content]
+    [handleReplaceMessage, chatMessage]
   );
+
+  const handleKeyDown = useKeyDownChatMessageListener({
+    handleSubmitMessage,
+    setTextInput,
+    textareaRef,
+  });
 
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLTextAreaElement>) => {

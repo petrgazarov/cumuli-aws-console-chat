@@ -4,9 +4,8 @@ import { useCallback, useState } from "react";
 import useChatChannelListener from "sidePanel/hooks/useChatChannelListener";
 import useCommandChannelListener from "sidePanel/hooks/useCommandChannelListener";
 import useConversation from "sidePanel/hooks/useConversation";
-import usePort from "sidePanel/hooks/usePort";
+import useKeyDownChatMessageListener from "sidePanel/hooks/useKeyDownChatMessageListener";
 import { loadingAtom, streamingAtom } from "sidePanel/utils/atoms";
-import { CHAT_CHANNEL } from "utils/constants";
 import {
   ChatChannelAction,
   NewUserChatMessage,
@@ -23,12 +22,7 @@ const useNewMessage = ({ textareaRef }: UseNewMessageProps) => {
   const [, setStreaming] = useAtom(streamingAtom);
   const { createConversation, currentConversation } = useConversation();
 
-  const chatChannelListener = useChatChannelListener();
-
-  const { postMessage: postChatMessage } = usePort({
-    channelName: CHAT_CHANNEL,
-    listener: chatChannelListener,
-  });
+  const { postChatMessage } = useChatChannelListener();
 
   const handleCreateNewMessage = useCallback(
     (message: UserChatMessage) => {
@@ -74,25 +68,8 @@ const useNewMessage = ({ textareaRef }: UseNewMessageProps) => {
     textareaRef,
   });
 
-  const handleKeyDown = useCallback(
-    async (event: React.KeyboardEvent) => {
-      if (event.key !== "Enter") {
-        return;
-      }
-
-      event.preventDefault();
-
-      // If Shift + Enter is pressed, insert a new line
-      if (event.shiftKey) {
-        setTextInput((prev) => prev + "\n");
-        return;
-      }
-
-      const currentInputValue = textareaRef.current?.value || "";
-      if (!currentInputValue.trim()) {
-        return;
-      }
-
+  const handleSubmitMessage = useCallback(
+    async (value: string) => {
       let conversationId: string;
       if (currentConversation) {
         conversationId = currentConversation.id;
@@ -104,12 +81,18 @@ const useNewMessage = ({ textareaRef }: UseNewMessageProps) => {
       handleCreateNewMessage(
         NewUserChatMessage({
           conversationId,
-          content: currentInputValue,
+          content: value,
         })
       );
     },
-    [handleCreateNewMessage, currentConversation?.id]
+    [handleCreateNewMessage, currentConversation]
   );
+
+  const handleKeyDown = useKeyDownChatMessageListener({
+    handleSubmitMessage,
+    setTextInput,
+    textareaRef,
+  });
 
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLTextAreaElement>) => {

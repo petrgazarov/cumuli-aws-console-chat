@@ -2,7 +2,9 @@ import { useAtom } from "jotai";
 import { useCallback } from "react";
 
 import useChatMessages from "sidePanel/hooks/useChatMessages";
+import usePort from "sidePanel/hooks/usePort";
 import { loadingAtom, streamingAtom } from "sidePanel/utils/atoms";
+import { CHAT_CHANNEL } from "utils/constants";
 import { ChatChannelAction, ChatChannelMessage } from "utils/types";
 
 const useChatChannelListener = () => {
@@ -31,7 +33,12 @@ const useChatChannelListener = () => {
     []
   );
 
-  return chatChannelListener;
+  const { postMessage: postChatMessage } = usePort({
+    channelName: CHAT_CHANNEL,
+    listener: chatChannelListener,
+  });
+
+  return { postChatMessage };
 };
 
 export default useChatChannelListener;

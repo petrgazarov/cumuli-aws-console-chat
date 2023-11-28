@@ -1,5 +1,5 @@
 import { useAtom } from "jotai";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 
 import { getChatMessages } from "indexedDb/chatMessage";
 import Button from "sidePanel/components/Button";
@@ -14,9 +14,14 @@ import { ConversationItem, HistoryTabContent } from "./styled";
 
 const HistoryTab = () => {
   const [currentTab, setCurrentTab] = useAtom(currentTabAtom);
-  const { conversations, deleteAllConversations } = useConversations();
+  const { conversations, deleteAllConversations, getConversations } =
+    useConversations();
   const { currentConversation, setCurrentConversation } = useConversation();
   const { setCurrentChatMessages } = useChatMessages();
+
+  useEffect(() => {
+    getConversations();
+  }, []);
 
   const onConversationClick = useCallback(
     (conversation: Conversation) => {
