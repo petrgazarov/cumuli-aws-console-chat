@@ -1,66 +1,30 @@
-import { useAtom } from "jotai";
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 
-import { getChatMessages } from "indexedDb/chatMessage";
-import Button from "sidePanel/components/Button";
-import useChatMessages from "sidePanel/hooks/useChatMessages";
-import useConversation from "sidePanel/hooks/useConversation";
 import useConversations from "sidePanel/hooks/useConversations";
-import { currentTabAtom } from "sidePanel/utils/atoms";
-import { TabTitlesEnum } from "sidePanel/utils/types";
-import { Conversation, Order } from "utils/types";
 
-import { ConversationItem, HistoryTabContent } from "./styled";
+import ConversationGroup from "./ConversationGroup";
+import { EmptyContent, HistoryTabContent } from "./styled";
 
 const HistoryTab = () => {
-  const [currentTab, setCurrentTab] = useAtom(currentTabAtom);
-  const { conversations, deleteAllConversations, getConversations } =
-    useConversations();
-  const { currentConversation, setCurrentConversation } = useConversation();
-  const { setCurrentChatMessages } = useChatMessages();
+  const { getConversations, groupedConversations } = useConversations();
 
   useEffect(() => {
     getConversations();
   }, []);
 
-  const onConversationClick = useCallback(
-    (conversation: Conversation) => {
-      if (currentConversation?.id === conversation.id) {
-        setCurrentTab(TabTitlesEnum.chat);
-        return;
-      }
-
-      getChatMessages({
-        conversationId: conversation.id,
-        order: Order.asc,
-      }).then((chatMessages) => {
-        setCurrentChatMessages(chatMessages);
-        setCurrentTab(TabTitlesEnum.chat);
-        setCurrentConversation(conversation);
-      });
-    },
-    [currentConversation?.id]
-  );
-
-  const renderConversation = useCallback(
-    (conversation: Conversation) => {
-      return (
-        <ConversationItem
-          key={conversation.id}
-          onClick={() => onConversationClick(conversation)}
-        >
-          <div>{conversation.createdAt}</div>
-          <div>{conversation.preview}</div>
-        </ConversationItem>
-      );
-    },
-    [onConversationClick]
-  );
-
   return (
-    <HistoryTabContent $show={currentTab == TabTitlesEnum.history}>
-      <Button onClick={deleteAllConversations}>Clear all</Button>
-      {conversations.map(renderConversation)}
+    <HistoryTabContent>
+      {Object.keys(groupedConversations).length ? (
+        Object.keys(groupedConversations).map((label) => (
+          <ConversationGroup
+            label={label}
+            conversations={groupedConversations[label]}
+            key={label}
+          />
+        ))
+      ) : (
+        <EmptyContent>No conversations</EmptyContent>
+      )}
     </HistoryTabContent>
   );
 };

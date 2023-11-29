@@ -31,6 +31,7 @@ const Textarea = ({
       onFocus={() => setCurrentTextareaRef(textareaRef)}
       onChange={onChange}
       onKeyDown={onKeyDown}
+      minRows={1}
     />
   );
 };

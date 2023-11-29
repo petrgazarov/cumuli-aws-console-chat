@@ -1,30 +1,44 @@
-import { useState } from "react";
+import { useMedia } from "react-use";
 import { ThemeProvider, createGlobalStyle } from "styled-components";
 
 import SidePanel from "sidePanel/components/SidePanel";
-import { COLORS, FONT_FAMILY, FONT_SIZE } from "sidePanel/utils/globalStyles";
-import { ColorThemeEnum, Theme } from "sidePanel/utils/types";
+import {
+  COLOR_THEMES,
+  FONT_FAMILY,
+  FONT_SIZE,
+  LINE_HEIGHT,
+} from "sidePanel/utils/globalStyles";
+import { ColorThemeName } from "sidePanel/utils/types";
 
-const GlobalStyle = createGlobalStyle<{ theme: Theme }>`
+const GlobalStyle = createGlobalStyle`
   html, body, #root {
     height: 100%;
   }
 
   body {
     margin: 0;
-    background-color: ${COLORS.BLACK_2};
+    background-color: ${({ theme }) => theme.BACKGROUND};
     font-family: ${FONT_FAMILY};
     font-size: ${FONT_SIZE};
-    line-height: 22px;
+    line-height: ${LINE_HEIGHT};
+    color: ${({ theme }) => theme.PRIMARY_TEXT};
   }
 
   #root {
     overflow-y: hidden;
   }
+
+  button {
+    font-family: ${FONT_FAMILY};
+    font-size: inherit;
+  }
 `;
 
 const App = () => {
-  const [theme] = useState<Theme>({ selected: ColorThemeEnum.dark });
+  const isDarkMode = useMedia("(prefers-color-scheme: dark)");
+  const theme = isDarkMode
+    ? COLOR_THEMES[ColorThemeName.dark]
+    : COLOR_THEMES[ColorThemeName.light];
 
   return (
     <ThemeProvider theme={theme}>

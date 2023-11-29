@@ -1,31 +1,46 @@
 import styled from "styled-components";
 
-import { COLORS } from "sidePanel/utils/globalStyles";
-import { Theme } from "sidePanel/utils/types";
+import { LINE_HEIGHT } from "sidePanel/utils/globalStyles";
+import { ColorTheme } from "sidePanel/utils/types";
 
-export const StyledButton = styled.button<{
+const ButtonBase = styled.button<{
   disabled: boolean;
-  theme: Theme;
+  theme: ColorTheme;
 }>`
   padding: 4px 20px;
   font-weight: 700;
-  border: 1px solid ${COLORS.BLUE_3};
+  border-width: 1px;
+  border-style: solid;
   border-radius: 2px;
-  line-height: 22px;
-  background-color: transparent;
-  color: ${COLORS.BLUE_1};
+  line-height: ${LINE_HEIGHT};
   cursor: pointer;
 
+  &:disabled {
+    cursor: default;
+  }
+`;
+
+export const PrimaryButton = styled(ButtonBase)`
+  border-color: ${({ theme }) => theme.HIGHLIGHT};
+  background-color: transparent;
+  color: ${({ theme }) => theme.PRIMARY_TEXT};
+
   &:hover {
-    border: 1px solid ${COLORS.BLUE_2};
-    background-color: ${COLORS.BLACK_4};
-    color: ${COLORS.WHITE_2};
+    color: ${({ theme }) => theme.HIGHLIGHT};
+  }
+`;
+
+export const SecondaryButton = styled(ButtonBase)`
+  border-color: ${({ theme }) => theme.ACTIVE_TEXT};
+  background-color: transparent;
+  color: ${({ theme }) => theme.PRIMARY_TEXT};
+
+  &:hover {
+    color: ${({ theme }) => theme.ACTIVE_TEXT};
   }
 
   &:disabled {
-    border: 1px solid ${COLORS.ORANGE_3};
-    background-color: transparent;
-    color: ${COLORS.ORANGE_2};
-    cursor: default;
+    border-color: ${({ theme }) => theme.HELP_TEXT};
+    color: ${({ theme }) => theme.HELP_TEXT};
   }
 `;

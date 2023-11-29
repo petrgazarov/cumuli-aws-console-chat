@@ -6,7 +6,7 @@ import useConversation from "sidePanel/hooks/useConversation";
 import { openaiApiKeyAtom } from "sidePanel/utils/atoms";
 
 const NewChatButton = ({ onClick }: { onClick: () => void }) => {
-  const { resetConversation } = useConversation();
+  const { resetCurrentConversation } = useConversation();
   const { currentChatMessages } = useChatMessages();
   const [openaiApiKey] = useAtom(openaiApiKeyAtom);
 
@@ -19,10 +19,10 @@ const NewChatButton = ({ onClick }: { onClick: () => void }) => {
       disabled={!openaiApiKey}
       onClick={() => {
         onClick();
-        resetConversation();
+        resetCurrentConversation();
       }}
     >
-      New Chat
+      New chat
     </Button>
   );
 };

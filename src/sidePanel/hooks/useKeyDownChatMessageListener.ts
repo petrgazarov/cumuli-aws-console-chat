@@ -19,9 +19,21 @@ const useKeyDownChatMessageListener = ({
 
       event.preventDefault();
 
-      // If Shift + Enter is pressed, insert a new line
+      // If Shift + Enter is pressed, insert a new line at cursor position
       if (event.shiftKey) {
-        setTextInput((prev) => prev + "\n");
+        const cursorPosition = textareaRef.current?.selectionStart || 0;
+        setTextInput((prev) => {
+          const newValue =
+            prev.slice(0, cursorPosition) + "\n" + prev.slice(cursorPosition);
+          // After state update, move the cursor after the inserted newline
+          setTimeout(() => {
+            textareaRef.current?.setSelectionRange(
+              cursorPosition + 1,
+              cursorPosition + 1
+            );
+          }, 0);
+          return newValue;
+        });
         return;
       }
 

@@ -68,6 +68,19 @@ export const detectOS = () => {
   return os;
 };
 
+export const getModifierKey = (): string => {
+  const os = detectOS();
+
+  switch (os) {
+    case OS.Windows:
+      return "Ctrl";
+    case OS.MacOS:
+      return "\u2318";
+    default:
+      return "Ctrl";
+  }
+};
+
 export const getImageContentFromMessage = (
   message: ChatMessage
 ): ChatMessageImageContent | null => {

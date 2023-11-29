@@ -1,14 +1,10 @@
 import styled from "styled-components";
 
-import { COLORS } from "sidePanel/utils/globalStyles";
-
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
   min-height: calc(100% - 20px);
-  background-color: ${COLORS.BLACK_2};
-  color: ${COLORS.BLUE_1};
 `;
 
 export const Content = styled.div`
@@ -24,13 +20,16 @@ export const TabTitlesContainer = styled.div`
 `;
 
 export const TabTitle = styled.div<{ $active: boolean }>`
-  padding: 10px 0;
-  cursor: ${({ $active }) => ($active ? "default" : "pointer")};
-  color: ${({ $active }) => ($active ? COLORS.BLUE_4 : COLORS.BLUE_1)};
+  margin: 10px 0;
+  cursor: pointer;
+  color: ${({ theme }) => theme.PRIMARY_TEXT};
   font-weight: bold;
+  border-bottom: 1px solid
+    ${({ $active, theme }) =>
+      $active ? theme.ACTIVE_TEXT : theme.PRIMARY_TEXT};
 
   &:hover {
-    color: ${COLORS.BLUE_4};
-    text-decoration: ${({ $active }) => ($active ? "none" : "underline")};
+    border-bottom-color: ${({ theme }) => theme.ACTIVE_TEXT};
+    color: ${({ theme }) => theme.ACTIVE_TEXT};
   }
 `;

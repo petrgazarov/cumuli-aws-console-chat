@@ -1,5 +1,5 @@
 import { useAtom } from "jotai";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 
 import useConversations from "sidePanel/hooks/useConversations";
 import { currentTabAtom, openaiApiKeyAtom } from "sidePanel/utils/atoms";
@@ -15,6 +15,7 @@ import HistoryTab from "./tabs/HistoryTab";
 const SidePanel = () => {
   const [, setOpenaiApiKey] = useAtom(openaiApiKeyAtom);
   const [currentTab, setCurrentTab] = useAtom(currentTabAtom);
+  const { getConversations } = useConversations();
 
   useEffect(() => {
     getOpenaiApiKey().then((apiKey: string) => {
@@ -22,25 +23,41 @@ const SidePanel = () => {
     });
   }, []);
 
+  useEffect(() => {
+    getConversations();
+  }, []);
+
+  const onTabTitleClick = useCallback(
+    (tabTitle: TabTitlesEnum) =>
+      (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        if (currentTab === tabTitle) {
+          // TODO: Scroll to top
+        } else {
+          setCurrentTab(tabTitle);
+        }
+      },
+    [currentTab]
+  );
+
   return (
     <Container>
       <TabTitlesContainer>
         <TabTitle
           $active={currentTab === TabTitlesEnum.chat}
-          onClick={() => setCurrentTab(TabTitlesEnum.chat)}
+          onClick={onTabTitleClick(TabTitlesEnum.chat)}
         >
           Chat
         </TabTitle>
         <TabTitle
           $active={currentTab === TabTitlesEnum.history}
-          onClick={() => setCurrentTab(TabTitlesEnum.history)}
+          onClick={onTabTitleClick(TabTitlesEnum.history)}
         >
           History
         </TabTitle>
 
         <TabTitle
           $active={currentTab === TabTitlesEnum.config}
-          onClick={() => setCurrentTab(TabTitlesEnum.config)}
+          onClick={onTabTitleClick(TabTitlesEnum.config)}
         >
           Config
         </TabTitle>

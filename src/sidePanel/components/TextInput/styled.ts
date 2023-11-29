@@ -1,23 +1,20 @@
 import styled from "styled-components";
 
-import { BORDER_RADIUS } from "sidePanel/utils/globalStyles";
-import { COLORS } from "sidePanel/utils/globalStyles";
-import { Theme } from "sidePanel/utils/types";
+import { BORDER_RADIUS, LINE_HEIGHT } from "sidePanel/utils/globalStyles";
 
 export const Container = styled.div`
   flex-grow: 1;
 `;
 
-export const StyledTextInput = styled.input<{ theme: Theme }>`
+export const StyledTextInput = styled.input`
   height: 32px;
-  background-color: ${COLORS.BLACK_5};
+  background-color: ${({ theme }) => theme.INPUT_BACKGROUND};
   border-radius: ${BORDER_RADIUS};
   box-sizing: border-box;
   margin-top: 1px;
-  outline: 2px dotted transparent;
-  border: 1px solid ${COLORS.BLUE_3};
-  color: ${COLORS.BLUE_1};
-  line-height: 22px;
+  border: 1px solid transparent;
+  color: ${({ theme }) => theme.PRIMARY_TEXT};
+  line-height: ${LINE_HEIGHT};
   max-width: 100%;
   resize: none;
   font-family: Monaco, monospace;
@@ -25,19 +22,18 @@ export const StyledTextInput = styled.input<{ theme: Theme }>`
   padding: 4px 8px;
 
   &::placeholder {
-    color: ${COLORS.GRAY_1};
+    color: ${({ theme }) => theme.GRAY_1};
     font-style: italic;
   }
 
   &:focus {
-    border: 1px solid ${COLORS.BLUE_5};
-    box-shadow: 0 0 0 1px ${COLORS.BLUE_5};
+    outline: 1px solid ${({ theme }) => theme.FOCUS};
   }
 `;
 
 export const Label = styled.div`
-  color: ${COLORS.BLUE_1};
   margin-bottom: 4px;
+  color: ${({ theme }) => theme.HELP_TEXT};
 `;
 
 export const TextInputWrapper = styled.div`
@@ -48,9 +44,9 @@ export const TextInputWrapper = styled.div`
 
 export const SavedStatus = styled.div`
   position: absolute;
-  right: 10px;
+  right: 15px;
   top: 18%;
-  color: ${COLORS.GREEN};
+  color: ${({ theme }) => theme.SUCCESS_TEXT};
   font-weight: 600;
   font-size: 13px;
   user-select: none;

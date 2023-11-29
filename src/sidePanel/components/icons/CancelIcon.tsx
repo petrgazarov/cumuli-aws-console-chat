@@ -1,11 +1,8 @@
 import styled from "styled-components";
 
-import { COLORS } from "sidePanel/utils/globalStyles";
-import { Theme } from "sidePanel/utils/types";
-
-const StyledSvg = styled.svg<{ theme: Theme }>`
+const StyledSvg = styled.svg`
   stroke-width: 2px;
-  stroke: ${COLORS.BLUE_1};
+  stroke: ${({ theme }) => theme.PRIMARY_TEXT};
 `;
 
 type CancelIconProps = {

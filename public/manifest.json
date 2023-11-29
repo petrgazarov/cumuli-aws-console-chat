@@ -19,8 +19,11 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["icons/*.png"],
-      "matches": ["<all_urls>"]
+      "resources": ["fonts/*"],
+      "matches": [
+        "*://console.aws.amazon.com/*",
+        "*://*.console.aws.amazon.com/*"
+      ]
     }
   ],
   "content_security_policy": {

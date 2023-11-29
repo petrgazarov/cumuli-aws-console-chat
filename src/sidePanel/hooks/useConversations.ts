@@ -1,9 +1,10 @@
 import { format, isThisMonth, isToday, isYesterday, parseISO } from "date-fns";
 import { useAtom } from "jotai";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 
 import {
   deleteAllConversations as deleteAllConversationsDb,
+  deleteConversation as deleteConversationDb,
   getConversations as getConversationsDb,
 } from "indexedDb/conversation";
 import {
@@ -11,12 +12,14 @@ import {
   currentChatMessagesAtom,
   currentConversationAtom,
 } from "sidePanel/utils/atoms";
-import { Order } from "utils/types";
+import { Conversation, Order } from "utils/types";
 
 const useConversations = () => {
   const [conversations, setConversations] = useAtom(conversationsAtom);
   const [, setCurrentChatMessages] = useAtom(currentChatMessagesAtom);
-  const [, setCurrentConversation] = useAtom(currentConversationAtom);
+  const [currentConversation, setCurrentConversation] = useAtom(
+    currentConversationAtom
+  );
 
   const getConversations = useCallback(async (page = 1) => {
     getConversationsDb({ page, order: Order.desc }).then((conversations) => {
@@ -34,8 +37,21 @@ const useConversations = () => {
     });
   }, []);
 
-  const groupedConversations = useCallback(() => {
-    const groups: { [key: string]: any[] } = {};
+  const deleteConversation = useCallback(
+    async (conversation: Conversation) => {
+      await deleteConversationDb(conversation);
+      getConversations();
+
+      if (currentConversation?.id === conversation.id) {
+        setCurrentConversation(null);
+        setCurrentChatMessages([]);
+      }
+    },
+    [currentConversation]
+  );
+
+  const groupedConversations = useMemo(() => {
+    const groups: { [key: string]: Conversation[] } = {};
 
     conversations.forEach((conversation) => {
       const creationDate = parseISO(conversation.createdAt);
@@ -58,6 +74,12 @@ const useConversations = () => {
       groups[label].push(conversation);
     });
 
+    Object.keys(groups).forEach((key) => {
+      if (groups[key].length === 0) {
+        delete groups[key];
+      }
+    });
+
     return groups;
   }, [conversations]);
 
@@ -66,6 +88,7 @@ const useConversations = () => {
     groupedConversations,
     getConversations,
     deleteAllConversations,
+    deleteConversation,
   };
 };
 

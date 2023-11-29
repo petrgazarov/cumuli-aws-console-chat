@@ -1,14 +1,14 @@
 import styled from "styled-components";
 
-export const HistoryTabContent = styled.div<{ $show: boolean }>`
-  display: ${({ $show }) => ($show ? "flex" : "none")};
+export const HistoryTabContent = styled.div`
+  display: flex;
   flex-direction: column;
   padding: 10px;
 `;
 
-export const ConversationItem = styled.div`
+export const EmptyContent = styled.div`
   display: flex;
-  justify-content: space-between;
-  height: 50px;
-  cursor: pointer;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
 `;

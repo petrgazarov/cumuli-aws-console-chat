@@ -36,7 +36,7 @@ const TextInput = ({
           placeholder={placeholder}
           onKeyDown={onKeyDown}
         />
-        {showSavedStatus && <SavedStatus>Saved</SavedStatus>}
+        {showSavedStatus && <SavedStatus>saved</SavedStatus>}
       </TextInputWrapper>
     </Container>
   );

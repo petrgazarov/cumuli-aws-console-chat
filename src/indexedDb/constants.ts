@@ -8,7 +8,7 @@ export const CONVERSATION_STORE_INDEX = "createdAtIndex";
 
 export const CONVERSATION_PAGE_SIZE = 25;
 
-export const CONVERSATION_PREVIEW_CHARACTER_LIMIT = 40;
+export const CONVERSATION_PREVIEW_CHARACTER_LIMIT = 300;
 
 export const CHAT_MESSAGE_STORE = "chatMessages";
 

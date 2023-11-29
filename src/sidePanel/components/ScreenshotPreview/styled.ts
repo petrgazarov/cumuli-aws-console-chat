@@ -1,33 +1,30 @@
 import styled from "styled-components";
 
-import { COLORS } from "sidePanel/utils/globalStyles";
-import { Theme } from "sidePanel/utils/types";
-
-export const CancelIconButton = styled.button<{ theme: Theme }>`
+export const CancelIconButton = styled.button`
   position: absolute;
   top: 2px;
   right: 2px;
   display: none;
   border: none;
-  background-color: ${COLORS.ORANGE_4};
+  background-color: ${({ theme }) => theme.HIGHLIGHT};
   border-radius: 2px;
   padding: 1px;
   cursor: pointer;
 
   &:hover {
     svg {
-      stroke: ${COLORS.WHITE_2};
+      stroke: ${({ theme }) => theme.PRIMARY_TEXT};
     }
   }
 `;
 
-export const ScreenshotContainer = styled.div<{ theme: Theme }>`
+export const ScreenshotContainer = styled.div`
   display: flex;
   position: relative;
   align-self: flex-start;
   margin-top: 10px;
   border-radius: 2px;
-  border: 1px solid ${COLORS.GRAY_2};
+  border: 1px solid ${({ theme }) => theme.GRAY_2};
 
   &:hover {
     ${CancelIconButton} {

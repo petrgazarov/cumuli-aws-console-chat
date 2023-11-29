@@ -2,11 +2,15 @@ import { useAtom } from "jotai";
 import { useCallback, useState } from "react";
 
 import Button from "sidePanel/components/Button";
+import { ButtonVariants } from "sidePanel/components/Button/types";
 import TextInput from "sidePanel/components/TextInput";
+import useConversations from "sidePanel/hooks/useConversations";
 import { openaiApiKeyAtom } from "sidePanel/utils/atoms";
 import { saveOpenaiApiKey } from "utils/helpers";
 
 import {
+  ClearDataButtonLabel,
+  ClearDataRow,
   ConfigTabContent,
   SubmitApiKeyButtonContainer,
   TextInputRow,
@@ -17,6 +21,7 @@ const ConfigTab = () => {
   const [inputValue, setInputValue] = useState(openaiApiKey);
   const [showSavedStatus, setShowSavedStatus] = useState(true);
   const [inputDirty, setInputDirty] = useState(false);
+  const { deleteAllConversations } = useConversations();
 
   const saveApiKey = useCallback(() => {
     saveOpenaiApiKey(inputValue).then((maskedKey) => {
@@ -74,6 +79,17 @@ const ConfigTab = () => {
           </Button>
         </SubmitApiKeyButtonContainer>
       </TextInputRow>
+      <ClearDataRow>
+        <ClearDataButtonLabel>
+          Your conversations are stored locally in IndexedDB
+        </ClearDataButtonLabel>
+        <Button
+          onClick={deleteAllConversations}
+          variant={ButtonVariants.primary}
+        >
+          Clear all data
+        </Button>
+      </ClearDataRow>
     </ConfigTabContent>
   );
 };

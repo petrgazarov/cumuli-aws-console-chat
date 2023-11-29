@@ -1,16 +1,27 @@
-import { StyledButton } from "./styled";
+import { PrimaryButton, SecondaryButton } from "./styled";
+import { ButtonProps, ButtonVariants } from "./types";
 
-type ButtonProps = {
-  children: React.ReactNode;
-  disabled?: boolean;
-  onClick: () => void;
-};
+const Button = ({
+  children,
+  disabled = false,
+  onClick,
+  variant,
+}: ButtonProps) => {
+  let Component = SecondaryButton;
 
-const Button = ({ children, disabled = false, onClick }: ButtonProps) => {
+  switch (variant) {
+    case ButtonVariants.primary:
+      Component = PrimaryButton;
+      break;
+    case ButtonVariants.secondary:
+      Component = SecondaryButton;
+      break;
+  }
+
   return (
-    <StyledButton onClick={onClick} disabled={disabled}>
+    <Component disabled={disabled} onClick={onClick}>
       {children}
-    </StyledButton>
+    </Component>
   );
 };
 

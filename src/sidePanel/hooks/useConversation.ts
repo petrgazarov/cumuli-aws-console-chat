@@ -21,7 +21,7 @@ const useConversation = () => {
     return newConversation;
   }, []);
 
-  const resetConversation = useCallback(() => {
+  const resetCurrentConversation = useCallback(() => {
     setCurrentConversation(null);
     setCurrentChatMessages([]);
   }, []);
@@ -30,7 +30,7 @@ const useConversation = () => {
     currentConversation,
     setCurrentConversation,
     createConversation,
-    resetConversation,
+    resetCurrentConversation,
   };
 };
 
