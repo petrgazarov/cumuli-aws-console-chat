@@ -4,7 +4,7 @@ import { RefObject, useEffect, useMemo } from "react";
 import useNewMessage from "sidePanel/components/NewMessage/useNewMessage";
 import Textarea from "sidePanel/components/Textarea";
 import { loadingAtom, streamingAtom } from "sidePanel/utils/atoms";
-import { getModifierKey } from "utils/helpers";
+import { getKeyboardShortcutModifierKey } from "utils/helpers";
 
 import { HelpText, KeyboardSymbol, LoadingState } from "./styled";
 
@@ -20,7 +20,7 @@ const NewMessage = ({
     textareaRef,
   });
 
-  const modifierKey = useMemo(() => getModifierKey(), []);
+  const modifierKey = useMemo(() => getKeyboardShortcutModifierKey(), []);
 
   useEffect(() => {
     if (!streaming && !loading) {

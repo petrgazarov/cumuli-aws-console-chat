@@ -1,6 +1,11 @@
 import styled from "styled-components";
 
-import { BORDER_RADIUS, LINE_HEIGHT } from "sidePanel/utils/globalStyles";
+import {
+  BORDER_RADIUS,
+  FONT_FAMILY,
+  FONT_SIZE,
+  LINE_HEIGHT,
+} from "sidePanel/utils/globalStyles";
 
 export const Container = styled.div`
   flex-grow: 1;
@@ -17,9 +22,9 @@ export const StyledTextInput = styled.input`
   line-height: ${LINE_HEIGHT};
   max-width: 100%;
   resize: none;
-  font-family: Monaco, monospace;
-  font-size: 13px;
   padding: 4px 8px;
+  font-family: ${FONT_FAMILY};
+  font-size: ${FONT_SIZE};
 
   &::placeholder {
     color: ${({ theme }) => theme.GRAY_1};

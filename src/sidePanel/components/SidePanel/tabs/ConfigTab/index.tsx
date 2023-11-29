@@ -1,12 +1,12 @@
 import { useAtom } from "jotai";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 
 import Button from "sidePanel/components/Button";
 import { ButtonVariants } from "sidePanel/components/Button/types";
 import TextInput from "sidePanel/components/TextInput";
 import useConversations from "sidePanel/hooks/useConversations";
 import { openaiApiKeyAtom } from "sidePanel/utils/atoms";
-import { saveOpenaiApiKey } from "utils/helpers";
+import { getAllModifierKeys, saveOpenaiApiKey } from "utils/helpers";
 
 import {
   ClearDataButtonLabel,
@@ -19,48 +19,43 @@ import {
 const ConfigTab = () => {
   const [openaiApiKey, setOpenaiApiKey] = useAtom(openaiApiKeyAtom);
   const [inputValue, setInputValue] = useState(openaiApiKey);
-  const [showSavedStatus, setShowSavedStatus] = useState(true);
-  const [inputDirty, setInputDirty] = useState(false);
   const { deleteAllConversations } = useConversations();
+  const textInputRef = useRef<HTMLInputElement>(null);
 
   const saveApiKey = useCallback(() => {
-    saveOpenaiApiKey(inputValue).then((maskedKey) => {
+    const value = textInputRef.current?.value || "";
+
+    saveOpenaiApiKey(value).then((maskedKey) => {
       setInputValue(maskedKey);
       setOpenaiApiKey(maskedKey);
-      setShowSavedStatus(true);
     });
-  }, [inputValue]);
+  }, []);
+
+  const inputMasked = inputValue.includes("...") && inputValue === openaiApiKey;
+
+  const isApiKeySubmitDisabled = useCallback(
+    () => inputMasked || inputValue === openaiApiKey,
+    [openaiApiKey, inputMasked, inputValue]
+  );
 
   const onKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (inputDirty) {
-        return;
+      if (e.key === "Enter" && !isApiKeySubmitDisabled()) {
+        e.preventDefault();
+        saveApiKey();
       }
 
-      e.preventDefault();
-
-      if (e.key === "Backspace") {
+      if (inputMasked && !getAllModifierKeys().includes(e.key)) {
         setInputValue("");
-        setShowSavedStatus(false);
-        setInputDirty(true);
       }
     },
-    [inputDirty]
+    [isApiKeySubmitDisabled, inputMasked]
   );
 
   const onChange = useCallback(
-    (value: string) => {
-      if (!inputDirty) {
-        return;
-      }
-
-      setShowSavedStatus(false);
-      setInputValue(value);
-    },
-    [inputDirty]
+    (value: string) => setInputValue(value),
+    [inputMasked]
   );
-
-  const buttonDisabled = !inputValue || inputValue === openaiApiKey;
 
   return (
     <ConfigTabContent>
@@ -71,10 +66,11 @@ const ConfigTab = () => {
           onChange={onChange}
           onKeyDown={onKeyDown}
           placeholder="Enter OpenAI API Key"
-          showSavedStatus={showSavedStatus}
+          showSavedStatus={inputValue === openaiApiKey}
+          textInputRef={textInputRef}
         />
         <SubmitApiKeyButtonContainer>
-          <Button onClick={saveApiKey} disabled={buttonDisabled}>
+          <Button onClick={saveApiKey} disabled={isApiKeySubmitDisabled()}>
             Submit
           </Button>
         </SubmitApiKeyButtonContainer>

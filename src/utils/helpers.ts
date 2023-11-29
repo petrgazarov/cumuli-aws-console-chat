@@ -68,7 +68,7 @@ export const detectOS = () => {
   return os;
 };
 
-export const getModifierKey = (): string => {
+export const getKeyboardShortcutModifierKey = (): string => {
   const os = detectOS();
 
   switch (os) {
@@ -79,6 +79,19 @@ export const getModifierKey = (): string => {
     default:
       return "Ctrl";
   }
+};
+
+export const getAllModifierKeys = (): string[] => {
+  return [
+    "Control",
+    "Shift",
+    "Alt",
+    "Meta",
+    "AltGraph",
+    "CapsLock",
+    "NumLock",
+    "ScrollLock",
+  ];
 };
 
 export const getImageContentFromMessage = (

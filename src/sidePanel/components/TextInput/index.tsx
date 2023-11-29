@@ -12,6 +12,7 @@ type TextInputProps = {
   onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   placeholder?: string;
   showSavedStatus?: boolean;
+  textInputRef?: React.RefObject<HTMLInputElement>;
   value: string;
 };
 
@@ -21,6 +22,7 @@ const TextInput = ({
   onKeyDown,
   placeholder,
   showSavedStatus,
+  textInputRef,
   value,
 }: TextInputProps) => {
   return (
@@ -35,6 +37,7 @@ const TextInput = ({
           }
           placeholder={placeholder}
           onKeyDown={onKeyDown}
+          ref={textInputRef}
         />
         {showSavedStatus && <SavedStatus>saved</SavedStatus>}
       </TextInputWrapper>
