@@ -4,7 +4,6 @@ import { useCallback, useRef, useState } from "react";
 import Button from "sidePanel/components/Button";
 import { ButtonVariants } from "sidePanel/components/Button/types";
 import TextInput from "sidePanel/components/TextInput";
-import useConversations from "sidePanel/hooks/useConversations";
 import { openaiApiKeyAtom } from "sidePanel/utils/atoms";
 import { getAllModifierKeys, saveOpenaiApiKey } from "utils/helpers";
 
@@ -19,17 +18,16 @@ import {
 const ConfigTab = () => {
   const [openaiApiKey, setOpenaiApiKey] = useAtom(openaiApiKeyAtom);
   const [inputValue, setInputValue] = useState(openaiApiKey);
-  const { deleteAllConversations } = useConversations();
   const textInputRef = useRef<HTMLInputElement>(null);
 
   const saveApiKey = useCallback(() => {
     const value = textInputRef.current?.value || "";
 
-    saveOpenaiApiKey(value).then((maskedKey) => {
+    saveOpenaiApiKey(value.trim()).then((maskedKey) => {
       setInputValue(maskedKey);
       setOpenaiApiKey(maskedKey);
     });
-  }, []);
+  }, [setInputValue, setOpenaiApiKey]);
 
   const inputMasked = inputValue.includes("...") && inputValue === openaiApiKey;
 
@@ -49,13 +47,10 @@ const ConfigTab = () => {
         setInputValue("");
       }
     },
-    [isApiKeySubmitDisabled, inputMasked]
+    [isApiKeySubmitDisabled, inputMasked, saveApiKey]
   );
 
-  const onChange = useCallback(
-    (value: string) => setInputValue(value),
-    [inputMasked]
-  );
+  const onChange = useCallback((value: string) => setInputValue(value), []);
 
   return (
     <ConfigTabContent>
@@ -77,13 +72,10 @@ const ConfigTab = () => {
       </TextInputRow>
       <ClearDataRow>
         <ClearDataButtonLabel>
-          Your conversations are stored locally in IndexedDB
+          Conversations are stored locally in IndexedDB
         </ClearDataButtonLabel>
-        <Button
-          onClick={deleteAllConversations}
-          variant={ButtonVariants.primary}
-        >
-          Clear all data
+        <Button onClick={() => {}} variant={ButtonVariants.primary}>
+          Clear all conversations
         </Button>
       </ClearDataRow>
     </ConfigTabContent>

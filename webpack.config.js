@@ -2,6 +2,7 @@ const path = require("path");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
 const StylelintPlugin = require("stylelint-webpack-plugin");
+const ESLintPlugin = require("eslint-webpack-plugin");
 
 const mode = process.env.NODE_ENV || "production";
 
@@ -34,5 +35,9 @@ module.exports = {
       patterns: [{ from: "public", to: "" }],
     }),
     new StylelintPlugin({ files: "src/**/*.{ts,tsx}" }),
+    new ESLintPlugin({
+      extensions: ["ts", "tsx"],
+      failOnError: true,
+    }),
   ],
 };

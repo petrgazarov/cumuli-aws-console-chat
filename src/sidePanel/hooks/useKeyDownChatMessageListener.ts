@@ -45,7 +45,7 @@ const useKeyDownChatMessageListener = ({
 
       handleSubmitMessage(currentInputValue);
     },
-    [handleSubmitMessage]
+    [handleSubmitMessage, textareaRef, setTextInput]
   );
 
   return handleKeyDown;

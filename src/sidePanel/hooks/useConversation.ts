@@ -19,18 +19,18 @@ const useConversation = () => {
 
     setCurrentChatMessages([]);
     return newConversation;
-  }, []);
+  }, [setCurrentConversation, setCurrentChatMessages]);
 
   const resetCurrentConversation = useCallback(() => {
     setCurrentConversation(null);
     setCurrentChatMessages([]);
-  }, []);
+  }, [setCurrentConversation, setCurrentChatMessages]);
 
   return {
-    currentConversation,
-    setCurrentConversation,
     createConversation,
+    currentConversation,
     resetCurrentConversation,
+    setCurrentConversation,
   };
 };
 

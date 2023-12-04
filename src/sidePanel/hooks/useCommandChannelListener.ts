@@ -1,7 +1,10 @@
 import { useAtom } from "jotai";
 import { useCallback, useEffect } from "react";
 
-import { currentTextareaRefAtom, streamingAtom } from "sidePanel/utils/atoms";
+import {
+  currentTextareaRefAtom,
+  llmStreamingAtom,
+} from "sidePanel/utils/atoms";
 import {
   addOnMessageListener,
   removeOnMessageListener,
@@ -17,7 +20,7 @@ const useCommandChannelListener = ({
   handleSubmitWithScreenshotCommand,
   textareaRef,
 }: UseCommandChannelListenerParams) => {
-  const [streaming] = useAtom(streamingAtom);
+  const [llmStreaming] = useAtom(llmStreamingAtom);
   const [currentTextareaRef] = useAtom(currentTextareaRefAtom);
 
   const commandChannelListener = useCallback(
@@ -27,7 +30,7 @@ const useCommandChannelListener = ({
       ) {
         return;
       }
-      if (streaming) {
+      if (llmStreaming) {
         return;
       }
       if (currentTextareaRef !== textareaRef) {
@@ -40,7 +43,12 @@ const useCommandChannelListener = ({
 
       handleSubmitWithScreenshotCommand(currentInputValue);
     },
-    [streaming, currentTextareaRef, handleSubmitWithScreenshotCommand]
+    [
+      llmStreaming,
+      currentTextareaRef,
+      textareaRef,
+      handleSubmitWithScreenshotCommand,
+    ]
   );
 
   useEffect(() => {

@@ -1,16 +1,10 @@
-import { useEffect } from "react";
-
 import useConversations from "sidePanel/hooks/useConversations";
 
 import ConversationGroup from "./ConversationGroup";
 import { EmptyContent, HistoryTabContent } from "./styled";
 
 const HistoryTab = () => {
-  const { getConversations, groupedConversations } = useConversations();
-
-  useEffect(() => {
-    getConversations();
-  }, []);
+  const { groupedConversations } = useConversations();
 
   return (
     <HistoryTabContent>

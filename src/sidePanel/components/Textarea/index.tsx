@@ -1,6 +1,7 @@
 import { useAtom } from "jotai";
 
 import { currentTextareaRefAtom } from "sidePanel/utils/atoms";
+import { openaiApiKeyAtom } from "sidePanel/utils/atoms";
 
 import { StyledTextarea } from "./styled";
 
@@ -11,11 +12,6 @@ type TextareaProps = {
   value: string;
 };
 
-// Textarea value:
-//   - textareaRef is used to read the value. This avoids resetting the
-//     onMessage listener on every value change.
-//   - textInput state is used to set the value.
-
 const Textarea = ({
   onChange,
   onKeyDown,
@@ -23,15 +19,18 @@ const Textarea = ({
   value,
 }: TextareaProps) => {
   const [, setCurrentTextareaRef] = useAtom(currentTextareaRefAtom);
+  const [openaiApiKey] = useAtom(openaiApiKeyAtom);
 
   return (
     <StyledTextarea
       ref={textareaRef}
       value={value}
       onFocus={() => setCurrentTextareaRef(textareaRef)}
+      onBlur={() => setCurrentTextareaRef(null)}
       onChange={onChange}
       onKeyDown={onKeyDown}
       minRows={1}
+      disabled={!openaiApiKey}
     />
   );
 };

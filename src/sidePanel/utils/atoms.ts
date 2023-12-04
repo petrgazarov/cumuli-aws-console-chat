@@ -9,9 +9,9 @@ export const conversationsAtom = atom<Conversation[]>([]);
 
 export const currentChatMessagesAtom = atom<ChatMessage[]>([]);
 
-export const streamingAtom = atom<boolean>(false);
+export const llmStreamingAtom = atom<boolean>(false);
 
-export const loadingAtom = atom<boolean>(false);
+export const llmLoadingAtom = atom<boolean>(false);
 
 export const currentTabAtom = atom<string>(TabTitlesEnum.chat);
 
@@ -19,3 +19,5 @@ export const openaiApiKeyAtom = atom<string>("");
 
 export const currentTextareaRefAtom =
   atom<React.RefObject<HTMLTextAreaElement> | null>(null);
+
+export const streamingErrorAtom = atom<string | null>(null);

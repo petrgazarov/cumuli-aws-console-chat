@@ -23,9 +23,9 @@ const usePort = ({ channelName, listener }: usePortParameters) => {
 
   // port buffer is so that an unsent message can be sent after the port is reset.
   const [portBuffer, setPortBuffer] = useState<PortBuffer>({
-    resetPortPending: true,
-    pendingMessage: null,
     listener,
+    pendingMessage: null,
+    resetPortPending: true,
   });
 
   useEffect(() => {
@@ -45,8 +45,8 @@ const usePort = ({ channelName, listener }: usePortParameters) => {
 
     setPortBuffer((prevBuffer) => ({
       ...prevBuffer,
-      resetPortPending: false,
       pendingMessage: null,
+      resetPortPending: false,
     }));
     setPort(newPort);
 
@@ -69,7 +69,7 @@ const usePort = ({ channelName, listener }: usePortParameters) => {
       }
       removePort(port);
     };
-  }, [portBuffer.resetPortPending]);
+  }, [channelName, portBuffer, port]);
 
   const postMessage = useCallback(
     (message: any) => {

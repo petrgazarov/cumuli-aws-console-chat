@@ -4,6 +4,7 @@ extends:
   - plugin:@typescript-eslint/recommended
   - plugin:import/errors
   - plugin:typescript-sort-keys/recommended
+  - plugin:react-hooks/recommended
 parser: "@typescript-eslint/parser"
 parserOptions:
   project: ./tsconfig.json
@@ -19,11 +20,19 @@ rules:
     - error
     - global
   curly: warn
-  "@typescript-eslint/no-explicit-any": "off"
+  "@typescript-eslint/no-explicit-any": off
+  "@typescript-eslint/no-unused-vars":
+    - error
+    - argsIgnorePattern: "^_"
   import/order:
     - error
     - groups:
-        ["builtin", "external", "internal", ["sibling", "parent"], "index"]
+        - builtin
+        - external
+        - internal
+        - sibling
+        - parent
+        - index
       alphabetize:
         order: asc
         caseInsensitive: true
@@ -31,10 +40,15 @@ rules:
   sort-imports:
     - error
     - ignoreDeclarationSort: true
-  "@typescript-eslint/no-unused-vars": off # handled by typescript
   sort-destructure-keys/sort-destructure-keys:
     - error
     - caseSensitive: false
+  react-hooks/exhaustive-deps: error
+  sort-keys:
+    - error
+    - asc
+    - caseSensitive: true
+      natural: true
 settings:
   import/resolver:
     typescript:

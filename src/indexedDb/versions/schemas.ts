@@ -6,7 +6,23 @@ import {
 } from "indexedDb/constants";
 import { ChatMessage, Conversation } from "utils/types";
 
-export type DBSchema = {
+export type DBSchemaV1 = {
+  [CHAT_MESSAGE_STORE]: {
+    indexes: { [CHAT_MESSAGE_STORE_INDEX]: [string, string] };
+    key: string;
+    value: ChatMessage;
+  };
+  [CONVERSATION_STORE]: {
+    indexes: { createdAtIndex: string };
+    key: string;
+    value: {
+      createdAt: string;
+      id: string;
+    };
+  };
+};
+
+export type DBSchemaV2 = {
   [CHAT_MESSAGE_STORE]: {
     indexes: { [CHAT_MESSAGE_STORE_INDEX]: [string, string] };
     key: string;

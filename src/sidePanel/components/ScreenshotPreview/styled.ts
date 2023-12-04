@@ -6,16 +6,10 @@ export const CancelIconButton = styled.button`
   right: 2px;
   display: none;
   border: none;
-  background-color: ${({ theme }) => theme.HIGHLIGHT};
+  background-color: ${({ theme }) => theme.colors.HIGHLIGHT};
   border-radius: 2px;
   padding: 1px;
   cursor: pointer;
-
-  &:hover {
-    svg {
-      stroke: ${({ theme }) => theme.PRIMARY_TEXT};
-    }
-  }
 `;
 
 export const ScreenshotContainer = styled.div`
@@ -24,7 +18,7 @@ export const ScreenshotContainer = styled.div`
   align-self: flex-start;
   margin-top: 10px;
   border-radius: 2px;
-  border: 1px solid ${({ theme }) => theme.GRAY_2};
+  border: 1px solid ${({ theme }) => theme.colors.INPUT_BACKGROUND};
 
   &:hover {
     ${CancelIconButton} {

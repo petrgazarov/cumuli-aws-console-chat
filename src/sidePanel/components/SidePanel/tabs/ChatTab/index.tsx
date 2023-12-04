@@ -4,8 +4,11 @@ import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import ConversationMessage from "sidePanel/components/ConversationMessage";
 import NewMessage from "sidePanel/components/NewMessage";
 import useChatMessages from "sidePanel/hooks/useChatMessages";
-import { currentTabAtom, currentTextareaRefAtom } from "sidePanel/utils/atoms";
-import { TabTitlesEnum } from "sidePanel/utils/types";
+import useConversation from "sidePanel/hooks/useConversation";
+import {
+  currentTextareaRefAtom,
+  streamingErrorAtom,
+} from "sidePanel/utils/atoms";
 import { ChatMessage } from "utils/types";
 
 import NewChatButton from "./NewChatButton";
@@ -13,8 +16,9 @@ import { ChatTabContent, NewChatButtonContainer, Separator } from "./styled";
 
 const ChatTab = () => {
   const [currentTextareaRef] = useAtom(currentTextareaRefAtom);
-  const [currentTab] = useAtom(currentTabAtom);
+  const [, setLlmStreamingError] = useAtom(streamingErrorAtom);
   const { currentChatMessages } = useChatMessages();
+  const { currentConversation } = useConversation();
   const [isScrolled, setIsScrolled] = useState(false);
   const newMessageTextareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -27,25 +31,22 @@ const ChatTab = () => {
     );
   }, []);
 
-  const showContent = currentTab == TabTitlesEnum.chat;
-
   useEffect(() => {
-    if (showContent) {
-      currentTextareaRef?.current?.focus();
-      setIsScrolled(true);
-    } else {
-      setIsScrolled(false);
-    }
-  }, [showContent]);
+    // Focusing the textarea scrolls the chat to the bottom. "isScrolled" state
+    // is used to add a delay to prevent flickering.
+    setIsScrolled(true);
+  }, [currentTextareaRef, setIsScrolled]);
 
   const onNewChatButtonClick = useCallback(() => {
     newMessageTextareaRef.current?.focus();
   }, []);
 
-  console.log("currentChatMessages", currentChatMessages);
+  useEffect(() => {
+    setLlmStreamingError(null);
+  }, [setLlmStreamingError, currentConversation]);
 
   return (
-    <ChatTabContent $show={showContent} $isScrolled={isScrolled}>
+    <ChatTabContent $isScrolled={isScrolled}>
       {currentChatMessages.map(renderMessage)}
       <NewMessage textareaRef={newMessageTextareaRef} />
       <NewChatButtonContainer>

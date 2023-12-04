@@ -12,8 +12,8 @@ const UserMessage = ({ chatMessage }: { chatMessage: UserChatMessage }) => {
 
   const { handleChange, handleKeyDown, removeImageFromMessage, value } =
     useEditMessage({
-      textareaRef,
       chatMessage,
+      textareaRef,
     });
 
   if (typeof chatMessage.content === "string") {

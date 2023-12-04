@@ -1,11 +1,10 @@
 import styled from "styled-components";
 
 import { LINE_HEIGHT } from "sidePanel/utils/globalStyles";
-import { ColorTheme } from "sidePanel/utils/types";
+import { ThemeName } from "sidePanel/utils/types";
 
 const ButtonBase = styled.button<{
   disabled: boolean;
-  theme: ColorTheme;
 }>`
   padding: 4px 20px;
   font-weight: 700;
@@ -21,26 +20,44 @@ const ButtonBase = styled.button<{
 `;
 
 export const PrimaryButton = styled(ButtonBase)`
-  border-color: ${({ theme }) => theme.HIGHLIGHT};
+  border-color: ${({ theme }) => theme.colors.HIGHLIGHT};
   background-color: transparent;
-  color: ${({ theme }) => theme.PRIMARY_TEXT};
+  color: ${({ theme }) =>
+    theme.name === ThemeName.dark
+      ? theme.colors.PRIMARY_TEXT
+      : theme.colors.HIGHLIGHT};
 
-  &:hover {
-    color: ${({ theme }) => theme.HIGHLIGHT};
+  &:hover,
+  &:focus-visible {
+    color: ${({ theme }) =>
+      theme.name === ThemeName.dark
+        ? theme.colors.HIGHLIGHT
+        : theme.colors.BACKGROUND};
+    background-color: ${({ theme }) =>
+      theme.name === ThemeName.dark ? "transparent" : theme.colors.HIGHLIGHT};
   }
 `;
 
 export const SecondaryButton = styled(ButtonBase)`
-  border-color: ${({ theme }) => theme.ACTIVE_TEXT};
+  border-color: ${({ theme }) => theme.colors.ACTIVE_TEXT};
   background-color: transparent;
-  color: ${({ theme }) => theme.PRIMARY_TEXT};
-
-  &:hover {
-    color: ${({ theme }) => theme.ACTIVE_TEXT};
-  }
+  color: ${({ theme }) =>
+    theme.name === ThemeName.dark
+      ? theme.colors.PRIMARY_TEXT
+      : theme.colors.ACTIVE_TEXT};
 
   &:disabled {
-    border-color: ${({ theme }) => theme.HELP_TEXT};
-    color: ${({ theme }) => theme.HELP_TEXT};
+    border-color: ${({ theme }) => theme.colors.HELP_TEXT};
+    color: ${({ theme }) => theme.colors.HELP_TEXT};
+  }
+
+  &:focus-visible,
+  &:hover:enabled {
+    color: ${({ theme }) =>
+      theme.name === ThemeName.dark
+        ? theme.colors.ACTIVE_TEXT
+        : theme.colors.BACKGROUND};
+    background-color: ${({ theme }) =>
+      theme.name === ThemeName.dark ? "transparent" : theme.colors.ACTIVE_TEXT};
   }
 `;

@@ -1,20 +1,23 @@
 import { useAtom } from "jotai";
-import { RefObject, useEffect, useMemo } from "react";
+import { RefObject, useMemo } from "react";
 
 import useNewMessage from "sidePanel/components/NewMessage/useNewMessage";
 import Textarea from "sidePanel/components/Textarea";
-import { loadingAtom, streamingAtom } from "sidePanel/utils/atoms";
+import { llmLoadingAtom, llmStreamingAtom } from "sidePanel/utils/atoms";
 import { getKeyboardShortcutModifierKey } from "utils/helpers";
 
+import ChatError from "./ChatError";
 import { HelpText, KeyboardSymbol, LoadingState } from "./styled";
+import useChatError from "./useChatError";
 
 const NewMessage = ({
   textareaRef,
 }: {
   textareaRef: RefObject<HTMLTextAreaElement>;
 }) => {
-  const [streaming] = useAtom(streamingAtom);
-  const [loading] = useAtom(loadingAtom);
+  const [llmStreaming] = useAtom(llmStreamingAtom);
+  const [llmLoading] = useAtom(llmLoadingAtom);
+  const chatError = useChatError();
 
   const { handleChange, handleKeyDown, value } = useNewMessage({
     textareaRef,
@@ -22,18 +25,16 @@ const NewMessage = ({
 
   const modifierKey = useMemo(() => getKeyboardShortcutModifierKey(), []);
 
-  useEffect(() => {
-    if (!streaming && !loading) {
-      textareaRef.current?.focus();
-    }
-  }, [streaming, loading]);
-
-  if (loading) {
+  if (llmLoading) {
     return <LoadingState />;
   }
 
-  if (streaming) {
+  if (llmStreaming) {
     return null;
+  }
+
+  if (chatError) {
+    return <ChatError />;
   }
 
   return (

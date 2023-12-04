@@ -1,10 +1,10 @@
 export const INDEXED_DB_NAME = "cumuliDB";
 
-export const INDEXED_DB_VERSION = 1;
+export const INDEXED_DB_VERSION = 2;
 
 export const CONVERSATION_STORE = "conversations";
 
-export const CONVERSATION_STORE_INDEX = "createdAtIndex";
+export const CONVERSATION_STORE_INDEX = "updatedAtIndex";
 
 export const CONVERSATION_PAGE_SIZE = 25;
 

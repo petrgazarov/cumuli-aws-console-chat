@@ -5,7 +5,7 @@ import useChatChannelListener from "sidePanel/hooks/useChatChannelListener";
 import useChatMessages from "sidePanel/hooks/useChatMessages";
 import useCommandChannelListener from "sidePanel/hooks/useCommandChannelListener";
 import useKeyDownChatMessageListener from "sidePanel/hooks/useKeyDownChatMessageListener";
-import { loadingAtom, streamingAtom } from "sidePanel/utils/atoms";
+import { llmLoadingAtom, llmStreamingAtom } from "sidePanel/utils/atoms";
 import { getChatMessageText, getImageContentFromMessage } from "utils/helpers";
 import { ChatChannelAction, ChatMessage, UserChatMessage } from "utils/types";
 
@@ -16,8 +16,8 @@ type UseNewMessageProps = {
 
 const useEditMessage = ({ chatMessage, textareaRef }: UseNewMessageProps) => {
   const [textInput, setTextInput] = useState(getChatMessageText(chatMessage));
-  const [, setLoading] = useAtom(loadingAtom);
-  const [, setStreaming] = useAtom(streamingAtom);
+  const [, setLlmLoading] = useAtom(llmLoadingAtom);
+  const [, setLlmStreaming] = useAtom(llmStreamingAtom);
   const { removeImageFromMessage } = useChatMessages();
 
   const { postChatMessage } = useChatChannelListener();
@@ -25,13 +25,13 @@ const useEditMessage = ({ chatMessage, textareaRef }: UseNewMessageProps) => {
   const handleReplaceMessage = useCallback(
     (message: ChatMessage) => {
       postChatMessage({
-        action: ChatChannelAction.replace_message,
+        action: ChatChannelAction.message_replace,
         payload: message,
       });
-      setLoading(true);
-      setStreaming(true);
+      setLlmLoading(true);
+      setLlmStreaming(true);
     },
-    [postChatMessage]
+    [postChatMessage, setLlmLoading, setLlmStreaming]
   );
 
   const handleSubmitWithScreenshotCommand = useCallback(
@@ -39,10 +39,10 @@ const useEditMessage = ({ chatMessage, textareaRef }: UseNewMessageProps) => {
       handleReplaceMessage({
         ...chatMessage,
         content: [
-          { type: "text", text: value },
+          { text: value, type: "text" },
           {
+            image_url: { detail: "high", url: "" },
             type: "image_url",
-            image_url: { url: "", detail: "high" },
           },
         ],
       });
@@ -67,7 +67,7 @@ const useEditMessage = ({ chatMessage, textareaRef }: UseNewMessageProps) => {
       } else {
         handleReplaceMessage({
           ...chatMessage,
-          content: [{ type: "text", text: value }, imageContent],
+          content: [{ text: value, type: "text" }, imageContent],
         });
       }
     },
@@ -88,10 +88,10 @@ const useEditMessage = ({ chatMessage, textareaRef }: UseNewMessageProps) => {
   );
 
   return {
-    value: textInput,
     handleChange,
     handleKeyDown,
     removeImageFromMessage,
+    value: textInput,
   };
 };
 

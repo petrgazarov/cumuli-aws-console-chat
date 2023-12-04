@@ -1,5 +1,7 @@
 import styled from "styled-components";
 
+import { FONT_SIZE_SECONDARY } from "sidePanel/utils/globalStyles";
+
 export const ConfigTabContent = styled.div`
   display: flex;
   flex-direction: column;
@@ -17,8 +19,9 @@ export const TextInputRow = styled.div`
 `;
 
 export const ClearDataButtonLabel = styled.div`
-  margin-bottom: 4px;
-  color: ${({ theme }) => theme.HELP_TEXT};
+  margin-bottom: 5px;
+  color: ${({ theme }) => theme.colors.HELP_TEXT};
+  font-size: ${FONT_SIZE_SECONDARY};
 `;
 
 export const ClearDataRow = styled.div`

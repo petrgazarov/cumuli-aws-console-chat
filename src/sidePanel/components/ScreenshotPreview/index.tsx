@@ -12,7 +12,7 @@ const ScreenshotPreview = ({ onRemove, url }: ScreenshotPreviewProps) => {
     <ScreenshotContainer>
       <img
         src={url}
-        style={{ width: "auto", height: "95px" }}
+        style={{ height: "95px", width: "auto" }}
         alt="Screenshot preview"
       />
       <CancelIconButton onClick={onRemove}>

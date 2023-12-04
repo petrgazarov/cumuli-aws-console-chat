@@ -27,11 +27,12 @@ export const streamLlmResponse = async ({
 
   return openai.beta.chat.completions
     .stream({
-      model: OPENAI_MODEL_ID,
-      messages: messages.map(
-        ({ conversationId, createdAt, id, ...rest }) => rest
-      ) as OpenAI.Chat.ChatCompletionMessageParam[],
       max_tokens: 4096,
+      messages: messages.map(({ content, role }) => ({
+        content,
+        role,
+      })) as OpenAI.Chat.ChatCompletionMessageParam[],
+      model: OPENAI_MODEL_ID,
       stream: true,
       temperature: 0.0,
     })

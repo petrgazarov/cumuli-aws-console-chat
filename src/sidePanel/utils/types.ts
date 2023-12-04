@@ -4,24 +4,24 @@ export enum TabTitlesEnum {
   history = "history",
 }
 
-export enum ColorThemeName {
+export enum ThemeName {
   dark = "dark",
   light = "light",
 }
 
-export type ColorThemes = {
-  [key in ColorThemeName]: {
-    ACTIVE_TEXT: string;
-    BACKGROUND: string;
-    FOCUS: string;
-    GRAY_1: string;
-    GRAY_2: string;
-    HELP_TEXT: string;
-    HIGHLIGHT: string;
-    INPUT_BACKGROUND: string;
-    PRIMARY_TEXT: string;
-    SUCCESS_TEXT: string;
+export type ThemesObject = {
+  [key in ThemeName]: {
+    colors: {
+      ACTIVE_TEXT: string;
+      BACKGROUND: string;
+      FOCUS: string;
+      HELP_TEXT: string;
+      HIGHLIGHT: string;
+      INPUT_BACKGROUND: string;
+      PRIMARY_TEXT: string;
+    };
+    name: ThemeName;
   };
 };
 
-export type ColorTheme = ColorThemes[ColorThemeName];
+export type Theme = ThemesObject[ThemeName];

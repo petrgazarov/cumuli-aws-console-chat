@@ -21,13 +21,15 @@ const useConversations = () => {
     currentConversationAtom
   );
 
-  const getConversations = useCallback(async (page = 1) => {
-    getConversationsDb({ page, order: Order.desc }).then((conversations) => {
-      setConversations((prevConversations) =>
-        page === 1 ? conversations : [...prevConversations, ...conversations]
-      );
-    });
-  }, []);
+  const getConversations = useCallback(
+    async (page = 1) =>
+      getConversationsDb({ order: Order.desc, page }).then((conversations) => {
+        setConversations((prevConversations) =>
+          page === 1 ? conversations : [...prevConversations, ...conversations]
+        );
+      }),
+    [setConversations]
+  );
 
   const deleteAllConversations = useCallback(async () => {
     deleteAllConversationsDb().then(() => {
@@ -35,7 +37,7 @@ const useConversations = () => {
       setCurrentChatMessages([]);
       setCurrentConversation(null);
     });
-  }, []);
+  }, [setConversations, setCurrentChatMessages, setCurrentConversation]);
 
   const deleteConversation = useCallback(
     async (conversation: Conversation) => {
@@ -47,14 +49,19 @@ const useConversations = () => {
         setCurrentChatMessages([]);
       }
     },
-    [currentConversation]
+    [
+      getConversations,
+      currentConversation,
+      setCurrentConversation,
+      setCurrentChatMessages,
+    ]
   );
 
   const groupedConversations = useMemo(() => {
     const groups: { [key: string]: Conversation[] } = {};
 
     conversations.forEach((conversation) => {
-      const creationDate = parseISO(conversation.createdAt);
+      const creationDate = parseISO(conversation.updatedAt);
       let label;
 
       if (isToday(creationDate)) {
@@ -85,10 +92,10 @@ const useConversations = () => {
 
   return {
     conversations,
-    groupedConversations,
-    getConversations,
     deleteAllConversations,
     deleteConversation,
+    getConversations,
+    groupedConversations,
   };
 };
 

@@ -5,6 +5,7 @@ import {
   replaceChatMessage,
   saveChatMessage,
 } from "indexedDb/chatMessage";
+import { touchConversation } from "indexedDb/conversation";
 import { streamLlmResponse } from "serviceWorker/openai";
 import { addScreenshotToMessage } from "serviceWorker/utils";
 import { getImageContentFromMessage } from "utils/helpers";
@@ -23,7 +24,7 @@ export const chatChannelListener = async (
   channelMessage: ChatChannelMessage
 ) => {
   switch (channelMessage.action) {
-    case ChatChannelAction.new_message:
+    case ChatChannelAction.message_new:
       {
         const userMessage: UserChatMessage = channelMessage.payload;
         const conversationId = userMessage.conversationId;
@@ -34,33 +35,40 @@ export const chatChannelListener = async (
         }
 
         await saveChatMessage(userMessage);
+        await touchConversation(conversationId);
 
         port.postMessage({
-          action: ChatChannelAction.new_message,
+          action: ChatChannelAction.message_new,
           payload: userMessage,
         });
 
         generateAssistantMessage(conversationId, port);
       }
       break;
-    case ChatChannelAction.replace_message: {
-      const userMessage: UserChatMessage = channelMessage.payload;
-      const conversationId = userMessage.conversationId;
+    case ChatChannelAction.message_replace:
+      {
+        const userMessage: UserChatMessage = channelMessage.payload;
+        const conversationId = userMessage.conversationId;
 
-      const imageContent = getImageContentFromMessage(userMessage);
-      if (imageContent && !imageContent.image_url.url) {
-        await addScreenshotToMessage(userMessage);
+        const imageContent = getImageContentFromMessage(userMessage);
+        if (imageContent && !imageContent.image_url.url) {
+          await addScreenshotToMessage(userMessage);
+        }
+
+        await replaceChatMessage(userMessage);
+        await touchConversation(conversationId);
+
+        port.postMessage({
+          action: ChatChannelAction.message_replace,
+          payload: userMessage,
+        });
+
+        await generateAssistantMessage(conversationId, port);
       }
-
-      await replaceChatMessage(userMessage);
-
-      port.postMessage({
-        action: ChatChannelAction.replace_message,
-        payload: userMessage,
-      });
-
-      await generateAssistantMessage(conversationId, port);
-    }
+      break;
+    case ChatChannelAction.stream_abort:
+      streamingRunner?.abort();
+      break;
   }
 };
 
@@ -84,7 +92,7 @@ const generateAssistantMessage = async (
 
       try {
         port.postMessage({
-          action: ChatChannelAction.new_message,
+          action: ChatChannelAction.message_new,
           payload: assistantMessage,
         });
       } catch (error: any) {
@@ -112,13 +120,6 @@ const generateAssistantMessage = async (
 
   streamingRunner = await streamLlmResponse({
     messages: chatMessages,
-    onContent,
-    onError: async () => {
-      if (assistantMessage.content) {
-        await saveChatMessage(assistantMessage);
-      }
-      streamingRunner = null;
-    },
     onAbort: async () => {
       if (assistantMessage.content) {
         await saveChatMessage(assistantMessage);
@@ -130,7 +131,7 @@ const generateAssistantMessage = async (
 
       try {
         port.postMessage({
-          action: ChatChannelAction.finish_stream,
+          action: ChatChannelAction.stream_finish,
         });
       } catch (error: any) {
         console.debug(
@@ -138,6 +139,17 @@ const generateAssistantMessage = async (
           error?.message
         );
       }
+      streamingRunner = null;
+    },
+    onContent,
+    onError: async (e: Error) => {
+      if (assistantMessage.content) {
+        await saveChatMessage(assistantMessage);
+      }
+      port.postMessage({
+        action: ChatChannelAction.stream_error,
+        payload: e.message,
+      });
       streamingRunner = null;
     },
   });

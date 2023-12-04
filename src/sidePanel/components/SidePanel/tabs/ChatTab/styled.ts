@@ -2,9 +2,8 @@ import styled from "styled-components";
 
 export const ChatTabContent = styled.div<{
   $isScrolled: boolean;
-  $show: boolean;
 }>`
-  display: ${({ $show }) => ($show ? "flex" : "none")};
+  display: flex;
   opacity: ${({ $isScrolled }) => ($isScrolled ? 1 : 0)};
   flex-direction: column;
   padding: 10px 10px 300px;

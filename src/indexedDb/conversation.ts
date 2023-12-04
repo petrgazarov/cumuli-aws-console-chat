@@ -13,13 +13,13 @@ import {
 import { getChatMessageText } from "utils/helpers";
 import { Conversation, NewConversation, Order } from "utils/types";
 
-import { DBSchema } from "./types";
+import { DBSchemaLatest } from "./versions";
 
 export const getConversations = async (options: {
   order: Order;
   page: number;
 }) => {
-  const db = await openDB<DBSchema>(INDEXED_DB_NAME, INDEXED_DB_VERSION);
+  const db = await openDB<DBSchemaLatest>(INDEXED_DB_NAME, INDEXED_DB_VERSION);
   const pageSize = CONVERSATION_PAGE_SIZE;
 
   const tx = db.transaction(
@@ -72,7 +72,37 @@ export const getConversations = async (options: {
   return conversations;
 };
 
-export const saveConversation = async (conversation: Conversation) => {
+export const findConversation = async (id: string) => {
+  const db = await openDB(INDEXED_DB_NAME, INDEXED_DB_VERSION);
+
+  const tx = db.transaction(CONVERSATION_STORE, "readonly");
+  const store = tx.objectStore(CONVERSATION_STORE);
+
+  return store.get(id);
+};
+
+export const touchConversation = async (conversationId: string) => {
+  const db = await openDB(INDEXED_DB_NAME, INDEXED_DB_VERSION);
+
+  const tx = db.transaction(CONVERSATION_STORE, "readwrite");
+  const store = tx.objectStore(CONVERSATION_STORE);
+
+  const conversation = await store.get(conversationId);
+  if (!conversation) {
+    throw new Error(`No conversation found with id: ${conversationId}`);
+  }
+
+  conversation.updatedAt = new Date().toISOString();
+
+  await store.put(conversation);
+  await tx.done;
+
+  return conversation;
+};
+
+export const createConversation = async () => {
+  const conversation = NewConversation();
+
   const db = await openDB(INDEXED_DB_NAME, INDEXED_DB_VERSION);
 
   const tx = db.transaction(CONVERSATION_STORE, "readwrite");
@@ -84,24 +114,8 @@ export const saveConversation = async (conversation: Conversation) => {
   return conversation;
 };
 
-export const findConversation = async (id: string) => {
-  const db = await openDB(INDEXED_DB_NAME, INDEXED_DB_VERSION);
-
-  const tx = db.transaction(CONVERSATION_STORE, "readonly");
-  const store = tx.objectStore(CONVERSATION_STORE);
-
-  return store.get(id);
-};
-
-export const createConversation = async () => {
-  const conversation = NewConversation();
-  await saveConversation(conversation);
-
-  return conversation;
-};
-
 export const deleteAllConversations = async () => {
-  const db = await openDB<DBSchema>(INDEXED_DB_NAME, INDEXED_DB_VERSION);
+  const db = await openDB<DBSchemaLatest>(INDEXED_DB_NAME, INDEXED_DB_VERSION);
 
   const tx = db.transaction(
     [CONVERSATION_STORE, CHAT_MESSAGE_STORE],
@@ -116,7 +130,7 @@ export const deleteAllConversations = async () => {
 };
 
 export const deleteConversation = async (conversation: Conversation) => {
-  const db = await openDB<DBSchema>(INDEXED_DB_NAME, INDEXED_DB_VERSION);
+  const db = await openDB<DBSchemaLatest>(INDEXED_DB_NAME, INDEXED_DB_VERSION);
 
   const tx = db.transaction(
     [CONVERSATION_STORE, CHAT_MESSAGE_STORE],

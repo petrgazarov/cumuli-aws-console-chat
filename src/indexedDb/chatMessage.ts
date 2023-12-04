@@ -6,15 +6,15 @@ import {
   INDEXED_DB_NAME,
   INDEXED_DB_VERSION,
 } from "indexedDb/constants";
-import { ChatMessage, Conversation, Order, UserChatMessage } from "utils/types";
+import { ChatMessage, Order, UserChatMessage } from "utils/types";
 
-import { DBSchema } from "./types";
+import { DBSchemaLatest } from "./versions";
 
 export const getChatMessages = async (options: {
   conversationId: string;
   order: Order;
 }) => {
-  const db = await openDB<DBSchema>(INDEXED_DB_NAME, INDEXED_DB_VERSION);
+  const db = await openDB<DBSchemaLatest>(INDEXED_DB_NAME, INDEXED_DB_VERSION);
 
   const tx = db.transaction(CHAT_MESSAGE_STORE, "readonly");
   const store = tx.objectStore(CHAT_MESSAGE_STORE);
@@ -42,7 +42,7 @@ export const getChatMessages = async (options: {
 };
 
 export const saveChatMessage = async (chatMessage: ChatMessage) => {
-  const db = await openDB<DBSchema>(INDEXED_DB_NAME, INDEXED_DB_VERSION);
+  const db = await openDB<DBSchemaLatest>(INDEXED_DB_NAME, INDEXED_DB_VERSION);
 
   const tx = db.transaction(CHAT_MESSAGE_STORE, "readwrite");
   const store = tx.objectStore(CHAT_MESSAGE_STORE);
@@ -54,7 +54,7 @@ export const saveChatMessage = async (chatMessage: ChatMessage) => {
 };
 
 export const replaceChatMessage = async (chatMessage: UserChatMessage) => {
-  const db = await openDB<DBSchema>(INDEXED_DB_NAME, INDEXED_DB_VERSION);
+  const db = await openDB<DBSchemaLatest>(INDEXED_DB_NAME, INDEXED_DB_VERSION);
 
   const tx = db.transaction(CHAT_MESSAGE_STORE, "readwrite");
   const store = tx.objectStore(CHAT_MESSAGE_STORE);

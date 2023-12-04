@@ -2,6 +2,7 @@ import { useAtom } from "jotai";
 import cloneDeep from "lodash.clonedeep";
 import { useCallback } from "react";
 
+import useConversations from "sidePanel/hooks/useConversations";
 import { currentChatMessagesAtom } from "sidePanel/utils/atoms";
 import { getChatMessageText, getImageContentFromMessage } from "utils/helpers";
 import { ChatMessage, Role, UserChatMessage } from "utils/types";
@@ -10,78 +11,96 @@ const useChatMessages = () => {
   const [currentChatMessages, setCurrentChatMessages] = useAtom(
     currentChatMessagesAtom
   );
+  const { getConversations } = useConversations();
 
-  const appendMessage = useCallback((chatMessage: ChatMessage) => {
-    setCurrentChatMessages((prevChatMessages) => [
-      ...prevChatMessages,
-      chatMessage,
-    ]);
-  }, []);
+  const appendMessage = useCallback(
+    (chatMessage: ChatMessage) => {
+      setCurrentChatMessages((prevChatMessages) => [
+        ...prevChatMessages,
+        chatMessage,
+      ]);
 
-  const appendChunk = useCallback((chunk: string) => {
-    setCurrentChatMessages((prevChatMessages) => {
-      const newMessages = cloneDeep(prevChatMessages);
-      const lastMessage = newMessages[newMessages.length - 1];
-
-      if (lastMessage?.role === Role.assistant) {
-        newMessages[newMessages.length - 1] = {
-          ...lastMessage,
-          content: lastMessage.content + chunk,
-        };
+      if (chatMessage.role === Role.user) {
+        getConversations();
       }
+    },
+    [setCurrentChatMessages, getConversations]
+  );
 
-      return newMessages;
-    });
-  }, []);
+  const appendChunk = useCallback(
+    (chunk: string) => {
+      setCurrentChatMessages((prevChatMessages) => {
+        const newMessages = cloneDeep(prevChatMessages);
+        const lastMessage = newMessages[newMessages.length - 1];
 
-  const replaceMessage = useCallback((chatMessage: UserChatMessage) => {
-    setCurrentChatMessages((prevChatMessages): ChatMessage[] => {
-      const messageIndex = prevChatMessages.findIndex(
-        (m) => m.id === chatMessage.id
-      );
+        if (lastMessage?.role === Role.assistant) {
+          newMessages[newMessages.length - 1] = {
+            ...lastMessage,
+            content: lastMessage.content + chunk,
+          };
+        }
 
-      if (messageIndex === -1) {
-        return prevChatMessages;
-      }
+        return newMessages;
+      });
+    },
+    [setCurrentChatMessages]
+  );
 
-      return [...prevChatMessages.slice(0, messageIndex), chatMessage];
-    });
-  }, []);
+  const replaceMessage = useCallback(
+    (chatMessage: UserChatMessage) => {
+      setCurrentChatMessages((prevChatMessages): ChatMessage[] => {
+        const messageIndex = prevChatMessages.findIndex(
+          (m) => m.id === chatMessage.id
+        );
 
-  const removeImageFromMessage = useCallback((chatMessage: UserChatMessage) => {
-    setCurrentChatMessages((prevChatMessages): ChatMessage[] => {
-      const messageIndex = prevChatMessages.findIndex(
-        (m) => m.id === chatMessage.id
-      );
+        if (messageIndex === -1) {
+          return prevChatMessages;
+        }
 
-      if (messageIndex === -1) {
-        return prevChatMessages;
-      }
+        return [...prevChatMessages.slice(0, messageIndex), chatMessage];
+      });
+      getConversations();
+    },
+    [setCurrentChatMessages, getConversations]
+  );
 
-      const newChatMessages = cloneDeep(prevChatMessages);
+  const removeImageFromMessage = useCallback(
+    (chatMessage: UserChatMessage) => {
+      setCurrentChatMessages((prevChatMessages): ChatMessage[] => {
+        const messageIndex = prevChatMessages.findIndex(
+          (m) => m.id === chatMessage.id
+        );
 
-      const prevChatMessage = newChatMessages[messageIndex];
-      const imageContent = getImageContentFromMessage(prevChatMessage);
+        if (messageIndex === -1) {
+          return prevChatMessages;
+        }
 
-      if (imageContent) {
-        return [
-          ...newChatMessages.slice(0, messageIndex),
-          { ...prevChatMessage, content: getChatMessageText(chatMessage) },
-          ...newChatMessages.slice(messageIndex + 1),
-        ];
-      }
+        const newChatMessages = cloneDeep(prevChatMessages);
 
-      return newChatMessages;
-    });
-  }, []);
+        const prevChatMessage = newChatMessages[messageIndex];
+        const imageContent = getImageContentFromMessage(prevChatMessage);
+
+        if (imageContent) {
+          return [
+            ...newChatMessages.slice(0, messageIndex),
+            { ...prevChatMessage, content: getChatMessageText(chatMessage) },
+            ...newChatMessages.slice(messageIndex + 1),
+          ];
+        }
+
+        return newChatMessages;
+      });
+    },
+    [setCurrentChatMessages]
+  );
 
   return {
-    currentChatMessages,
-    setCurrentChatMessages,
-    appendMessage,
     appendChunk,
-    replaceMessage,
+    appendMessage,
+    currentChatMessages,
     removeImageFromMessage,
+    replaceMessage,
+    setCurrentChatMessages,
   };
 };
 

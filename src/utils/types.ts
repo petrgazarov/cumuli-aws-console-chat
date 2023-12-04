@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from "uuid";
 
 export enum Role {
   assistant = "assistant",
-  user = "user"
+  user = "user",
 }
 
 export type ChatMessageTextContent = {
@@ -19,10 +19,12 @@ export type ChatMessageImageContent = {
 };
 
 export enum ChatChannelAction {
-  finish_stream = "finish_stream",
-  new_message = "new_message",
-  replace_message = "replace_message",
-  stream_chunk = "stream_chunk"
+  message_new = "message_new",
+  message_replace = "message_replace",
+  stream_abort = "stream_abort",
+  stream_chunk = "stream_chunk",
+  stream_error = "stream_error",
+  stream_finish = "stream_finish",
 }
 
 export type ChatChannelMessage = {
@@ -44,7 +46,7 @@ export enum OS {
   MacOS = "MacOS",
   UNIX = "UNIX",
   Unknown = "Unknown OS",
-  Windows = "Windows"
+  Windows = "Windows",
 }
 
 export enum Order {
@@ -74,31 +76,38 @@ export const NewUserChatMessage = (params: {
   content: string | Array<ChatMessageTextContent | ChatMessageImageContent>;
   conversationId: string;
 }): UserChatMessage => ({
-  id: uuidv4(),
   content: params.content,
-  role: Role.user,
   conversationId: params.conversationId,
   createdAt: new Date().toISOString(),
+  id: uuidv4(),
+  role: Role.user,
 });
 
 export const NewAssistantChatMessage = (params: {
   content: string;
   conversationId: string;
 }): AssistantChatMessage => ({
-  id: uuidv4(),
   content: params.content,
-  role: Role.assistant,
   conversationId: params.conversationId,
   createdAt: new Date().toISOString(),
+  id: uuidv4(),
+  role: Role.assistant,
 });
 
 export type Conversation = {
   createdAt: string;
   id: string;
-  preview?: string;
+  preview: string;
+  updatedAt: string;
 };
 
-export const NewConversation = (): Conversation => ({
-  id: uuidv4(),
-  createdAt: new Date().toISOString(),
-});
+export const NewConversation = (): Conversation => {
+  const timestamp = new Date().toISOString();
+
+  return {
+    createdAt: timestamp,
+    id: uuidv4(),
+    preview: "",
+    updatedAt: timestamp,
+  };
+};

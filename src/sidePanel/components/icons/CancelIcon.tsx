@@ -1,8 +1,10 @@
 import styled from "styled-components";
 
+import { COLORS } from "sidePanel/utils/globalStyles";
+
 const StyledSvg = styled.svg`
   stroke-width: 2px;
-  stroke: ${({ theme }) => theme.PRIMARY_TEXT};
+  stroke: ${COLORS.WHITE};
 `;
 
 type CancelIconProps = {

@@ -5,7 +5,7 @@ import useChatChannelListener from "sidePanel/hooks/useChatChannelListener";
 import useCommandChannelListener from "sidePanel/hooks/useCommandChannelListener";
 import useConversation from "sidePanel/hooks/useConversation";
 import useKeyDownChatMessageListener from "sidePanel/hooks/useKeyDownChatMessageListener";
-import { loadingAtom, streamingAtom } from "sidePanel/utils/atoms";
+import { llmLoadingAtom, llmStreamingAtom } from "sidePanel/utils/atoms";
 import {
   ChatChannelAction,
   NewUserChatMessage,
@@ -18,8 +18,8 @@ type UseNewMessageProps = {
 
 const useNewMessage = ({ textareaRef }: UseNewMessageProps) => {
   const [textInput, setTextInput] = useState("");
-  const [, setLoading] = useAtom(loadingAtom);
-  const [, setStreaming] = useAtom(streamingAtom);
+  const [, setLlmLoading] = useAtom(llmLoadingAtom);
+  const [, setLlmStreaming] = useAtom(llmStreamingAtom);
   const { createConversation, currentConversation } = useConversation();
 
   const { postChatMessage } = useChatChannelListener();
@@ -27,14 +27,14 @@ const useNewMessage = ({ textareaRef }: UseNewMessageProps) => {
   const handleCreateNewMessage = useCallback(
     (message: UserChatMessage) => {
       postChatMessage({
-        action: ChatChannelAction.new_message,
+        action: ChatChannelAction.message_new,
         payload: message,
       });
       setTextInput("");
-      setLoading(true);
-      setStreaming(true);
+      setLlmLoading(true);
+      setLlmStreaming(true);
     },
-    [postChatMessage]
+    [postChatMessage, setLlmLoading, setLlmStreaming]
   );
 
   const handleSubmitWithScreenshotCommand = useCallback(
@@ -49,18 +49,18 @@ const useNewMessage = ({ textareaRef }: UseNewMessageProps) => {
 
       handleCreateNewMessage(
         NewUserChatMessage({
-          conversationId,
           content: [
-            { type: "text", text: value },
+            { text: value, type: "text" },
             {
+              image_url: { detail: "high", url: "" },
               type: "image_url",
-              image_url: { url: "", detail: "high" },
             },
           ],
+          conversationId,
         })
       );
     },
-    [handleCreateNewMessage, currentConversation?.id]
+    [handleCreateNewMessage, currentConversation, createConversation]
   );
 
   useCommandChannelListener({
@@ -80,12 +80,12 @@ const useNewMessage = ({ textareaRef }: UseNewMessageProps) => {
 
       handleCreateNewMessage(
         NewUserChatMessage({
-          conversationId,
           content: value,
+          conversationId,
         })
       );
     },
-    [handleCreateNewMessage, currentConversation]
+    [handleCreateNewMessage, currentConversation, createConversation]
   );
 
   const handleKeyDown = useKeyDownChatMessageListener({
@@ -102,9 +102,9 @@ const useNewMessage = ({ textareaRef }: UseNewMessageProps) => {
   );
 
   return {
-    value: textInput,
     handleChange,
     handleKeyDown,
+    value: textInput,
   };
 };
 

@@ -36,14 +36,14 @@ export const onTabUpdatedListener = async (
 
   if (url.origin.includes(AWS_CONSOLE_HOST)) {
     await chrome.sidePanel.setOptions({
-      tabId,
-      path: "sidepanel.html",
       enabled: true,
+      path: "sidepanel.html",
+      tabId,
     });
   } else {
     await chrome.sidePanel.setOptions({
-      tabId,
       enabled: false,
+      tabId,
     });
   }
 };
