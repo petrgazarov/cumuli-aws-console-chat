@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "Cumuli AWS Console Chat",
+  "name": "Cumuli - AWS Console Chat",
   "version": "0.1.0",
   "action": {
-    "default_title": "Cumuli AWS Console Chat"
+    "default_title": "Cumuli - AWS Console Chat"
   },
   "background": {
     "service_worker": "js/serviceWorker.js"

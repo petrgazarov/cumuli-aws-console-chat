@@ -2,6 +2,7 @@ import { v4 as uuidv4 } from "uuid";
 
 export enum Role {
   assistant = "assistant",
+  system = "system",
   user = "user",
 }
 
