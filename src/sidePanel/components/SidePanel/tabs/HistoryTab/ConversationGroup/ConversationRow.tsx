@@ -2,10 +2,10 @@ import { useAtom } from "jotai";
 import { useCallback } from "react";
 
 import { getChatMessages } from "indexedDb/chatMessage";
-import useChatMessages from "sidePanel/hooks/useChatMessages";
 import useConversation from "sidePanel/hooks/useConversation";
 import useConversations from "sidePanel/hooks/useConversations";
 import { currentTabAtom } from "sidePanel/utils/atoms";
+import { currentChatMessagesAtom } from "sidePanel/utils/atoms";
 import { TabTitlesEnum } from "sidePanel/utils/types";
 import { Conversation, Order } from "utils/types";
 
@@ -24,7 +24,7 @@ type ConversationRowProps = {
 const ConversationRow = ({ conversation }: ConversationRowProps) => {
   const [, setCurrentTab] = useAtom(currentTabAtom);
   const { currentConversation, setCurrentConversation } = useConversation();
-  const { setCurrentChatMessages } = useChatMessages();
+  const [, setCurrentChatMessages] = useAtom(currentChatMessagesAtom);
   const { deleteConversation } = useConversations();
 
   const onItemClick = useCallback(

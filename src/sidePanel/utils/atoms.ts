@@ -9,6 +9,11 @@ export const conversationsAtom = atom<Conversation[]>([]);
 
 export const currentChatMessagesAtom = atom<ChatMessage[]>([]);
 
+export const conversationStartedAtom = atom((get) => {
+  const chatMessages = get(currentChatMessagesAtom);
+  return chatMessages.length > 0;
+});
+
 export const llmStreamingAtom = atom<boolean>(false);
 
 export const llmLoadingAtom = atom<boolean>(false);

@@ -8,7 +8,7 @@ import { useMedia } from "react-use";
 
 import { AssistantChatMessage } from "utils/types";
 
-import { MarkdownContent } from "./styled";
+import { MarkdownCode, MarkdownContent, MarkdownLink } from "./styled";
 
 const AssistantMessage = ({
   chatMessage,
@@ -18,9 +18,17 @@ const AssistantMessage = ({
   const isDarkMode = useMedia("(prefers-color-scheme: dark)");
 
   const components = {
+    a(props: any) {
+      const { node: _node, ...rest } = props;
+
+      return (
+        <MarkdownLink {...rest} target="_blank" rel="noopener noreferrer" />
+      );
+    },
     code(props: any) {
-      const { children, className, node, ...rest } = props; // eslint-disable-line @typescript-eslint/no-unused-vars
+      const { children, className, node: _node, ...rest } = props;
       const match = /language-(\w+)/.exec(className || "");
+
       return match ? (
         <SyntaxHighlighter
           {...rest}
@@ -31,9 +39,13 @@ const AssistantMessage = ({
           customStyle={{ fontSize: isDarkMode ? "15px" : "13.5px" }}
         />
       ) : (
-        <code {...rest} className={className} style={{ fontSize: "13px" }}>
+        <MarkdownCode
+          {...rest}
+          className={className}
+          style={{ fontSize: "13px" }}
+        >
           {children}
-        </code>
+        </MarkdownCode>
       );
     },
   };

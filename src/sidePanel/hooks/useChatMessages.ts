@@ -8,9 +8,7 @@ import { getChatMessageText, getImageContentFromMessage } from "utils/helpers";
 import { ChatMessage, Role, UserChatMessage } from "utils/types";
 
 const useChatMessages = () => {
-  const [currentChatMessages, setCurrentChatMessages] = useAtom(
-    currentChatMessagesAtom
-  );
+  const [, setCurrentChatMessages] = useAtom(currentChatMessagesAtom);
   const { getConversations } = useConversations();
 
   const appendMessage = useCallback(
@@ -97,10 +95,8 @@ const useChatMessages = () => {
   return {
     appendChunk,
     appendMessage,
-    currentChatMessages,
     removeImageFromMessage,
     replaceMessage,
-    setCurrentChatMessages,
   };
 };
 

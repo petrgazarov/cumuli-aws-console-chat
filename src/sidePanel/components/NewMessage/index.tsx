@@ -3,10 +3,17 @@ import { RefObject, useEffect, useMemo } from "react";
 
 import useNewMessage from "sidePanel/components/NewMessage/useNewMessage";
 import Textarea from "sidePanel/components/Textarea";
-import UserInstructions from "sidePanel/components/UserInstructions";
+import {
+  UserInstructionType,
+  UserInstructions,
+} from "sidePanel/components/UserInstructions";
 import useChatError from "sidePanel/hooks/useChatError";
-import useChatMessages from "sidePanel/hooks/useChatMessages";
-import { llmLoadingAtom, llmStreamingAtom } from "sidePanel/utils/atoms";
+import {
+  conversationStartedAtom,
+  currentChatMessagesAtom,
+  llmLoadingAtom,
+  llmStreamingAtom,
+} from "sidePanel/utils/atoms";
 import { Role } from "utils/types";
 
 import { LoadingState } from "./styled";
@@ -18,7 +25,8 @@ const NewMessage = ({
 }) => {
   const [llmStreaming] = useAtom(llmStreamingAtom);
   const [llmLoading] = useAtom(llmLoadingAtom);
-  const { currentChatMessages } = useChatMessages();
+  const [currentChatMessages] = useAtom(currentChatMessagesAtom);
+  const [conversationStarted] = useAtom(conversationStartedAtom);
   const chatError = useChatError();
 
   const { handleChange, handleKeyDown, value } = useNewMessage({
@@ -26,10 +34,10 @@ const NewMessage = ({
   });
 
   useEffect(() => {
-    if (currentChatMessages.length === 0) {
+    if (!conversationStarted) {
       textareaRef?.current?.focus();
     }
-  }, [textareaRef, currentChatMessages]);
+  }, [textareaRef, conversationStarted]);
 
   const isLastMessageUserMessage = useMemo(() => {
     const lastMessage = currentChatMessages[currentChatMessages.length - 1];
@@ -52,7 +60,7 @@ const NewMessage = ({
         onChange={handleChange}
         onKeyDown={handleKeyDown}
       />
-      <UserInstructions />
+      <UserInstructions messageType={UserInstructionType.newMessage} />
     </>
   );
 };

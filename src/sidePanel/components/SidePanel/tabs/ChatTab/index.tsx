@@ -4,9 +4,9 @@ import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import ConversationMessage from "sidePanel/components/ConversationMessage";
 import NewMessage from "sidePanel/components/NewMessage";
 import useChatError from "sidePanel/hooks/useChatError";
-import useChatMessages from "sidePanel/hooks/useChatMessages";
 import useConversation from "sidePanel/hooks/useConversation";
 import {
+  currentChatMessagesAtom,
   currentTextareaRefAtom,
   streamingErrorAtom,
 } from "sidePanel/utils/atoms";
@@ -19,7 +19,7 @@ import { ChatTabContent, NewChatButtonContainer } from "./styled";
 const ChatTab = () => {
   const [currentTextareaRef] = useAtom(currentTextareaRefAtom);
   const [, setLlmStreamingError] = useAtom(streamingErrorAtom);
-  const { currentChatMessages } = useChatMessages();
+  const [currentChatMessages] = useAtom(currentChatMessagesAtom);
   const { currentConversation } = useConversation();
   const [isScrolled, setIsScrolled] = useState(false);
   const newMessageTextareaRef = useRef<HTMLTextAreaElement>(null);

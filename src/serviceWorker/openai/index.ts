@@ -35,8 +35,6 @@ export const streamLlmResponse = async ({
     })),
   ];
 
-  console.log("messagesWithSystemPrompt", messagesWithSystemPrompt);
-
   return openai.beta.chat.completions
     .stream({
       max_tokens: 4096,

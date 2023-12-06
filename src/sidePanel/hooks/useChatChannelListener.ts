@@ -27,16 +27,16 @@ const useChatChannelListener = () => {
           appendMessage(channelMessage.payload);
           break;
         case ChatChannelAction.stream_chunk:
-          appendChunk(channelMessage.payload);
           setLlmLoading(false);
+          appendChunk(channelMessage.payload);
           break;
         case ChatChannelAction.stream_finish:
           setLlmStreaming(false);
           break;
         case ChatChannelAction.stream_error:
-          setLlmStreamingError(channelMessage.payload);
           setLlmStreaming(false);
           setLlmLoading(false);
+          setLlmStreamingError(channelMessage.payload);
           break;
       }
     },

@@ -1,12 +1,14 @@
+import { useAtom } from "jotai";
+
 import { Button } from "sidePanel/components/Button";
-import useChatMessages from "sidePanel/hooks/useChatMessages";
 import useConversation from "sidePanel/hooks/useConversation";
+import { conversationStartedAtom } from "sidePanel/utils/atoms";
 
 const NewChatButton = () => {
   const { resetCurrentConversation } = useConversation();
-  const { currentChatMessages } = useChatMessages();
+  const [conversationStarted] = useAtom(conversationStartedAtom);
 
-  if (!currentChatMessages.length) {
+  if (!conversationStarted) {
     return null;
   }
 

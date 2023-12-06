@@ -1,9 +1,13 @@
-import { useRef } from "react";
+import { useAtom } from "jotai";
+import { Fragment, useRef } from "react";
 
 import Screenshot from "sidePanel/components/ScreenshotPreview";
 import Textarea from "sidePanel/components/Textarea";
-import UserInstructions from "sidePanel/components/UserInstructions";
-import useChatMessages from "sidePanel/hooks/useChatMessages";
+import {
+  UserInstructionType,
+  UserInstructions,
+} from "sidePanel/components/UserInstructions";
+import { currentChatMessagesAtom, llmLoadingAtom } from "sidePanel/utils/atoms";
 import { isChatMessageTextContent } from "utils/helpers";
 import { UserChatMessage } from "utils/types";
 
@@ -11,9 +15,11 @@ import useEditMessage from "./useEditMessage";
 
 const UserMessage = ({ chatMessage }: { chatMessage: UserChatMessage }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const { currentChatMessages } = useChatMessages();
+  const [currentChatMessages] = useAtom(currentChatMessagesAtom);
+  const [llmLoading] = useAtom(llmLoadingAtom);
 
   const showUserInstructions =
+    !llmLoading &&
     currentChatMessages[currentChatMessages.length - 1] === chatMessage;
 
   const { handleChange, handleKeyDown, removeImageFromMessage, value } =
@@ -31,7 +37,9 @@ const UserMessage = ({ chatMessage }: { chatMessage: UserChatMessage }) => {
           onChange={handleChange}
           onKeyDown={handleKeyDown}
         />
-        {showUserInstructions && <UserInstructions />}
+        {showUserInstructions && (
+          <UserInstructions messageType={UserInstructionType.existingMessage} />
+        )}
       </>
     );
   }
@@ -39,16 +47,19 @@ const UserMessage = ({ chatMessage }: { chatMessage: UserChatMessage }) => {
   const contents = chatMessage.content.map((content, idx) => {
     if (isChatMessageTextContent(content)) {
       return (
-        <>
+        <Fragment key={idx}>
           <Textarea
-            key={idx}
             textareaRef={textareaRef}
             value={value}
             onChange={handleChange}
             onKeyDown={handleKeyDown}
           />
-          {showUserInstructions && <UserInstructions />}
-        </>
+          {showUserInstructions && (
+            <UserInstructions
+              messageType={UserInstructionType.existingMessage}
+            />
+          )}
+        </Fragment>
       );
     } else {
       return (
