@@ -2,7 +2,7 @@ import { useMedia } from "react-use";
 import { ThemeProvider } from "styled-components";
 
 import SidePanel from "sidePanel/components/SidePanel";
-import { GlobalStyle, THEMES_OBJECT } from "sidePanel/utils/globalStyles";
+import { GlobalStyle, THEMES_OBJECT } from "sidePanel/globalStyles";
 import { ThemeName } from "sidePanel/utils/types";
 
 const App = () => {

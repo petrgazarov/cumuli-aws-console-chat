@@ -5,6 +5,7 @@ import { createConversation as createConversationDb } from "indexedDb/conversati
 import {
   currentChatMessagesAtom,
   currentConversationAtom,
+  streamingErrorAtom,
 } from "sidePanel/utils/atoms";
 
 const useConversation = () => {
@@ -12,6 +13,7 @@ const useConversation = () => {
     currentConversationAtom
   );
   const [, setCurrentChatMessages] = useAtom(currentChatMessagesAtom);
+  const [, setLlmStreamingError] = useAtom(streamingErrorAtom);
 
   const createConversation = useCallback(async () => {
     const newConversation = await createConversationDb();
@@ -24,7 +26,8 @@ const useConversation = () => {
   const resetCurrentConversation = useCallback(() => {
     setCurrentConversation(null);
     setCurrentChatMessages([]);
-  }, [setCurrentConversation, setCurrentChatMessages]);
+    setLlmStreamingError(null);
+  }, [setCurrentConversation, setCurrentChatMessages, setLlmStreamingError]);
 
   return {
     createConversation,

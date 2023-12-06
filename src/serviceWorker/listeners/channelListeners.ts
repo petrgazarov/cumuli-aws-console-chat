@@ -47,6 +47,9 @@ export const chatChannelListener = async (
       break;
     case ChatChannelAction.message_replace:
       {
+        // Abort the streaming runner if it's running
+        streamingRunner?.abort();
+
         const userMessage: UserChatMessage = channelMessage.payload;
         const conversationId = userMessage.conversationId;
 
@@ -65,9 +68,6 @@ export const chatChannelListener = async (
 
         await generateAssistantMessage(conversationId, port);
       }
-      break;
-    case ChatChannelAction.stream_abort:
-      streamingRunner?.abort();
       break;
   }
 };

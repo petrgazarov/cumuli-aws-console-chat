@@ -1,10 +1,13 @@
 import { PrimaryButton, SecondaryButton } from "./styled";
 import { ButtonProps, ButtonVariants } from "./types";
 
-const Button = ({
+export { ButtonBase, PrimaryButton, SecondaryButton } from "./styled";
+
+export const Button = ({
   children,
   disabled = false,
   onClick,
+  style,
   variant,
 }: ButtonProps) => {
   let Component = SecondaryButton;
@@ -19,10 +22,8 @@ const Button = ({
   }
 
   return (
-    <Component disabled={disabled} onClick={onClick}>
+    <Component disabled={disabled} onClick={onClick} style={style}>
       {children}
     </Component>
   );
 };
-
-export default Button;

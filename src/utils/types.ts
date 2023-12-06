@@ -22,7 +22,6 @@ export type ChatMessageImageContent = {
 export enum ChatChannelAction {
   message_new = "message_new",
   message_replace = "message_replace",
-  stream_abort = "stream_abort",
   stream_chunk = "stream_chunk",
   stream_error = "stream_error",
   stream_finish = "stream_finish",

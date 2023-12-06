@@ -5,7 +5,7 @@ import {
   FONT_FAMILY,
   FONT_SIZE_PRIMARY,
   LINE_HEIGHT,
-} from "sidePanel/utils/globalStyles";
+} from "sidePanel/globalStyles";
 
 export const StyledTextarea = styled(TextareaAutosize)`
   background-color: ${({ theme }) => theme.colors.INPUT_BACKGROUND};

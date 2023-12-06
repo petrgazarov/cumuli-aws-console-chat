@@ -1,5 +1,6 @@
+import useChatError from "sidePanel/hooks/useChatError";
+
 import { ErrorContainer, ErrorText } from "./styled";
-import useChatError from "./useChatError";
 
 const ChatError = () => {
   const chatError = useChatError();

@@ -1,14 +1,15 @@
 import { useAtom } from "jotai";
-import { RefObject, useMemo } from "react";
+import { RefObject, useEffect, useMemo } from "react";
 
 import useNewMessage from "sidePanel/components/NewMessage/useNewMessage";
 import Textarea from "sidePanel/components/Textarea";
+import UserInstructions from "sidePanel/components/UserInstructions";
+import useChatError from "sidePanel/hooks/useChatError";
+import useChatMessages from "sidePanel/hooks/useChatMessages";
 import { llmLoadingAtom, llmStreamingAtom } from "sidePanel/utils/atoms";
-import { getKeyboardShortcutModifierKey } from "utils/helpers";
+import { Role } from "utils/types";
 
-import ChatError from "./ChatError";
-import { HelpText, KeyboardSymbol, LoadingState } from "./styled";
-import useChatError from "./useChatError";
+import { LoadingState } from "./styled";
 
 const NewMessage = ({
   textareaRef,
@@ -17,24 +18,30 @@ const NewMessage = ({
 }) => {
   const [llmStreaming] = useAtom(llmStreamingAtom);
   const [llmLoading] = useAtom(llmLoadingAtom);
+  const { currentChatMessages } = useChatMessages();
   const chatError = useChatError();
 
   const { handleChange, handleKeyDown, value } = useNewMessage({
     textareaRef,
   });
 
-  const modifierKey = useMemo(() => getKeyboardShortcutModifierKey(), []);
+  useEffect(() => {
+    if (currentChatMessages.length === 0) {
+      textareaRef?.current?.focus();
+    }
+  }, [textareaRef, currentChatMessages]);
+
+  const isLastMessageUserMessage = useMemo(() => {
+    const lastMessage = currentChatMessages[currentChatMessages.length - 1];
+    return lastMessage?.role === Role.user;
+  }, [currentChatMessages]);
 
   if (llmLoading) {
     return <LoadingState />;
   }
 
-  if (llmStreaming) {
+  if (llmStreaming || chatError || isLastMessageUserMessage) {
     return null;
-  }
-
-  if (chatError) {
-    return <ChatError />;
   }
 
   return (
@@ -45,11 +52,7 @@ const NewMessage = ({
         onChange={handleChange}
         onKeyDown={handleKeyDown}
       />
-      <HelpText>
-        <KeyboardSymbol>{"\u23CE"}</KeyboardSymbol> to send,{" "}
-        <KeyboardSymbol>{modifierKey} + U</KeyboardSymbol> to send with
-        screenshot
-      </HelpText>
+      <UserInstructions />
     </>
   );
 };

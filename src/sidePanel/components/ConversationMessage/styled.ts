@@ -1,9 +1,8 @@
 import styled from "styled-components";
 
-import { LINE_HEIGHT } from "sidePanel/utils/globalStyles";
+import { LINE_HEIGHT } from "sidePanel/globalStyles";
 
-export const TextContent = styled.div`
-  white-space: pre-line;
+export const MarkdownContent = styled.div`
   line-height: ${LINE_HEIGHT};
   padding: 0 7px;
 `;

@@ -9,7 +9,13 @@ import { currentTabAtom } from "sidePanel/utils/atoms";
 import { TabTitlesEnum } from "sidePanel/utils/types";
 import { Conversation, Order } from "utils/types";
 
-import { DeleteButton, GroupItem, Preview, PreviewContainer } from "./styled";
+import {
+  DeleteButton,
+  DeleteButtonContainer,
+  GroupItem,
+  Preview,
+  PreviewContainer,
+} from "./styled";
 
 type ConversationRowProps = {
   conversation: Conversation;
@@ -58,12 +64,14 @@ const ConversationRow = ({ conversation }: ConversationRowProps) => {
       >
         <Preview>{conversation.preview}</Preview>
       </PreviewContainer>
-      <DeleteButton
-        tabIndex={0}
-        onClick={() => deleteConversation(conversation)}
-      >
-        Delete
-      </DeleteButton>
+      <DeleteButtonContainer>
+        <DeleteButton
+          tabIndex={0}
+          onClick={() => deleteConversation(conversation)}
+        >
+          Delete
+        </DeleteButton>
+      </DeleteButtonContainer>
     </GroupItem>
   );
 };

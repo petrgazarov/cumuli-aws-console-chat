@@ -13,19 +13,6 @@
     "48": "icons/logo48.png",
     "128": "icons/logo128.png"
   },
-  "host_permissions": [
-    "*://console.aws.amazon.com/*",
-    "*://*.console.aws.amazon.com/*"
-  ],
-  "web_accessible_resources": [
-    {
-      "resources": ["fonts/*"],
-      "matches": [
-        "*://console.aws.amazon.com/*",
-        "*://*.console.aws.amazon.com/*"
-      ]
-    }
-  ],
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'; style-src 'self' 'unsafe-inline'"
   },

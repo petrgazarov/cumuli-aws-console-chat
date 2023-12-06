@@ -2,14 +2,19 @@ import styled from "styled-components";
 
 export const CancelIconButton = styled.button`
   position: absolute;
+  display: flex;
+  opacity: 0;
   top: 2px;
   right: 2px;
-  display: none;
   border: none;
   background-color: ${({ theme }) => theme.colors.HIGHLIGHT};
   border-radius: 2px;
   padding: 1px;
   cursor: pointer;
+
+  &:focus-visible {
+    opacity: 1;
+  }
 `;
 
 export const ScreenshotContainer = styled.div`
@@ -22,7 +27,7 @@ export const ScreenshotContainer = styled.div`
 
   &:hover {
     ${CancelIconButton} {
-      display: flex;
+      opacity: 1;
     }
   }
 `;

@@ -6,7 +6,7 @@ import {
   FONT_SIZE_PRIMARY,
   FONT_SIZE_SECONDARY,
   LINE_HEIGHT,
-} from "sidePanel/utils/globalStyles";
+} from "sidePanel/globalStyles";
 
 export const Container = styled.div`
   flex-grow: 1;

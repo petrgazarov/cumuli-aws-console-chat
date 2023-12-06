@@ -3,6 +3,7 @@ import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 
 import ConversationMessage from "sidePanel/components/ConversationMessage";
 import NewMessage from "sidePanel/components/NewMessage";
+import useChatError from "sidePanel/hooks/useChatError";
 import useChatMessages from "sidePanel/hooks/useChatMessages";
 import useConversation from "sidePanel/hooks/useConversation";
 import {
@@ -11,8 +12,9 @@ import {
 } from "sidePanel/utils/atoms";
 import { ChatMessage } from "utils/types";
 
+import ChatError from "./ChatError";
 import NewChatButton from "./NewChatButton";
-import { ChatTabContent, NewChatButtonContainer, Separator } from "./styled";
+import { ChatTabContent, NewChatButtonContainer } from "./styled";
 
 const ChatTab = () => {
   const [currentTextareaRef] = useAtom(currentTextareaRefAtom);
@@ -21,12 +23,12 @@ const ChatTab = () => {
   const { currentConversation } = useConversation();
   const [isScrolled, setIsScrolled] = useState(false);
   const newMessageTextareaRef = useRef<HTMLTextAreaElement>(null);
+  const chatError = useChatError();
 
   const renderMessage = useCallback((chatMessage: ChatMessage) => {
     return (
       <Fragment key={chatMessage.id}>
         <ConversationMessage chatMessage={chatMessage} />
-        <Separator />
       </Fragment>
     );
   }, []);
@@ -37,10 +39,6 @@ const ChatTab = () => {
     setIsScrolled(true);
   }, [currentTextareaRef, setIsScrolled]);
 
-  const onNewChatButtonClick = useCallback(() => {
-    newMessageTextareaRef.current?.focus();
-  }, []);
-
   useEffect(() => {
     setLlmStreamingError(null);
   }, [setLlmStreamingError, currentConversation]);
@@ -49,8 +47,9 @@ const ChatTab = () => {
     <ChatTabContent $isScrolled={isScrolled}>
       {currentChatMessages.map(renderMessage)}
       <NewMessage textareaRef={newMessageTextareaRef} />
+      {chatError && <ChatError />}
       <NewChatButtonContainer>
-        <NewChatButton onClick={onNewChatButtonClick} />
+        <NewChatButton />
       </NewChatButtonContainer>
     </ChatTabContent>
   );

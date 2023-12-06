@@ -1,11 +1,9 @@
 import styled from "styled-components";
 
-import { LINE_HEIGHT } from "sidePanel/utils/globalStyles";
+import { LINE_HEIGHT } from "sidePanel/globalStyles";
 import { ThemeName } from "sidePanel/utils/types";
 
-const ButtonBase = styled.button<{
-  disabled: boolean;
-}>`
+export const ButtonBase = styled.button`
   padding: 4px 20px;
   font-weight: 700;
   border-width: 1px;

@@ -1,18 +1,16 @@
 import { useAtom } from "jotai";
 import { useCallback, useRef, useState } from "react";
 
-import Button from "sidePanel/components/Button";
-import { ButtonVariants } from "sidePanel/components/Button/types";
+import { Button } from "sidePanel/components/Button";
 import TextInput from "sidePanel/components/TextInput";
 import { openaiApiKeyAtom } from "sidePanel/utils/atoms";
 import { getAllModifierKeys, saveOpenaiApiKey } from "utils/helpers";
 
+import ClearDataSection from "./ClearDataSection";
 import {
-  ClearDataButtonLabel,
-  ClearDataRow,
+  ApiKeySection,
   ConfigTabContent,
   SubmitApiKeyButtonContainer,
-  TextInputRow,
 } from "./styled";
 
 const ConfigTab = () => {
@@ -54,7 +52,7 @@ const ConfigTab = () => {
 
   return (
     <ConfigTabContent>
-      <TextInputRow>
+      <ApiKeySection>
         <TextInput
           label="OpenAI API Key"
           value={inputValue}
@@ -69,15 +67,8 @@ const ConfigTab = () => {
             Submit
           </Button>
         </SubmitApiKeyButtonContainer>
-      </TextInputRow>
-      <ClearDataRow>
-        <ClearDataButtonLabel>
-          Conversations are stored locally in IndexedDB
-        </ClearDataButtonLabel>
-        <Button onClick={() => {}} variant={ButtonVariants.primary}>
-          Clear all conversations
-        </Button>
-      </ClearDataRow>
+      </ApiKeySection>
+      <ClearDataSection />
     </ConfigTabContent>
   );
 };

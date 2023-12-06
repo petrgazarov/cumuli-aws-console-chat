@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { COLORS } from "sidePanel/utils/globalStyles";
+import { COLORS } from "sidePanel/globalStyles";
 
 const StyledSvg = styled.svg`
   stroke-width: 2px;
