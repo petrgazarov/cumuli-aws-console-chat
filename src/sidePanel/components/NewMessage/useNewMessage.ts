@@ -104,6 +104,7 @@ const useNewMessage = ({ textareaRef }: UseNewMessageProps) => {
   return {
     handleChange,
     handleKeyDown,
+    handleSubmitMessage,
     value: textInput,
   };
 };

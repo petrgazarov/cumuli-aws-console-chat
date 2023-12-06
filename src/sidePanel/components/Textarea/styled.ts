@@ -8,6 +8,7 @@ import {
 } from "sidePanel/globalStyles";
 
 export const StyledTextarea = styled(TextareaAutosize)`
+  flex-grow: 1;
   background-color: ${({ theme }) => theme.colors.INPUT_BACKGROUND};
   border-radius: 2px;
   box-sizing: border-box;
@@ -15,7 +16,6 @@ export const StyledTextarea = styled(TextareaAutosize)`
   border: 1px solid transparent;
   color: ${({ theme }) => theme.colors.PRIMARY_TEXT};
   line-height: ${LINE_HEIGHT};
-  max-width: 100%;
   resize: none;
   font-family: ${FONT_FAMILY};
   font-size: ${FONT_SIZE_PRIMARY};
@@ -28,5 +28,40 @@ export const StyledTextarea = styled(TextareaAutosize)`
 
   &:focus {
     outline: 1px solid ${({ theme }) => theme.colors.FOCUS};
+  }
+`;
+
+export const TextareaContainer = styled.div`
+  display: flex;
+  position: relative;
+  width: 100%;
+`;
+
+export const SendButton = styled.button`
+  position: absolute;
+  display: flex;
+  right: 4px;
+  bottom: 1px;
+  padding: 6px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+
+  svg {
+    fill: ${({ theme }) => theme.colors.PRIMARY_TEXT};
+  }
+
+  &:disabled {
+    cursor: default;
+
+    svg {
+      fill: ${({ theme }) => theme.colors.HELP_TEXT};
+    }
+  }
+
+  &:hover:enabled {
+    svg {
+      fill: ${({ theme }) => theme.colors.ACTIVE_TEXT};
+    }
   }
 `;

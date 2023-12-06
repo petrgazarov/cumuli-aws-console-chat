@@ -1,12 +1,9 @@
 import { useAtom } from "jotai";
-import { Fragment, useRef } from "react";
+import { useRef } from "react";
 
 import Screenshot from "sidePanel/components/ScreenshotPreview";
 import Textarea from "sidePanel/components/Textarea";
-import {
-  UserInstructionType,
-  UserInstructions,
-} from "sidePanel/components/UserInstructions";
+import { UserInstructionType } from "sidePanel/components/UserInstructions";
 import { currentChatMessagesAtom, llmLoadingAtom } from "sidePanel/utils/atoms";
 import { isChatMessageTextContent } from "utils/helpers";
 import { UserChatMessage } from "utils/types";
@@ -22,44 +19,48 @@ const UserMessage = ({ chatMessage }: { chatMessage: UserChatMessage }) => {
     !llmLoading &&
     currentChatMessages[currentChatMessages.length - 1] === chatMessage;
 
-  const { handleChange, handleKeyDown, removeImageFromMessage, value } =
-    useEditMessage({
-      chatMessage,
-      textareaRef,
-    });
+  const {
+    handleChange,
+    handleKeyDown,
+    handleSubmitMessage,
+    removeImageFromMessage,
+    value,
+  } = useEditMessage({
+    chatMessage,
+    textareaRef,
+  });
 
   if (typeof chatMessage.content === "string") {
     return (
-      <>
-        <Textarea
-          textareaRef={textareaRef}
-          value={value}
-          onChange={handleChange}
-          onKeyDown={handleKeyDown}
-        />
-        {showUserInstructions && (
-          <UserInstructions messageType={UserInstructionType.existingMessage} />
-        )}
-      </>
+      <Textarea
+        textareaRef={textareaRef}
+        value={value}
+        onChange={handleChange}
+        onKeyDown={handleKeyDown}
+        userInstructionType={
+          showUserInstructions ? UserInstructionType.existingMessage : undefined
+        }
+        onSendButtonClick={handleSubmitMessage}
+      />
     );
   }
 
   const contents = chatMessage.content.map((content, idx) => {
     if (isChatMessageTextContent(content)) {
       return (
-        <Fragment key={idx}>
-          <Textarea
-            textareaRef={textareaRef}
-            value={value}
-            onChange={handleChange}
-            onKeyDown={handleKeyDown}
-          />
-          {showUserInstructions && (
-            <UserInstructions
-              messageType={UserInstructionType.existingMessage}
-            />
-          )}
-        </Fragment>
+        <Textarea
+          key={idx}
+          textareaRef={textareaRef}
+          value={value}
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
+          userInstructionType={
+            showUserInstructions
+              ? UserInstructionType.existingMessage
+              : undefined
+          }
+          onSendButtonClick={handleSubmitMessage}
+        />
       );
     } else {
       return (

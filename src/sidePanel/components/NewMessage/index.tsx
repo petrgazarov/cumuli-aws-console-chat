@@ -3,10 +3,7 @@ import { RefObject, useEffect, useMemo } from "react";
 
 import useNewMessage from "sidePanel/components/NewMessage/useNewMessage";
 import Textarea from "sidePanel/components/Textarea";
-import {
-  UserInstructionType,
-  UserInstructions,
-} from "sidePanel/components/UserInstructions";
+import { UserInstructionType } from "sidePanel/components/UserInstructions";
 import useChatError from "sidePanel/hooks/useChatError";
 import {
   conversationStartedAtom,
@@ -29,9 +26,10 @@ const NewMessage = ({
   const [conversationStarted] = useAtom(conversationStartedAtom);
   const chatError = useChatError();
 
-  const { handleChange, handleKeyDown, value } = useNewMessage({
-    textareaRef,
-  });
+  const { handleChange, handleKeyDown, handleSubmitMessage, value } =
+    useNewMessage({
+      textareaRef,
+    });
 
   useEffect(() => {
     if (!conversationStarted) {
@@ -53,15 +51,14 @@ const NewMessage = ({
   }
 
   return (
-    <>
-      <Textarea
-        textareaRef={textareaRef}
-        value={value}
-        onChange={handleChange}
-        onKeyDown={handleKeyDown}
-      />
-      <UserInstructions messageType={UserInstructionType.newMessage} />
-    </>
+    <Textarea
+      textareaRef={textareaRef}
+      value={value}
+      onChange={handleChange}
+      onKeyDown={handleKeyDown}
+      userInstructionType={UserInstructionType.newMessage}
+      onSendButtonClick={handleSubmitMessage}
+    />
   );
 };
 

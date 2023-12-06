@@ -90,6 +90,7 @@ const useEditMessage = ({ chatMessage, textareaRef }: UseNewMessageProps) => {
   return {
     handleChange,
     handleKeyDown,
+    handleSubmitMessage,
     removeImageFromMessage,
     value: textInput,
   };
