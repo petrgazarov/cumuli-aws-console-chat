@@ -1,41 +1,54 @@
 import { useAtom } from "jotai";
-import { RefObject, useEffect, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 
 import useNewMessage from "sidePanel/components/NewMessage/useNewMessage";
 import Textarea from "sidePanel/components/Textarea";
-import { UserInstructionType } from "sidePanel/components/UserInstructions";
 import useChatError from "sidePanel/hooks/useChatError";
 import {
   conversationStartedAtom,
   currentChatMessagesAtom,
+  documentWasFocusedAtom,
   llmLoadingAtom,
   llmStreamingAtom,
+  newMessageTextareaRefAtom,
 } from "sidePanel/utils/atoms";
 import { Role } from "utils/types";
 
 import { LoadingState } from "./styled";
 
-const NewMessage = ({
-  textareaRef,
-}: {
-  textareaRef: RefObject<HTMLTextAreaElement>;
-}) => {
+const NewMessage = () => {
   const [llmStreaming] = useAtom(llmStreamingAtom);
   const [llmLoading] = useAtom(llmLoadingAtom);
   const [currentChatMessages] = useAtom(currentChatMessagesAtom);
   const [conversationStarted] = useAtom(conversationStartedAtom);
+  const [newMessageTextareaRef] = useAtom(newMessageTextareaRefAtom);
+  const [documentWasFocused] = useAtom(documentWasFocusedAtom);
   const chatError = useChatError();
 
   const { handleChange, handleKeyDown, handleSubmitMessage, value } =
-    useNewMessage({
-      textareaRef,
-    });
+    useNewMessage();
 
   useEffect(() => {
-    if (!conversationStarted) {
-      textareaRef?.current?.focus();
+    /* When the sidepanel initially loads, it does not receive focus authority immediately.
+     * Instead, the sidepanel must be focused by the user _before_ it can focus itself programmatically.
+     * documentWasFocused state gets rid of the jerkiness that occurs the first time user focuses the sidepanel.
+     */
+    if (documentWasFocused && !conversationStarted) {
+      newMessageTextareaRef?.current?.focus();
     }
-  }, [textareaRef, conversationStarted]);
+  }, [newMessageTextareaRef, conversationStarted, documentWasFocused]);
+
+  useEffect(() => {
+    return () => {
+      if (llmStreaming) {
+        setTimeout(() => {
+          // This is a hack to focus the textarea after the LLM streaming stops.
+          // eslint-disable-next-line react-hooks/exhaustive-deps
+          newMessageTextareaRef?.current?.focus();
+        }, 50);
+      }
+    };
+  }, [llmStreaming, newMessageTextareaRef]);
 
   const isLastMessageUserMessage = useMemo(() => {
     const lastMessage = currentChatMessages[currentChatMessages.length - 1];
@@ -52,11 +65,10 @@ const NewMessage = ({
 
   return (
     <Textarea
-      textareaRef={textareaRef}
+      textareaRef={newMessageTextareaRef}
       value={value}
       onChange={handleChange}
       onKeyDown={handleKeyDown}
-      userInstructionType={UserInstructionType.newMessage}
       onSendButtonClick={handleSubmitMessage}
     />
   );

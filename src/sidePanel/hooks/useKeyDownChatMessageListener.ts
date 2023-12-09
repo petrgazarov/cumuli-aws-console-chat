@@ -43,6 +43,8 @@ const useKeyDownChatMessageListener = ({
         return;
       }
 
+      textareaRef.current?.blur();
+
       handleSubmitMessage(currentInputValue);
     },
     [handleSubmitMessage, textareaRef, setTextInput]

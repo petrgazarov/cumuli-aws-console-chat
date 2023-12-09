@@ -1,6 +1,13 @@
 import { useAtom } from "jotai";
+import { useEffect } from "react";
 
-import { currentTabAtom } from "sidePanel/utils/atoms";
+import useChatChannelListener from "sidePanel/hooks/useChatChannelListener";
+import useCommandChannelListener from "sidePanel/hooks/useCommandChannelListener";
+import {
+  chatChannelAtom,
+  currentTabAtom,
+  screenshotChatMessageIdAtom,
+} from "sidePanel/utils/atoms";
 import { PANEL_CONTENT_ID } from "sidePanel/utils/constants";
 import { TabTitlesEnum } from "sidePanel/utils/types";
 
@@ -14,6 +21,23 @@ import useInitialData from "./useInitialData";
 const SidePanel = () => {
   const [currentTab] = useAtom(currentTabAtom);
   const { hasLoaded } = useInitialData();
+  const [, setChatChannel] = useAtom(chatChannelAtom);
+  const [screenshotChatMessageId, setScreenshotChatMessageId] = useAtom(
+    screenshotChatMessageIdAtom
+  );
+  const { postChatMessage } = useChatChannelListener();
+
+  useEffect(() => {
+    setChatChannel({ post: postChatMessage });
+  }, [postChatMessage, setChatChannel]);
+
+  useCommandChannelListener();
+
+  useEffect(() => {
+    if (screenshotChatMessageId || screenshotChatMessageId === null) {
+      setScreenshotChatMessageId(undefined);
+    }
+  }, [screenshotChatMessageId, setScreenshotChatMessageId]);
 
   if (!hasLoaded) {
     return <Container />;

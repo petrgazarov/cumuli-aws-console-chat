@@ -1,50 +1,89 @@
 import { useAtom } from "jotai";
+import { useMemo, useState } from "react";
 
+import ReSendIcon from "sidePanel/components/icons/ReSendIcon";
 import SendIcon from "sidePanel/components/icons/SendIcon";
+import { focusedTextareaAtom } from "sidePanel/utils/atoms";
 import {
-  UserInstructionType,
-  UserInstructions,
-} from "sidePanel/components/UserInstructions";
-import { currentTextareaRefAtom } from "sidePanel/utils/atoms";
-import {
+  currentChatMessagesAtom,
   llmLoadingAtom,
   llmStreamingAtom,
   openaiApiKeyAtom,
 } from "sidePanel/utils/atoms";
+import { ChatMessage } from "utils/types";
 
-import { SendButton, StyledTextarea, TextareaContainer } from "./styled";
+import {
+  Container,
+  SendButton,
+  StyledTextarea,
+  TextareaContainer,
+} from "./styled";
+import { UserInstructionType, UserInstructions } from "./UserInstructions";
 
 type TextareaProps = {
+  chatMessage?: ChatMessage;
   onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
   onKeyDown: (event: React.KeyboardEvent<HTMLTextAreaElement>) => void;
   onSendButtonClick: (value: string) => void;
   textareaRef: React.RefObject<HTMLTextAreaElement>;
-  userInstructionType?: UserInstructionType;
   value: string;
 };
 
 const Textarea = ({
+  chatMessage,
   onChange,
   onKeyDown,
   onSendButtonClick,
   textareaRef,
-  userInstructionType,
   value,
 }: TextareaProps) => {
-  const [, setCurrentTextareaRef] = useAtom(currentTextareaRefAtom);
+  const [, setFocusedChatMessage] = useAtom(focusedTextareaAtom);
   const [openaiApiKey] = useAtom(openaiApiKeyAtom);
   const [llmStreaming] = useAtom(llmStreamingAtom);
   const [llmLoading] = useAtom(llmLoadingAtom);
+  const [currentChatMessages] = useAtom(currentChatMessagesAtom);
+  const [isFocused, setIsFocused] = useState(false);
+
+  const showAdditionalElements = useMemo(() => {
+    if (!chatMessage) {
+      return true;
+    }
+
+    if (llmLoading || llmStreaming) {
+      return false;
+    }
+
+    if (isFocused) {
+      return true;
+    }
+
+    if (currentChatMessages[currentChatMessages.length - 1] === chatMessage) {
+      return true;
+    }
+
+    return false;
+  }, [chatMessage, isFocused, llmLoading, llmStreaming, currentChatMessages]);
+
+  const userInstructionType = chatMessage
+    ? UserInstructionType.existingMessage
+    : UserInstructionType.newMessage;
 
   const sendButtonDisabled = !value || llmStreaming || llmLoading;
 
   return (
-    <>
+    <Container $reduceBottomSpace={showAdditionalElements}>
       <TextareaContainer>
         <StyledTextarea
           ref={textareaRef}
           value={value}
-          onFocus={() => setCurrentTextareaRef(textareaRef)}
+          onFocus={() => {
+            setFocusedChatMessage({ chatMessage, textareaRef });
+            setIsFocused(true);
+          }}
+          onBlur={() => {
+            setFocusedChatMessage({});
+            setIsFocused(false);
+          }}
           onChange={onChange}
           onKeyDown={onKeyDown}
           minRows={1}
@@ -52,16 +91,23 @@ const Textarea = ({
           placeholder="Type a message..."
         />
         <SendButton
-          onClick={() => onSendButtonClick(value)}
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={() => {
+            textareaRef.current?.blur();
+            onSendButtonClick(value);
+          }}
           disabled={sendButtonDisabled}
+          $show={showAdditionalElements}
+          tabIndex={-1}
         >
-          <SendIcon />
+          {chatMessage ? <ReSendIcon /> : <SendIcon />}
         </SendButton>
       </TextareaContainer>
-      {userInstructionType && (
-        <UserInstructions messageType={userInstructionType} />
-      )}
-    </>
+      <UserInstructions
+        messageType={userInstructionType}
+        show={showAdditionalElements}
+      />
+    </Container>
   );
 };
 

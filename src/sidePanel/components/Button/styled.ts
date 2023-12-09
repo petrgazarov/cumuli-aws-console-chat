@@ -14,6 +14,8 @@ export const ButtonBase = styled.button`
 
   &:disabled {
     cursor: default;
+    border-color: ${({ theme }) => theme.colors.HELP_TEXT};
+    color: ${({ theme }) => theme.colors.HELP_TEXT};
   }
 `;
 
@@ -25,8 +27,8 @@ export const PrimaryButton = styled(ButtonBase)`
       ? theme.colors.PRIMARY_TEXT
       : theme.colors.HIGHLIGHT};
 
-  &:hover,
-  &:focus-visible {
+  &:focus-visible,
+  &:hover:enabled {
     color: ${({ theme }) =>
       theme.name === ThemeName.dark
         ? theme.colors.HIGHLIGHT
@@ -43,11 +45,6 @@ export const SecondaryButton = styled(ButtonBase)`
     theme.name === ThemeName.dark
       ? theme.colors.PRIMARY_TEXT
       : theme.colors.ACTIVE_TEXT};
-
-  &:disabled {
-    border-color: ${({ theme }) => theme.colors.HELP_TEXT};
-    color: ${({ theme }) => theme.colors.HELP_TEXT};
-  }
 
   &:focus-visible,
   &:hover:enabled {

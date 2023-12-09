@@ -7,6 +7,17 @@ import {
   LINE_HEIGHT,
 } from "sidePanel/globalStyles";
 
+export const Container = styled.div<{ $reduceBottomSpace: boolean }>`
+  ${({ $reduceBottomSpace }) =>
+    $reduceBottomSpace &&
+    `
+ /* Hack to reduce the space before the next message */
+ z-index: 1;
+ & + * {
+   margin-top: -13px;
+ }`}
+`;
+
 export const StyledTextarea = styled(TextareaAutosize)`
   flex-grow: 1;
   background-color: ${({ theme }) => theme.colors.INPUT_BACKGROUND};
@@ -19,7 +30,7 @@ export const StyledTextarea = styled(TextareaAutosize)`
   resize: none;
   font-family: ${FONT_FAMILY};
   font-size: ${FONT_SIZE_PRIMARY};
-  padding: 4px 8px;
+  padding: 4px 30px 4px 8px;
 
   &::placeholder {
     color: ${({ theme }) => theme.colors.HELP_TEXT};
@@ -31,15 +42,9 @@ export const StyledTextarea = styled(TextareaAutosize)`
   }
 `;
 
-export const TextareaContainer = styled.div`
-  display: flex;
-  position: relative;
-  width: 100%;
-`;
-
-export const SendButton = styled.button`
+export const SendButton = styled.button<{ $show: boolean }>`
   position: absolute;
-  display: flex;
+  display: ${({ $show }) => ($show ? "flex" : "none")};
   right: 4px;
   bottom: 1px;
   padding: 6px;
@@ -64,4 +69,10 @@ export const SendButton = styled.button`
       fill: ${({ theme }) => theme.colors.ACTIVE_TEXT};
     }
   }
+`;
+
+export const TextareaContainer = styled.div`
+  display: flex;
+  position: relative;
+  width: 100%;
 `;

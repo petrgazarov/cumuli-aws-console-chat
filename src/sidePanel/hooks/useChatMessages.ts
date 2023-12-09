@@ -45,7 +45,7 @@ const useChatMessages = () => {
   );
 
   const replaceMessage = useCallback(
-    (chatMessage: UserChatMessage) => {
+    (chatMessage: ChatMessage) => {
       setCurrentChatMessages((prevChatMessages): ChatMessage[] => {
         const messageIndex = prevChatMessages.findIndex(
           (m) => m.id === chatMessage.id
@@ -60,6 +60,27 @@ const useChatMessages = () => {
       getConversations();
     },
     [setCurrentChatMessages, getConversations]
+  );
+
+  const appendOrReconcileMessage = useCallback(
+    (chatMessage: ChatMessage) => {
+      setCurrentChatMessages((prevChatMessages): ChatMessage[] => {
+        const messageIndex = prevChatMessages.findIndex(
+          (m) => m.id === chatMessage.id
+        );
+
+        if (messageIndex === -1) {
+          return [...prevChatMessages, chatMessage];
+        }
+
+        return [
+          ...prevChatMessages.slice(0, messageIndex),
+          chatMessage,
+          ...prevChatMessages.slice(messageIndex + 1),
+        ];
+      });
+    },
+    [setCurrentChatMessages]
   );
 
   const removeImageFromMessage = useCallback(
@@ -95,6 +116,7 @@ const useChatMessages = () => {
   return {
     appendChunk,
     appendMessage,
+    appendOrReconcileMessage,
     removeImageFromMessage,
     replaceMessage,
   };

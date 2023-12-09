@@ -5,7 +5,7 @@ import { FONT_SIZE_SECONDARY } from "sidePanel/globalStyles";
 
 export const ButtonsContainer = styled.div`
   display: flex;
-  width: 240px;
+  width: 247px;
 `;
 
 export const ButtonLabel = styled.div`

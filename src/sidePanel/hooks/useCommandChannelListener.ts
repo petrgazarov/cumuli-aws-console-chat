@@ -2,8 +2,9 @@ import { useAtom } from "jotai";
 import { useCallback, useEffect } from "react";
 
 import {
-  currentTextareaRefAtom,
+  focusedTextareaAtom,
   llmStreamingAtom,
+  screenshotChatMessageIdAtom,
 } from "sidePanel/utils/atoms";
 import {
   addOnMessageListener,
@@ -11,17 +12,10 @@ import {
 } from "sidePanel/utils/listeners";
 import { CommandChannelAction, CommandChannelMessage } from "utils/types";
 
-type UseCommandChannelListenerParams = {
-  handleSubmitWithScreenshotCommand: (value: string) => void;
-  textareaRef: React.RefObject<HTMLTextAreaElement>;
-};
-
-const useCommandChannelListener = ({
-  handleSubmitWithScreenshotCommand,
-  textareaRef,
-}: UseCommandChannelListenerParams) => {
+const useCommandChannelListener = () => {
   const [llmStreaming] = useAtom(llmStreamingAtom);
-  const [currentTextareaRef] = useAtom(currentTextareaRefAtom);
+  const [, setScreenshotChatMessageId] = useAtom(screenshotChatMessageIdAtom);
+  const [focusedTextarea] = useAtom(focusedTextareaAtom);
 
   const commandChannelListener = useCallback(
     async (channelMessage: CommandChannelMessage) => {
@@ -33,22 +27,25 @@ const useCommandChannelListener = ({
       if (llmStreaming) {
         return;
       }
-      if (currentTextareaRef !== textareaRef) {
+
+      const { chatMessage, textareaRef } = focusedTextarea;
+
+      if (!textareaRef) {
+        console.debug(
+          "[Cumuli] Screenshot requested, but no textarea is focused"
+        );
         return;
       }
+
       const currentInputValue = textareaRef.current?.value || "";
+
       if (!currentInputValue.trim()) {
         return;
       }
 
-      handleSubmitWithScreenshotCommand(currentInputValue);
+      setScreenshotChatMessageId(chatMessage?.id || null);
     },
-    [
-      llmStreaming,
-      currentTextareaRef,
-      textareaRef,
-      handleSubmitWithScreenshotCommand,
-    ]
+    [llmStreaming, focusedTextarea, setScreenshotChatMessageId]
   );
 
   useEffect(() => {

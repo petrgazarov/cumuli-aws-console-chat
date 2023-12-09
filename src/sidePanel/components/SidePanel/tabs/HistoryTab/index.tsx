@@ -1,10 +1,21 @@
+import { useEffect } from "react";
+
 import useConversations from "sidePanel/hooks/useConversations";
+import { scrollToTop } from "sidePanel/utils/helpers";
 
 import ConversationGroup from "./ConversationGroup";
 import { EmptyContent, HistoryTabContent } from "./styled";
 
 const HistoryTab = () => {
-  const { groupedConversations } = useConversations();
+  const { getConversations, groupedConversations } = useConversations();
+
+  useEffect(() => {
+    getConversations();
+  }, [getConversations]);
+
+  useEffect(() => {
+    scrollToTop();
+  }, []);
 
   return (
     <HistoryTabContent>

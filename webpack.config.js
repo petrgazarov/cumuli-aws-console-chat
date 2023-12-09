@@ -10,7 +10,7 @@ module.exports = {
   mode,
   devtool: mode === "development" ? "source-map" : false,
   entry: {
-    sidepanel: path.join(__dirname, "src", "sidepanel"),
+    sidepanel: path.join(__dirname, "src", "sidePanel"),
     serviceWorker: path.join(__dirname, "src", "serviceWorker", "index.ts"),
   },
   output: {

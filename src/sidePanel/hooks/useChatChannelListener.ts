@@ -15,7 +15,8 @@ const useChatChannelListener = () => {
   const [, setLlmLoading] = useAtom(llmLoadingAtom);
   const [, setLlmStreaming] = useAtom(llmStreamingAtom);
   const [, setLlmStreamingError] = useAtom(streamingErrorAtom);
-  const { appendChunk, appendMessage, replaceMessage } = useChatMessages();
+  const { appendChunk, appendOrReconcileMessage, replaceMessage } =
+    useChatMessages();
 
   const chatChannelListener = useCallback(
     (channelMessage: ChatChannelMessage) => {
@@ -24,13 +25,14 @@ const useChatChannelListener = () => {
           replaceMessage(channelMessage.payload);
           break;
         case ChatChannelAction.message_new:
-          appendMessage(channelMessage.payload);
+          appendOrReconcileMessage(channelMessage.payload);
           break;
         case ChatChannelAction.stream_chunk:
           setLlmLoading(false);
           appendChunk(channelMessage.payload);
           break;
         case ChatChannelAction.stream_finish:
+          setLlmLoading(false);
           setLlmStreaming(false);
           break;
         case ChatChannelAction.stream_error:
@@ -42,7 +44,7 @@ const useChatChannelListener = () => {
     },
     [
       replaceMessage,
-      appendMessage,
+      appendOrReconcileMessage,
       appendChunk,
       setLlmLoading,
       setLlmStreaming,

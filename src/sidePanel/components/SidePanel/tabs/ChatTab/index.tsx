@@ -1,5 +1,5 @@
 import { useAtom } from "jotai";
-import { Fragment, useCallback, useEffect, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect } from "react";
 
 import ConversationMessage from "sidePanel/components/ConversationMessage";
 import NewMessage from "sidePanel/components/NewMessage";
@@ -7,9 +7,9 @@ import useChatError from "sidePanel/hooks/useChatError";
 import useConversation from "sidePanel/hooks/useConversation";
 import {
   currentChatMessagesAtom,
-  currentTextareaRefAtom,
   streamingErrorAtom,
 } from "sidePanel/utils/atoms";
+import { scrollToTop } from "sidePanel/utils/helpers";
 import { ChatMessage } from "utils/types";
 
 import ChatError from "./ChatError";
@@ -17,12 +17,9 @@ import NewChatButton from "./NewChatButton";
 import { ChatTabContent, NewChatButtonContainer } from "./styled";
 
 const ChatTab = () => {
-  const [currentTextareaRef] = useAtom(currentTextareaRefAtom);
   const [, setLlmStreamingError] = useAtom(streamingErrorAtom);
   const [currentChatMessages] = useAtom(currentChatMessagesAtom);
   const { currentConversation } = useConversation();
-  const [isScrolled, setIsScrolled] = useState(false);
-  const newMessageTextareaRef = useRef<HTMLTextAreaElement>(null);
   const chatError = useChatError();
 
   const renderMessage = useCallback((chatMessage: ChatMessage) => {
@@ -34,19 +31,17 @@ const ChatTab = () => {
   }, []);
 
   useEffect(() => {
-    // Focusing the textarea scrolls the chat to the bottom. "isScrolled" state
-    // is used to add a delay to prevent flickering.
-    setIsScrolled(true);
-  }, [currentTextareaRef, setIsScrolled]);
+    scrollToTop();
+  }, []);
 
   useEffect(() => {
     setLlmStreamingError(null);
   }, [setLlmStreamingError, currentConversation]);
 
   return (
-    <ChatTabContent $isScrolled={isScrolled}>
+    <ChatTabContent>
       {currentChatMessages.map(renderMessage)}
-      <NewMessage textareaRef={newMessageTextareaRef} />
+      <NewMessage />
       {chatError && <ChatError />}
       <NewChatButtonContainer>
         <NewChatButton />

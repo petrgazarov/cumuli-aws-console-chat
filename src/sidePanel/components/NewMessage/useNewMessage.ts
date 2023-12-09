@@ -1,72 +1,81 @@
 import { useAtom } from "jotai";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
-import useChatChannelListener from "sidePanel/hooks/useChatChannelListener";
-import useCommandChannelListener from "sidePanel/hooks/useCommandChannelListener";
+import useChatMessages from "sidePanel/hooks/useChatMessages";
 import useConversation from "sidePanel/hooks/useConversation";
 import useKeyDownChatMessageListener from "sidePanel/hooks/useKeyDownChatMessageListener";
-import { llmLoadingAtom, llmStreamingAtom } from "sidePanel/utils/atoms";
+import {
+  chatChannelAtom,
+  llmLoadingAtom,
+  llmStreamingAtom,
+  newMessageTextareaRefAtom,
+  screenshotChatMessageIdAtom,
+} from "sidePanel/utils/atoms";
 import {
   ChatChannelAction,
   NewUserChatMessage,
   UserChatMessage,
 } from "utils/types";
 
-type UseNewMessageProps = {
-  textareaRef: React.RefObject<HTMLTextAreaElement>;
-};
-
-const useNewMessage = ({ textareaRef }: UseNewMessageProps) => {
+const useNewMessage = () => {
   const [textInput, setTextInput] = useState("");
   const [, setLlmLoading] = useAtom(llmLoadingAtom);
   const [, setLlmStreaming] = useAtom(llmStreamingAtom);
+  const [screenshotChatMessageId] = useAtom(screenshotChatMessageIdAtom);
+  const [chatChannel] = useAtom(chatChannelAtom);
+  const [newMessageTextareaRef] = useAtom(newMessageTextareaRefAtom);
   const { createConversation, currentConversation } = useConversation();
-
-  const { postChatMessage } = useChatChannelListener();
+  const { appendMessage } = useChatMessages();
 
   const handleCreateNewMessage = useCallback(
     (message: UserChatMessage) => {
-      postChatMessage({
+      chatChannel.post({
         action: ChatChannelAction.message_new,
         payload: message,
       });
       setTextInput("");
       setLlmLoading(true);
       setLlmStreaming(true);
+      appendMessage(message);
     },
-    [postChatMessage, setLlmLoading, setLlmStreaming]
+    [chatChannel, setLlmLoading, setLlmStreaming, appendMessage]
   );
 
-  const handleSubmitWithScreenshotCommand = useCallback(
-    async (value: string) => {
-      let conversationId: string;
-      if (currentConversation) {
-        conversationId = currentConversation.id;
-      } else {
-        const newConversation = await createConversation();
-        conversationId = newConversation.id;
-      }
+  const handleSubmitWithScreenshotCommand = useCallback(async () => {
+    const currentInputValue = newMessageTextareaRef.current?.value || "";
 
-      handleCreateNewMessage(
-        NewUserChatMessage({
-          content: [
-            { text: value, type: "text" },
-            {
-              image_url: { detail: "high", url: "" },
-              type: "image_url",
-            },
-          ],
-          conversationId,
-        })
-      );
-    },
-    [handleCreateNewMessage, currentConversation, createConversation]
-  );
+    let conversationId: string;
+    if (currentConversation) {
+      conversationId = currentConversation.id;
+    } else {
+      const newConversation = await createConversation();
+      conversationId = newConversation.id;
+    }
 
-  useCommandChannelListener({
-    handleSubmitWithScreenshotCommand,
-    textareaRef,
-  });
+    handleCreateNewMessage(
+      NewUserChatMessage({
+        content: [
+          { text: currentInputValue, type: "text" },
+          {
+            image_url: { detail: "high", url: "" },
+            type: "image_url",
+          },
+        ],
+        conversationId,
+      })
+    );
+  }, [
+    newMessageTextareaRef,
+    handleCreateNewMessage,
+    currentConversation,
+    createConversation,
+  ]);
+
+  useEffect(() => {
+    if (screenshotChatMessageId === null) {
+      handleSubmitWithScreenshotCommand();
+    }
+  }, [screenshotChatMessageId, handleSubmitWithScreenshotCommand]);
 
   const handleSubmitMessage = useCallback(
     async (value: string) => {
@@ -91,7 +100,7 @@ const useNewMessage = ({ textareaRef }: UseNewMessageProps) => {
   const handleKeyDown = useKeyDownChatMessageListener({
     handleSubmitMessage,
     setTextInput,
-    textareaRef,
+    textareaRef: newMessageTextareaRef,
   });
 
   const handleChange = useCallback(
