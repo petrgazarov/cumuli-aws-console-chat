@@ -1,1 +1,1 @@
-# aws-chrome-extension
+# cumuli-aws-chrome-extension
