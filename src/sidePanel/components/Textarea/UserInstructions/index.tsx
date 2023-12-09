@@ -10,11 +10,13 @@ export enum UserInstructionType {
 }
 
 type UserInstructionsProps = {
+  messageHasImage: boolean;
   messageType: UserInstructionType;
   show: boolean;
 };
 
 export const UserInstructions = ({
+  messageHasImage,
   messageType,
   show,
 }: UserInstructionsProps) => {
@@ -34,7 +36,8 @@ export const UserInstructions = ({
   const existingInstructions = (
     <>
       <EnterKeyboardSymbol>{"\u23CE"}</EnterKeyboardSymbol> to resend,{" "}
-      <KeyboardSymbol>{modifierKey} + U</KeyboardSymbol> to resend with new
+      <KeyboardSymbol>{modifierKey} + U</KeyboardSymbol> to resend with{" "}
+      {messageHasImage ? "new " : ""}
       screenshot
     </>
   );

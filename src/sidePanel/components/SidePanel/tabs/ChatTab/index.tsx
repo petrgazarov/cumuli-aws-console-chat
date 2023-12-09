@@ -9,7 +9,6 @@ import {
   currentChatMessagesAtom,
   streamingErrorAtom,
 } from "sidePanel/utils/atoms";
-import { scrollToTop } from "sidePanel/utils/helpers";
 import { ChatMessage } from "utils/types";
 
 import ChatError from "./ChatError";
@@ -28,10 +27,6 @@ const ChatTab = () => {
         <ConversationMessage chatMessage={chatMessage} />
       </Fragment>
     );
-  }, []);
-
-  useEffect(() => {
-    scrollToTop();
   }, []);
 
   useEffect(() => {

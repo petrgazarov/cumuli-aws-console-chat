@@ -91,6 +91,7 @@ export const getAllModifierKeys = (): string[] => {
     "CapsLock",
     "NumLock",
     "ScrollLock",
+    "Tab",
   ];
 };
 

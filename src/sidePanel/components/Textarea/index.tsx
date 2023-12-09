@@ -66,19 +66,22 @@ const Textarea = ({
     return false;
   }, [chatMessage, isFocused, llmLoading, llmStreaming, currentChatMessages]);
 
+  const messageHasImage = useMemo(
+    () => Boolean(chatMessage && getImageContentFromMessage(chatMessage)),
+    [chatMessage]
+  );
+
   const bottomMargin = useMemo(() => {
     if (!showAdditionalElements) {
       return ContainerBottomMargin.default;
     }
 
-    const hasImage = chatMessage && getImageContentFromMessage(chatMessage);
-
-    if (hasImage) {
+    if (messageHasImage) {
       return ContainerBottomMargin.smallNegative;
     } else {
       return ContainerBottomMargin.largeNegative;
     }
-  }, [showAdditionalElements, chatMessage]);
+  }, [showAdditionalElements, messageHasImage]);
 
   const userInstructionType = chatMessage
     ? UserInstructionType.existingMessage
@@ -120,6 +123,7 @@ const Textarea = ({
       <UserInstructions
         messageType={userInstructionType}
         show={showAdditionalElements}
+        messageHasImage={messageHasImage}
       />
     </Container>
   );
