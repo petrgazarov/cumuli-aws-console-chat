@@ -7,15 +7,19 @@ import {
   LINE_HEIGHT,
 } from "sidePanel/globalStyles";
 
-export const Container = styled.div<{ $reduceBottomSpace: boolean }>`
-  ${({ $reduceBottomSpace }) =>
-    $reduceBottomSpace &&
-    `
- /* Hack to reduce the space before the next message */
- z-index: 1;
- & + * {
-   margin-top: -13px;
- }`}
+export enum ContainerBottomMargin {
+  default = "0px",
+  largeNegative = "-13px",
+  smallNegative = "-7px",
+}
+
+export const Container = styled.div<{ $bottomMargin: ContainerBottomMargin }>`
+  z-index: 1;
+
+  /* Hack to reduce the space before the next message */
+  & + * {
+    margin-top: ${({ $bottomMargin }) => $bottomMargin};
+  }
 `;
 
 export const StyledTextarea = styled(TextareaAutosize)`

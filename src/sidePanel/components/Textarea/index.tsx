@@ -10,10 +10,12 @@ import {
   llmStreamingAtom,
   openaiApiKeyAtom,
 } from "sidePanel/utils/atoms";
+import { getImageContentFromMessage } from "utils/helpers";
 import { ChatMessage } from "utils/types";
 
 import {
   Container,
+  ContainerBottomMargin,
   SendButton,
   StyledTextarea,
   TextareaContainer,
@@ -64,14 +66,26 @@ const Textarea = ({
     return false;
   }, [chatMessage, isFocused, llmLoading, llmStreaming, currentChatMessages]);
 
+  const bottomMargin = useMemo(() => {
+    if (!showAdditionalElements) {
+      return ContainerBottomMargin.default;
+    }
+
+    const hasImage = chatMessage && getImageContentFromMessage(chatMessage);
+
+    if (hasImage) {
+      return ContainerBottomMargin.smallNegative;
+    } else {
+      return ContainerBottomMargin.largeNegative;
+    }
+  }, [showAdditionalElements, chatMessage]);
+
   const userInstructionType = chatMessage
     ? UserInstructionType.existingMessage
     : UserInstructionType.newMessage;
 
-  const sendButtonDisabled = !value || llmStreaming || llmLoading;
-
   return (
-    <Container $reduceBottomSpace={showAdditionalElements}>
+    <Container $bottomMargin={bottomMargin}>
       <TextareaContainer>
         <StyledTextarea
           ref={textareaRef}
@@ -96,7 +110,7 @@ const Textarea = ({
             textareaRef.current?.blur();
             onSendButtonClick(value);
           }}
-          disabled={sendButtonDisabled}
+          disabled={!value}
           $show={showAdditionalElements}
           tabIndex={-1}
         >

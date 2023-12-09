@@ -39,6 +39,7 @@ const UserMessage = ({ chatMessage }: { chatMessage: UserChatMessage }) => {
       return (
         <Textarea
           key={idx}
+          chatMessage={chatMessage}
           textareaRef={textareaRef}
           value={value}
           onChange={handleChange}

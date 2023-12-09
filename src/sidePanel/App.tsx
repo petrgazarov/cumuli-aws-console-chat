@@ -16,6 +16,10 @@ const App = () => {
 
   const [, setDocumentWasFocused] = useAtom(documentWasFocusedAtom);
 
+  /* When the sidepanel initially loads, it does not receive focus authority immediately.
+   * Instead, the sidepanel must be focused by the user _before_ it can focus itself programmatically.
+   * documentWasFocused state gets rid of the jerkiness that occurs the first time user focuses the sidepanel.
+   */
   useEffect(() => {
     const handleFocusIn = () => {
       setTimeout(() => {

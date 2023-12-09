@@ -29,25 +29,15 @@ const NewMessage = () => {
     useNewMessage();
 
   useEffect(() => {
-    /* When the sidepanel initially loads, it does not receive focus authority immediately.
-     * Instead, the sidepanel must be focused by the user _before_ it can focus itself programmatically.
-     * documentWasFocused state gets rid of the jerkiness that occurs the first time user focuses the sidepanel.
-     */
     if (documentWasFocused && !conversationStarted) {
       newMessageTextareaRef?.current?.focus();
     }
   }, [newMessageTextareaRef, conversationStarted, documentWasFocused]);
 
   useEffect(() => {
-    return () => {
-      if (llmStreaming) {
-        setTimeout(() => {
-          // This is a hack to focus the textarea after the LLM streaming stops.
-          // eslint-disable-next-line react-hooks/exhaustive-deps
-          newMessageTextareaRef?.current?.focus();
-        }, 50);
-      }
-    };
+    if (!llmStreaming) {
+      newMessageTextareaRef?.current?.focus();
+    }
   }, [llmStreaming, newMessageTextareaRef]);
 
   const isLastMessageUserMessage = useMemo(() => {

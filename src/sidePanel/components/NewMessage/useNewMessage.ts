@@ -19,7 +19,7 @@ import {
 
 const useNewMessage = () => {
   const [textInput, setTextInput] = useState("");
-  const [, setLlmLoading] = useAtom(llmLoadingAtom);
+  const [llmLoading, setLlmLoading] = useAtom(llmLoadingAtom);
   const [, setLlmStreaming] = useAtom(llmStreamingAtom);
   const [screenshotChatMessageId] = useAtom(screenshotChatMessageIdAtom);
   const [chatChannel] = useAtom(chatChannelAtom);
@@ -33,7 +33,6 @@ const useNewMessage = () => {
         action: ChatChannelAction.message_new,
         payload: message,
       });
-      setTextInput("");
       setLlmLoading(true);
       setLlmStreaming(true);
       appendMessage(message);
@@ -109,6 +108,12 @@ const useNewMessage = () => {
     },
     []
   );
+
+  useEffect(() => {
+    if (llmLoading) {
+      setTextInput("");
+    }
+  }, [llmLoading]);
 
   return {
     handleChange,

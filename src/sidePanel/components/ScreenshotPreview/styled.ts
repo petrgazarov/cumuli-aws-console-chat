@@ -1,5 +1,9 @@
 import styled from "styled-components";
 
+export const Container = styled.div`
+  align-self: flex-start;
+`;
+
 export const CancelIconButton = styled.button`
   position: absolute;
   display: flex;
