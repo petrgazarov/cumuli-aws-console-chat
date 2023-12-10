@@ -32,7 +32,10 @@ module.exports = {
   },
   plugins: [
     new CopyWebpackPlugin({
-      patterns: [{ from: "public", to: "" }],
+      patterns: [
+        { from: "public", to: "" },
+        { from: "LICENSE", to: "" },
+      ],
     }),
     new StylelintPlugin({ files: "src/**/*.{ts,tsx}" }),
     new ESLintPlugin({
