@@ -38,6 +38,7 @@ export const StyledTextInput = styled.input`
     outline: 1px solid ${({ theme }) => theme.colors.FOCUS};
   }
 
+  /* Avoid overlapping with the saved status on tiny screens */
   @media (width < 355px) {
     padding-right: 60px;
   }

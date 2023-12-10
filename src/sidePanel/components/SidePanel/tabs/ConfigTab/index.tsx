@@ -4,7 +4,7 @@ import { useCallback, useRef, useState } from "react";
 import { Button } from "sidePanel/components/Button";
 import TextInput from "sidePanel/components/TextInput";
 import { openaiApiKeyAtom } from "sidePanel/utils/atoms";
-import { getAllModifierKeys, saveOpenaiApiKey } from "utils/helpers";
+import { getAllNonCharacterKeys, saveOpenaiApiKey } from "utils/helpers";
 
 import ClearDataSection from "./ClearDataSection";
 import {
@@ -41,8 +41,12 @@ const ConfigTab = () => {
         saveApiKey();
       }
 
-      if (inputMasked && !getAllModifierKeys().includes(e.key)) {
-        setInputValue("");
+      const characterKeyPressed =
+        !getAllNonCharacterKeys().includes(e.key) && !e.ctrlKey && !e.metaKey;
+
+      if (inputMasked && characterKeyPressed) {
+        const deleteEvent = new KeyboardEvent("keydown", { key: "Delete" });
+        textInputRef.current?.dispatchEvent(deleteEvent);
       }
     },
     [isApiKeySubmitDisabled, inputMasked, saveApiKey]
