@@ -1,6 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Cumuli - AWS Console Chat",
+  "description": "Chat with GPT-4 turbo on any AWS web console page",
   "version": "0.1.0",
   "action": {
     "default_title": "Cumuli - AWS Console Chat"

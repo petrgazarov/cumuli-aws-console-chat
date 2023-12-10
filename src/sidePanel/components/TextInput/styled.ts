@@ -9,6 +9,9 @@ import {
 } from "sidePanel/globalStyles";
 
 export const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
   flex-grow: 1;
 `;
 
@@ -22,7 +25,6 @@ export const StyledTextInput = styled.input`
   color: ${({ theme }) => theme.colors.PRIMARY_TEXT};
   line-height: ${LINE_HEIGHT};
   max-width: 100%;
-  resize: none;
   padding: 4px 8px;
   font-family: ${FONT_FAMILY};
   font-size: ${FONT_SIZE_PRIMARY};
@@ -34,6 +36,10 @@ export const StyledTextInput = styled.input`
 
   &:focus {
     outline: 1px solid ${({ theme }) => theme.colors.FOCUS};
+  }
+
+  @media (width < 355px) {
+    padding-right: 60px;
   }
 `;
 
