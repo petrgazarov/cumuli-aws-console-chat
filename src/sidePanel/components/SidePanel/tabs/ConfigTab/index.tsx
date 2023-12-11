@@ -45,8 +45,18 @@ const ConfigTab = () => {
         !getAllNonCharacterKeys().includes(e.key) && !e.ctrlKey && !e.metaKey;
 
       if (inputMasked && characterKeyPressed) {
-        const deleteEvent = new KeyboardEvent("keydown", { key: "Delete" });
-        textInputRef.current?.dispatchEvent(deleteEvent);
+        try {
+          /* document.execCommand is used to allow the built-in "undo" action to revert this input change.
+           * It is deprecated, but works for now. Might need to replaced in the future. */
+          textInputRef.current?.focus();
+          textInputRef.current?.select();
+          document.execCommand("delete");
+        } catch (err) {
+          console.debug(
+            "[Cumuli] Failed to call document.execCommand('delete') on the input"
+          );
+          setInputValue("");
+        }
       }
     },
     [isApiKeySubmitDisabled, inputMasked, saveApiKey]

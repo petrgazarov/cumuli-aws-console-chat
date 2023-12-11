@@ -1,6 +1,11 @@
 import CancelIcon from "sidePanel/components/icons/CancelIcon";
 
-import { CancelIconButton, Container, ScreenshotContainer } from "./styled";
+import {
+  CancelIconButton,
+  Container,
+  ScreenshotContainer,
+  ScreenshotImage,
+} from "./styled";
 
 type ScreenshotPreviewProps = {
   onRemove: () => void;
@@ -11,11 +16,11 @@ const ScreenshotPreview = ({ onRemove, url }: ScreenshotPreviewProps) => {
   return (
     <Container>
       <ScreenshotContainer>
-        <img
-          src={url}
-          style={{ height: "95px", width: "auto" }}
-          alt="Screenshot preview"
-        />
+        {url ? (
+          <ScreenshotImage src={url} alt="Screenshot preview" />
+        ) : (
+          <ScreenshotImage as="div" />
+        )}
         <CancelIconButton onClick={onRemove} tabIndex={0}>
           <CancelIcon width={14} height={14} />
         </CancelIconButton>

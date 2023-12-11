@@ -32,11 +32,11 @@ const NewMessage = () => {
     return lastMessage?.role === Role.user;
   }, [currentChatMessages]);
 
-  if (llmLoading) {
-    return <LoadingState />;
+  if (llmLoading || llmStreaming) {
+    return <LoadingState $showAnimation={llmLoading} />;
   }
 
-  if (llmStreaming || chatError || isLastMessageUserMessage) {
+  if (chatError || isLastMessageUserMessage) {
     return null;
   }
 

@@ -7,7 +7,6 @@ import useKeyDownChatMessageListener from "sidePanel/hooks/useKeyDownChatMessage
 import {
   chatChannelAtom,
   llmLoadingAtom,
-  llmStreamingAtom,
   newMessageTextareaRefAtom,
   screenshotChatMessageIdAtom,
 } from "sidePanel/utils/atoms";
@@ -20,7 +19,6 @@ import {
 const useNewMessage = () => {
   const [textInput, setTextInput] = useState("");
   const [llmLoading, setLlmLoading] = useAtom(llmLoadingAtom);
-  const [, setLlmStreaming] = useAtom(llmStreamingAtom);
   const [screenshotChatMessageId] = useAtom(screenshotChatMessageIdAtom);
   const [chatChannel] = useAtom(chatChannelAtom);
   const [newMessageTextareaRef] = useAtom(newMessageTextareaRefAtom);
@@ -34,10 +32,9 @@ const useNewMessage = () => {
         payload: message,
       });
       setLlmLoading(true);
-      setLlmStreaming(true);
       appendMessage(message);
     },
-    [chatChannel, setLlmLoading, setLlmStreaming, appendMessage]
+    [chatChannel, setLlmLoading, appendMessage]
   );
 
   const handleSubmitWithScreenshotCommand = useCallback(async () => {

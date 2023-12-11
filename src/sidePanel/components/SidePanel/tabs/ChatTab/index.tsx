@@ -13,7 +13,7 @@ import { ChatMessage } from "utils/types";
 
 import ChatError from "./ChatError";
 import NewChatButton from "./NewChatButton";
-import { ChatTabContent, NewChatButtonContainer } from "./styled";
+import { ChatTabContent } from "./styled";
 
 const ChatTab = () => {
   const [, setLlmStreamingError] = useAtom(streamingErrorAtom);
@@ -38,9 +38,7 @@ const ChatTab = () => {
       {currentChatMessages.map(renderMessage)}
       <NewMessage />
       {chatError && <ChatError />}
-      <NewChatButtonContainer>
-        <NewChatButton />
-      </NewChatButtonContainer>
+      <NewChatButton />
     </ChatTabContent>
   );
 };

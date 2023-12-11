@@ -7,12 +7,15 @@ export const LoadingAnimation = keyframes`
   75% { content: '...'; }
 `;
 
-export const LoadingState = styled.div`
-  margin-top: 10px;
-  margin-bottom: 10px;
+export const LoadingState = styled.div<{ $showAnimation: boolean }>`
+  display: flex;
+  align-items: center;
+  margin-left: 7px;
+  height: 52px;
 
   &::after {
-    display: inline-block;
+    display: ${({ $showAnimation }) =>
+      $showAnimation ? "inline-block" : "none"};
     animation: ${LoadingAnimation} 0.8s steps(4, end) infinite;
     content: "";
   }

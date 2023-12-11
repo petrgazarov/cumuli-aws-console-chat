@@ -3,12 +3,14 @@ import { useEffect } from "react";
 
 import useChatChannelListener from "sidePanel/hooks/useChatChannelListener";
 import useCommandChannelListener from "sidePanel/hooks/useCommandChannelListener";
+import useScroll from "sidePanel/hooks/useScroll";
 import {
   chatChannelAtom,
   currentTabAtom,
   screenshotChatMessageIdAtom,
+  scrollableContainerRefAtom,
 } from "sidePanel/utils/atoms";
-import { PANEL_CONTENT_ID } from "sidePanel/utils/constants";
+import { SCROLLABLE_CONTAINER_ID } from "sidePanel/utils/constants";
 import { TabTitlesEnum } from "sidePanel/utils/types";
 
 import { Container, Content, TabTitlesContainer } from "./styled";
@@ -19,6 +21,7 @@ import TabTitle from "./TabTitle";
 import useInitialData from "./useInitialData";
 
 const SidePanel = () => {
+  const [scrollableContainerRef] = useAtom(scrollableContainerRefAtom);
   const [currentTab] = useAtom(currentTabAtom);
   const { hasLoaded } = useInitialData();
   const [, setChatChannel] = useAtom(chatChannelAtom);
@@ -39,6 +42,8 @@ const SidePanel = () => {
     }
   }, [screenshotChatMessageId, setScreenshotChatMessageId]);
 
+  useScroll({ isLoading: !hasLoaded });
+
   if (!hasLoaded) {
     return <Container />;
   }
@@ -50,7 +55,7 @@ const SidePanel = () => {
         <TabTitle tab={TabTitlesEnum.history}>History</TabTitle>
         <TabTitle tab={TabTitlesEnum.config}>Config</TabTitle>
       </TabTitlesContainer>
-      <Content id={PANEL_CONTENT_ID}>
+      <Content id={SCROLLABLE_CONTAINER_ID} ref={scrollableContainerRef}>
         {currentTab === TabTitlesEnum.chat && <ChatTab />}
         {currentTab === TabTitlesEnum.history && <HistoryTab />}
         {currentTab === TabTitlesEnum.config && <ConfigTab />}

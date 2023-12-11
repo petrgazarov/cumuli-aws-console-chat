@@ -19,8 +19,6 @@ export const StyledTextInput = styled.input`
   height: 32px;
   background-color: ${({ theme }) => theme.colors.INPUT_BACKGROUND};
   border-radius: ${BORDER_RADIUS};
-  box-sizing: border-box;
-  margin-top: 1px;
   border: 1px solid transparent;
   color: ${({ theme }) => theme.colors.PRIMARY_TEXT};
   line-height: ${LINE_HEIGHT};

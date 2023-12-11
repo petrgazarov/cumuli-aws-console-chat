@@ -39,7 +39,7 @@ const Textarea = ({
   textareaRef,
   value,
 }: TextareaProps) => {
-  const [, setFocusedChatMessage] = useAtom(focusedTextareaAtom);
+  const [, setFocusedTextarea] = useAtom(focusedTextareaAtom);
   const [openaiApiKey] = useAtom(openaiApiKeyAtom);
   const [llmStreaming] = useAtom(llmStreamingAtom);
   const [llmLoading] = useAtom(llmLoadingAtom);
@@ -94,11 +94,11 @@ const Textarea = ({
           ref={textareaRef}
           value={value}
           onFocus={() => {
-            setFocusedChatMessage({ chatMessage, textareaRef });
+            setFocusedTextarea({ chatMessage, textareaRef });
             setIsFocused(true);
           }}
           onBlur={() => {
-            setFocusedChatMessage({});
+            setFocusedTextarea({});
             setIsFocused(false);
           }}
           onChange={onChange}

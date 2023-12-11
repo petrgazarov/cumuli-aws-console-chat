@@ -3,34 +3,75 @@ import { useEffect, useRef } from "react";
 
 import {
   conversationStartedAtom,
-  documentWasFocusedAtom,
+  documentHadAnyScrollAtom,
+  documentHadScrollToBottomAtom,
+  documentWasEverFocusedAtom,
   llmStreamingAtom,
   newMessageTextareaRefAtom,
+  scrollableContainerRefAtom,
 } from "sidePanel/utils/atoms";
+import { scrollToBottom } from "sidePanel/utils/helpers";
 
 const useFocusTextarea = () => {
   const [newMessageTextareaRef] = useAtom(newMessageTextareaRefAtom);
   const [llmStreaming] = useAtom(llmStreamingAtom);
   const [conversationStarted] = useAtom(conversationStartedAtom);
-  const [documentWasFocused] = useAtom(documentWasFocusedAtom);
+  const [documentWasEverFocused] = useAtom(documentWasEverFocusedAtom);
+  const [documentHadAnyScroll] = useAtom(documentHadAnyScrollAtom);
+  const [documentHadScrollToBottom] = useAtom(documentHadScrollToBottomAtom);
+  const [scrollableContainerRef] = useAtom(scrollableContainerRefAtom);
+
   const prevLlmStreamingRef = useRef(llmStreaming);
+  const prevLlmStreaming = prevLlmStreamingRef.current;
+
+  const streamingFinished = prevLlmStreaming && !llmStreaming;
+  const scrollingOccurred = documentHadAnyScroll && !documentHadScrollToBottom;
 
   useEffect(() => {
     prevLlmStreamingRef.current = llmStreaming;
   });
-  const prevLlmStreaming = prevLlmStreamingRef.current;
 
   useEffect(() => {
-    if (documentWasFocused && !conversationStarted) {
+    if (documentWasEverFocused && !conversationStarted) {
       newMessageTextareaRef?.current?.focus();
     }
-  }, [newMessageTextareaRef, conversationStarted, documentWasFocused]);
+  }, [newMessageTextareaRef, conversationStarted, documentWasEverFocused]);
 
   useEffect(() => {
-    if (prevLlmStreaming && !llmStreaming) {
-      newMessageTextareaRef?.current?.focus();
+    if (!streamingFinished) {
+      return;
     }
-  }, [prevLlmStreaming, llmStreaming, newMessageTextareaRef]);
+
+    const textarea = newMessageTextareaRef?.current;
+    const container = scrollableContainerRef?.current;
+
+    if (textarea && container) {
+      const textareaRect = textarea.getBoundingClientRect();
+      const containerRect = container.getBoundingClientRect();
+
+      const isInViewport =
+        textareaRect.top >= containerRect.top &&
+        textareaRect.left >= containerRect.left &&
+        textareaRect.bottom <= containerRect.bottom &&
+        textareaRect.right <= containerRect.right;
+
+      if (isInViewport) {
+        textarea.focus();
+        return;
+      }
+
+      if (!scrollingOccurred) {
+        scrollToBottom();
+        textarea?.focus();
+        return;
+      }
+    }
+  }, [
+    streamingFinished,
+    scrollingOccurred,
+    newMessageTextareaRef,
+    scrollableContainerRef,
+  ]);
 };
 
 export default useFocusTextarea;

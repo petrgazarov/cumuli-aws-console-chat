@@ -29,6 +29,7 @@ const useChatChannelListener = () => {
           break;
         case ChatChannelAction.stream_chunk:
           setLlmLoading(false);
+          setLlmStreaming(true);
           appendChunk(channelMessage.payload);
           break;
         case ChatChannelAction.stream_finish:

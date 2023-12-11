@@ -26,8 +26,6 @@ export const StyledTextarea = styled(TextareaAutosize)`
   flex-grow: 1;
   background-color: ${({ theme }) => theme.colors.INPUT_BACKGROUND};
   border-radius: 2px;
-  box-sizing: border-box;
-  margin-top: 1px;
   border: 1px solid transparent;
   color: ${({ theme }) => theme.colors.PRIMARY_TEXT};
   line-height: ${LINE_HEIGHT};

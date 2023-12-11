@@ -35,3 +35,8 @@ export const ScreenshotContainer = styled.div`
     }
   }
 `;
+
+export const ScreenshotImage = styled.img`
+  height: 95px;
+  width: auto;
+`;
