@@ -1,4 +1,4 @@
-import { AWS_CONSOLE_HOST } from "utils/constants";
+import { AWS_HOST } from "utils/constants";
 import { CommandChannelAction } from "utils/types";
 
 export { chatChannelListener } from "./channelListeners";
@@ -9,8 +9,8 @@ export const commandListener = async (command: string) => {
       const activeTab = tabs[0];
 
       const isPageSupported =
-        activeTab.url?.indexOf(AWS_CONSOLE_HOST) &&
-        activeTab.url?.indexOf(AWS_CONSOLE_HOST) > -1;
+        activeTab.url?.indexOf(AWS_HOST) &&
+        activeTab.url?.indexOf(AWS_HOST) > -1;
 
       if (!isPageSupported) {
         console.debug(
@@ -34,7 +34,7 @@ export const onTabUpdatedListener = async (
   }
   const url = new URL(tab.url);
 
-  if (url.origin.includes(AWS_CONSOLE_HOST)) {
+  if (url.origin.includes(AWS_HOST)) {
     await chrome.sidePanel.setOptions({
       enabled: true,
       path: "sidepanel.html",
