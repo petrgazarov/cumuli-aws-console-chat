@@ -26,7 +26,7 @@ const ClearDataSection = () => {
   const labelText =
     sectionState === SectionState.confirm_deletion
       ? "Are you sure? This action cannot be undone"
-      : "Conversations are stored locally in IndexedDB";
+      : "Conversations are stored locally in your browser";
 
   const buttonsContent = useMemo(() => {
     switch (sectionState) {
