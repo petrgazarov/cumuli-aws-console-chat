@@ -7,6 +7,7 @@ import { openaiApiKeyAtom } from "sidePanel/utils/atoms";
 import { getAllNonCharacterKeys, saveOpenaiApiKey } from "utils/helpers";
 
 import ClearDataSection from "./ClearDataSection";
+import Footer from "./Footer";
 import {
   ApiKeySection,
   ConfigTabContent,
@@ -83,6 +84,7 @@ const ConfigTab = () => {
         </SubmitApiKeyButtonContainer>
       </ApiKeySection>
       <ClearDataSection />
+      <Footer />
     </ConfigTabContent>
   );
 };
