@@ -24,7 +24,7 @@
   "scripts": {
     "clean": "rimraf build/*",
     "build": "pnpm clean && webpack --mode production",
-    "prepareForUpload": "pnpm build && zip -r build.zip build/*",
+    "prepare-for-upload": "pnpm build && zip -r build-v$(pnpm pkg get version | tr -d '\"').zip build/*",
     "watch": "NODE_ENV=development webpack --watch",
     "lint": "pnpm lint:js && pnpm lint:css",
     "lint:fix": "pnpm lint:js:fix && pnpm lint:css:fix",
