@@ -1,6 +1,6 @@
 {
   "name": "aws-chrome-extension",
-  "version": "0.1.2",
+  "version": "0.1.1",
   "private": true,
   "engines": {
     "node": ">20.0.0"
@@ -26,6 +26,7 @@
     "build": "pnpm clean && webpack --mode production",
     "prepare-for-upload": "pnpm build && zip -r build-v$(pnpm pkg get version | tr -d '\"').zip build/*",
     "watch": "NODE_ENV=development webpack --watch",
+    "version:patch": "pnpm version patch && node scripts/update-manifest-version.js",
     "lint": "pnpm lint:js && pnpm lint:css",
     "lint:fix": "pnpm lint:js:fix && pnpm lint:css:fix",
     "lint:js": "eslint --ext .ts,.tsx src",
