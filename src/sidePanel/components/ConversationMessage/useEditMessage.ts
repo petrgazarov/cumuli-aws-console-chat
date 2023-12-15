@@ -17,7 +17,7 @@ type UseNewMessageProps = {
 };
 
 const useEditMessage = ({ chatMessage, textareaRef }: UseNewMessageProps) => {
-  const [textInput, setTextInput] = useState(getChatMessageText(chatMessage));
+  const [value, setValue] = useState(getChatMessageText(chatMessage));
   const [, setLlmLoading] = useAtom(llmLoadingAtom);
   const [chatChannel] = useAtom(chatChannelAtom);
   const [screenshotChatMessageId] = useAtom(screenshotChatMessageIdAtom);
@@ -77,13 +77,13 @@ const useEditMessage = ({ chatMessage, textareaRef }: UseNewMessageProps) => {
 
   const handleKeyDown = useKeyDownChatMessageListener({
     handleSubmitMessage,
-    setTextInput,
+    setValue,
     textareaRef,
   });
 
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-      setTextInput(event.target.value);
+      setValue(event.target.value);
     },
     []
   );
@@ -93,7 +93,7 @@ const useEditMessage = ({ chatMessage, textareaRef }: UseNewMessageProps) => {
     handleKeyDown,
     handleSubmitMessage,
     removeImageFromMessage,
-    value: textInput,
+    value,
   };
 };
 

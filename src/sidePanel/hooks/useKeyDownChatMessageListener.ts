@@ -2,13 +2,13 @@ import { useCallback } from "react";
 
 type UseKeyDownChatMessageListenerParams = {
   handleSubmitMessage: (value: string) => void;
-  setTextInput: React.Dispatch<React.SetStateAction<string>>;
+  setValue: React.Dispatch<React.SetStateAction<string>>;
   textareaRef: React.RefObject<HTMLTextAreaElement>;
 };
 
 const useKeyDownChatMessageListener = ({
   handleSubmitMessage,
-  setTextInput,
+  setValue,
   textareaRef,
 }: UseKeyDownChatMessageListenerParams) => {
   const handleKeyDown = useCallback(
@@ -22,7 +22,7 @@ const useKeyDownChatMessageListener = ({
       // If Shift + Enter is pressed, insert a new line at cursor position
       if (event.shiftKey) {
         const cursorPosition = textareaRef.current?.selectionStart || 0;
-        setTextInput((prev) => {
+        setValue((prev) => {
           const newValue =
             prev.slice(0, cursorPosition) + "\n" + prev.slice(cursorPosition);
           // After state update, move the cursor after the inserted newline
@@ -47,7 +47,7 @@ const useKeyDownChatMessageListener = ({
 
       handleSubmitMessage(currentInputValue);
     },
-    [handleSubmitMessage, textareaRef, setTextInput]
+    [handleSubmitMessage, textareaRef, setValue]
   );
 
   return handleKeyDown;

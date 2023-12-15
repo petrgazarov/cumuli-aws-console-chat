@@ -2,11 +2,7 @@ import { useAtom } from "jotai";
 import { useCallback } from "react";
 
 import useConversation from "sidePanel/hooks/useConversation";
-import {
-  conversationStartedAtom,
-  currentTabAtom,
-  streamingErrorAtom,
-} from "sidePanel/utils/atoms";
+import { currentTabAtom, streamingErrorAtom } from "sidePanel/utils/atoms";
 import { scrollToTop } from "sidePanel/utils/helpers";
 import { TabTitlesEnum } from "sidePanel/utils/types";
 
@@ -20,7 +16,6 @@ type TabTitleProps = {
 const TabTitle = ({ children, tab }: TabTitleProps) => {
   const [currentTab, setCurrentTab] = useAtom(currentTabAtom);
   const { resetCurrentConversation } = useConversation();
-  const [conversationStarted] = useAtom(conversationStartedAtom);
   const [, setLlmStreamingError] = useAtom(streamingErrorAtom);
 
   const onTabTitleClick = useCallback(() => {
@@ -38,14 +33,13 @@ const TabTitle = ({ children, tab }: TabTitleProps) => {
     if (currentTab === TabTitlesEnum.history) {
       scrollToTop();
     } else if (currentTab === TabTitlesEnum.chat) {
-      conversationStarted && resetCurrentConversation();
+      resetCurrentConversation();
     }
   }, [
     currentTab,
     setCurrentTab,
     tab,
     setLlmStreamingError,
-    conversationStarted,
     resetCurrentConversation,
   ]);
 

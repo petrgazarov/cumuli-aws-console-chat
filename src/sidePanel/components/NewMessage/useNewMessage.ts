@@ -1,5 +1,5 @@
 import { useAtom } from "jotai";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 
 import useChatMessages from "sidePanel/hooks/useChatMessages";
 import useConversation from "sidePanel/hooks/useConversation";
@@ -8,6 +8,7 @@ import {
   chatChannelAtom,
   llmLoadingAtom,
   newMessageTextareaRefAtom,
+  newMessageTextareaValueAtom,
   screenshotChatMessageIdAtom,
 } from "sidePanel/utils/atoms";
 import {
@@ -17,7 +18,7 @@ import {
 } from "utils/types";
 
 const useNewMessage = () => {
-  const [textInput, setTextInput] = useState("");
+  const [value, setValue] = useAtom(newMessageTextareaValueAtom);
   const [llmLoading, setLlmLoading] = useAtom(llmLoadingAtom);
   const [screenshotChatMessageId] = useAtom(screenshotChatMessageIdAtom);
   const [chatChannel] = useAtom(chatChannelAtom);
@@ -95,28 +96,28 @@ const useNewMessage = () => {
 
   const handleKeyDown = useKeyDownChatMessageListener({
     handleSubmitMessage,
-    setTextInput,
+    setValue,
     textareaRef: newMessageTextareaRef,
   });
 
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-      setTextInput(event.target.value);
+      setValue(event.target.value);
     },
-    []
+    [setValue]
   );
 
   useEffect(() => {
     if (llmLoading) {
-      setTextInput("");
+      setValue("");
     }
-  }, [llmLoading]);
+  }, [llmLoading, setValue]);
 
   return {
     handleChange,
     handleKeyDown,
     handleSubmitMessage,
-    value: textInput,
+    value,
   };
 };
 

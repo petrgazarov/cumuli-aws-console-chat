@@ -7,4 +7,4 @@ const manifestJson = require(manifestPath);
 
 manifestJson.version = packageJson.version;
 
-fs.writeFileSync(manifestPath, JSON.stringify(manifestJson, null, 2));
+fs.writeFileSync(manifestPath, JSON.stringify(manifestJson, null, 2) + '\n');

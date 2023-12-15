@@ -39,6 +39,8 @@ export const openaiApiKeyAtom = atom<string>("");
 
 export const newMessageTextareaRefAtom = atom(createRef<HTMLTextAreaElement>());
 
+export const newMessageTextareaValueAtom = atom<string>("");
+
 /*
  * When the sidepanel initially loads, it cannot programmatically focus itself _until_ the user focuses it.
  * If a focus() call is made on document load, it is frozen instead of being ignored. When it later thaws,

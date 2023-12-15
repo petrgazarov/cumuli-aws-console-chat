@@ -7,7 +7,7 @@ import useChatError from "sidePanel/hooks/useChatError";
 import useConversation from "sidePanel/hooks/useConversation";
 import {
   currentChatMessagesAtom,
-  streamingErrorAtom,
+  newMessageTextareaValueAtom,
 } from "sidePanel/utils/atoms";
 import { ChatMessage } from "utils/types";
 
@@ -16,8 +16,8 @@ import NewChatButton from "./NewChatButton";
 import { ChatTabContent } from "./styled";
 
 const ChatTab = () => {
-  const [, setLlmStreamingError] = useAtom(streamingErrorAtom);
   const [currentChatMessages] = useAtom(currentChatMessagesAtom);
+  const [, setNewMessageTextareaValue] = useAtom(newMessageTextareaValueAtom);
   const { currentConversation } = useConversation();
   const chatError = useChatError();
 
@@ -30,8 +30,8 @@ const ChatTab = () => {
   }, []);
 
   useEffect(() => {
-    setLlmStreamingError(null);
-  }, [setLlmStreamingError, currentConversation]);
+    setNewMessageTextareaValue("");
+  }, [setNewMessageTextareaValue, currentConversation]);
 
   return (
     <ChatTabContent>
