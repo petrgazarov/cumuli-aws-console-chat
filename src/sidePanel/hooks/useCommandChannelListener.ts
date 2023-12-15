@@ -3,6 +3,7 @@ import { useCallback, useEffect } from "react";
 
 import {
   focusedTextareaAtom,
+  llmLoadingAtom,
   llmStreamingAtom,
   screenshotChatMessageIdAtom,
 } from "sidePanel/utils/atoms";
@@ -14,6 +15,7 @@ import { CommandChannelAction, CommandChannelMessage } from "utils/types";
 
 const useCommandChannelListener = () => {
   const [llmStreaming] = useAtom(llmStreamingAtom);
+  const [llmLoading] = useAtom(llmLoadingAtom);
   const [, setScreenshotChatMessageId] = useAtom(screenshotChatMessageIdAtom);
   const [focusedTextarea] = useAtom(focusedTextareaAtom);
 
@@ -24,7 +26,7 @@ const useCommandChannelListener = () => {
       ) {
         return;
       }
-      if (llmStreaming) {
+      if (llmLoading || llmStreaming) {
         return;
       }
 
@@ -45,7 +47,7 @@ const useCommandChannelListener = () => {
 
       setScreenshotChatMessageId(chatMessage?.id || null);
     },
-    [llmStreaming, focusedTextarea, setScreenshotChatMessageId]
+    [llmLoading, llmStreaming, focusedTextarea, setScreenshotChatMessageId]
   );
 
   useEffect(() => {

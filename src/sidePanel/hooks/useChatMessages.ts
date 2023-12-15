@@ -1,5 +1,4 @@
 import { useAtom } from "jotai";
-import cloneDeep from "lodash.clonedeep";
 import { useCallback } from "react";
 
 import useConversations from "sidePanel/hooks/useConversations";
@@ -28,17 +27,18 @@ const useChatMessages = () => {
   const appendChunk = useCallback(
     (chunk: string) => {
       setCurrentChatMessages((prevChatMessages) => {
-        const newMessages = cloneDeep(prevChatMessages);
-        const lastMessage = newMessages[newMessages.length - 1];
+        const lastMessage = prevChatMessages[prevChatMessages.length - 1];
 
         if (lastMessage?.role === Role.assistant) {
-          newMessages[newMessages.length - 1] = {
+          const newLastMessage = {
             ...lastMessage,
             content: lastMessage.content + chunk,
           };
+
+          return [...prevChatMessages.slice(0, -1), newLastMessage];
         }
 
-        return newMessages;
+        return prevChatMessages;
       });
     },
     [setCurrentChatMessages]
@@ -94,20 +94,18 @@ const useChatMessages = () => {
           return prevChatMessages;
         }
 
-        const newChatMessages = cloneDeep(prevChatMessages);
-
-        const prevChatMessage = newChatMessages[messageIndex];
+        const prevChatMessage = prevChatMessages[messageIndex];
         const imageContent = getImageContentFromMessage(prevChatMessage);
 
         if (imageContent) {
           return [
-            ...newChatMessages.slice(0, messageIndex),
+            ...prevChatMessages.slice(0, messageIndex),
             { ...prevChatMessage, content: getChatMessageText(chatMessage) },
-            ...newChatMessages.slice(messageIndex + 1),
+            ...prevChatMessages.slice(messageIndex + 1),
           ];
         }
 
-        return newChatMessages;
+        return prevChatMessages;
       });
     },
     [setCurrentChatMessages]

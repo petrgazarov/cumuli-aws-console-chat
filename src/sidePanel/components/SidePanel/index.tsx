@@ -18,6 +18,7 @@ import ChatTab from "./tabs/ChatTab";
 import ConfigTab from "./tabs/ConfigTab";
 import HistoryTab from "./tabs/HistoryTab";
 import TabTitle from "./TabTitle";
+import useAbortStreaming from "./useAbortStreaming";
 import useInitialData from "./useInitialData";
 
 const SidePanel = () => {
@@ -28,6 +29,7 @@ const SidePanel = () => {
   const [screenshotChatMessageId, setScreenshotChatMessageId] = useAtom(
     screenshotChatMessageIdAtom
   );
+
   const { postChatMessage } = useChatChannelListener();
 
   useEffect(() => {
@@ -35,6 +37,8 @@ const SidePanel = () => {
   }, [postChatMessage, setChatChannel]);
 
   useCommandChannelListener();
+
+  useAbortStreaming({ postChatMessage });
 
   useEffect(() => {
     if (screenshotChatMessageId || screenshotChatMessageId === null) {

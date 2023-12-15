@@ -69,6 +69,9 @@ export const chatChannelListener = async (
         await generateAssistantMessage(conversationId, port);
       }
       break;
+    case ChatChannelAction.stream_abort:
+      streamingRunner?.abort();
+      break;
   }
 };
 
