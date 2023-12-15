@@ -26,4 +26,5 @@ export const ErrorContainer = styled.div`
 
 export const ErrorText = styled.div`
   font-size: ${FONT_SIZE_SECONDARY};
+  word-break: break-word;
 `;
