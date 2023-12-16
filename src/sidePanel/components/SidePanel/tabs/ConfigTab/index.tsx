@@ -4,7 +4,8 @@ import { useCallback, useRef, useState } from "react";
 import { Button } from "sidePanel/components/Button";
 import TextInput from "sidePanel/components/TextInput";
 import { openaiApiKeyAtom } from "sidePanel/utils/atoms";
-import { getAllNonCharacterKeys, saveOpenaiApiKey } from "utils/helpers";
+import { getAllNonCharacterKeys } from "sidePanel/utils/helpers";
+import { saveOpenaiApiKey } from "utils/helpers";
 
 import ClearDataSection from "./ClearDataSection";
 import Footer from "./Footer";

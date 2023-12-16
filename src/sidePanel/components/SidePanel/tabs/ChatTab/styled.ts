@@ -21,7 +21,7 @@ export const ErrorContainer = styled.div`
   align-items: center;
   padding: 10px;
   margin-top: 15px;
-  border: 1px solid ${({ theme }) => theme.colors.HIGHLIGHT};
+  border: 2px solid ${({ theme }) => theme.colors.HIGHLIGHT};
 `;
 
 export const ErrorText = styled.div`

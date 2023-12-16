@@ -42,14 +42,6 @@ export type CommandChannelMessage = {
   payload?: any;
 };
 
-export enum OS {
-  Linux = "Linux",
-  MacOS = "MacOS",
-  UNIX = "UNIX",
-  Unknown = "Unknown OS",
-  Windows = "Windows",
-}
-
 export enum Order {
   asc = "asc",
   desc = "desc",

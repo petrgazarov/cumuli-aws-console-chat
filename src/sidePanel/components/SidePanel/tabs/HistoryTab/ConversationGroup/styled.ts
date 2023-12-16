@@ -26,7 +26,7 @@ export const DeleteButtonContainer = styled.div`
 export const DeleteButton = styled(ButtonBase)`
   opacity: 0;
   margin-right: 5px;
-  padding: 4px 10px;
+  padding: 3px 9px;
   color: ${({ theme }) =>
     theme.name === ThemeName.dark
       ? theme.colors.PRIMARY_TEXT

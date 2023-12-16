@@ -1,4 +1,4 @@
-import { AWS_HOST } from "utils/constants";
+import { isPageSupported } from "utils/helpers";
 import { CommandChannelAction } from "utils/types";
 
 export { chatChannelListener } from "./channelListeners";
@@ -6,15 +6,15 @@ export { chatChannelListener } from "./channelListeners";
 export const commandListener = async (command: string) => {
   if (command === CommandChannelAction.submit_with_screenshot) {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      const activeTab = tabs[0];
+      const tabUrl = tabs[0].url;
 
-      const isPageSupported =
-        activeTab.url?.indexOf(AWS_HOST) &&
-        activeTab.url?.indexOf(AWS_HOST) > -1;
+      if (!tabUrl) {
+        return;
+      }
 
-      if (!isPageSupported) {
+      if (!isPageSupported(tabUrl)) {
         console.debug(
-          `[Cumuli] Attempted to take screenshot, but page not supported: ${activeTab.url}`
+          `[Cumuli] Attempted to take screenshot, but page not supported: ${tabUrl}`
         );
         return;
       }
@@ -32,9 +32,8 @@ export const onTabUpdatedListener = async (
   if (!tab.url) {
     return;
   }
-  const url = new URL(tab.url);
 
-  if (url.origin.includes(AWS_HOST)) {
+  if (isPageSupported(tab.url)) {
     await chrome.sidePanel.setOptions({
       enabled: true,
       path: "sidepanel.html",

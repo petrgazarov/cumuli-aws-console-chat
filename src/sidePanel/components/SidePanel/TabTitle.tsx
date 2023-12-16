@@ -19,9 +19,10 @@ const TabTitle = ({ children, tab }: TabTitleProps) => {
   const [, setLlmStreamingError] = useAtom(streamingErrorAtom);
 
   const onTabTitleClick = useCallback(() => {
+    scrollToTop();
+
     if (currentTab !== tab) {
       setCurrentTab(tab);
-      scrollToTop();
 
       if (tab === TabTitlesEnum.chat) {
         setLlmStreamingError(null);
@@ -30,9 +31,7 @@ const TabTitle = ({ children, tab }: TabTitleProps) => {
       return;
     }
 
-    if (currentTab === TabTitlesEnum.history) {
-      scrollToTop();
-    } else if (currentTab === TabTitlesEnum.chat) {
+    if (currentTab === TabTitlesEnum.chat) {
       resetCurrentConversation();
     }
   }, [

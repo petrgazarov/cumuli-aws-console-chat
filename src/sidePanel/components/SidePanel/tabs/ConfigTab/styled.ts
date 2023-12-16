@@ -32,10 +32,11 @@ export const SourceCodeLink = styled.a`
   color: inherit;
   text-decoration: none;
   margin-left: 12px;
-  border-bottom: 1px solid ${({ theme }) => theme.colors.ACTIVE_TEXT};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.HELP_TEXT};
 
   &:hover,
   &:focus-visible {
     color: ${({ theme }) => theme.colors.ACTIVE_TEXT};
+    border-bottom-color: ${({ theme }) => theme.colors.ACTIVE_TEXT};
   }
 `;

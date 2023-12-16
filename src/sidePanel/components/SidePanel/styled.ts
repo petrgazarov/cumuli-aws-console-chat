@@ -23,7 +23,7 @@ export const TabTitlesContainer = styled.div`
 
 export const StyledTabTitle = styled.div<{ $active: boolean }>`
   font-weight: bold;
-  border-bottom: 1px solid
+  border-bottom: ${({ $active }) => ($active ? "2px" : "1px")} solid
     ${({ $active, theme }) =>
       $active ? theme.colors.ACTIVE_TEXT : theme.colors.PRIMARY_TEXT};
 `;

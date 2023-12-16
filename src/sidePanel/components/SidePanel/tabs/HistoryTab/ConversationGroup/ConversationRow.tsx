@@ -6,6 +6,7 @@ import useConversation from "sidePanel/hooks/useConversation";
 import useConversations from "sidePanel/hooks/useConversations";
 import { currentTabAtom } from "sidePanel/utils/atoms";
 import { currentChatMessagesAtom } from "sidePanel/utils/atoms";
+import { scrollToTop } from "sidePanel/utils/helpers";
 import { TabTitlesEnum } from "sidePanel/utils/types";
 import { Conversation, Order } from "utils/types";
 
@@ -30,6 +31,7 @@ const ConversationRow = ({ conversation }: ConversationRowProps) => {
   const onItemClick = useCallback(
     (conversation: Conversation) => {
       if (currentConversation?.id === conversation.id) {
+        scrollToTop();
         setCurrentTab(TabTitlesEnum.chat);
         return;
       }
@@ -39,6 +41,7 @@ const ConversationRow = ({ conversation }: ConversationRowProps) => {
         order: Order.asc,
       }).then((chatMessages) => {
         setCurrentChatMessages(chatMessages);
+        scrollToTop();
         setCurrentTab(TabTitlesEnum.chat);
         setCurrentConversation(conversation);
       });

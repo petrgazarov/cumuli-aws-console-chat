@@ -4,9 +4,9 @@ import { LINE_HEIGHT } from "sidePanel/globalStyles";
 import { ThemeName } from "sidePanel/utils/types";
 
 export const ButtonBase = styled.button`
-  padding: 4px 20px;
+  padding: 3px 19px;
   font-weight: 700;
-  border-width: 1px;
+  border-width: 2px;
   border-style: solid;
   border-radius: 2px;
   line-height: ${LINE_HEIGHT};

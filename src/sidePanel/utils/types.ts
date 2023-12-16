@@ -25,3 +25,11 @@ export type ThemesObject = {
 };
 
 export type Theme = ThemesObject[ThemeName];
+
+export enum OS {
+  Linux = "Linux",
+  MacOS = "MacOS",
+  UNIX = "UNIX",
+  Unknown = "Unknown OS",
+  Windows = "Windows",
+}

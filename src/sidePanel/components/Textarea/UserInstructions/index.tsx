@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { getKeyboardShortcutModifierKey } from "utils/helpers";
+import { getKeyboardShortcutModifierKey } from "sidePanel/utils/helpers";
 
 import { EnterKeyboardSymbol, HelpText, KeyboardSymbol } from "./styled";
 
