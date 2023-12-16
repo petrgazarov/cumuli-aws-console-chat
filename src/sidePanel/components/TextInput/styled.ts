@@ -57,7 +57,7 @@ export const TextInputWrapper = styled.div`
 export const SavedStatus = styled.div`
   position: absolute;
   right: 15px;
-  top: 18%;
+  top: 17%;
   color: ${({ theme }) => theme.colors.HELP_TEXT};
   font-weight: 600;
   font-size: ${FONT_SIZE_SECONDARY};
