@@ -19,7 +19,7 @@ export const StyledTextInput = styled.input`
   height: 32px;
   background-color: ${({ theme }) => theme.colors.INPUT_BACKGROUND};
   border-radius: ${BORDER_RADIUS};
-  border: 1px solid transparent;
+  border: 1px solid ${({ theme }) => theme.colors.INPUT_BORDER};
   color: ${({ theme }) => theme.colors.PRIMARY_TEXT};
   line-height: ${LINE_HEIGHT};
   max-width: 100%;
@@ -34,6 +34,7 @@ export const StyledTextInput = styled.input`
 
   &:focus {
     outline: 1px solid ${({ theme }) => theme.colors.FOCUS};
+    border: 1px solid ${({ theme }) => theme.colors.INPUT_FOCUSED_BORDER};
   }
 
   /* Avoid overlapping with the saved status on tiny screens */

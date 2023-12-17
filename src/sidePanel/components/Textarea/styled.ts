@@ -26,7 +26,7 @@ export const StyledTextarea = styled(TextareaAutosize)`
   flex-grow: 1;
   background-color: ${({ theme }) => theme.colors.INPUT_BACKGROUND};
   border-radius: 2px;
-  border: 1px solid transparent;
+  border: 1px solid ${({ theme }) => theme.colors.INPUT_BORDER};
   color: ${({ theme }) => theme.colors.PRIMARY_TEXT};
   line-height: ${LINE_HEIGHT};
   resize: none;
@@ -41,6 +41,7 @@ export const StyledTextarea = styled(TextareaAutosize)`
 
   &:focus {
     outline: 1px solid ${({ theme }) => theme.colors.FOCUS};
+    border: 1px solid ${({ theme }) => theme.colors.INPUT_FOCUSED_BORDER};
   }
 `;
 

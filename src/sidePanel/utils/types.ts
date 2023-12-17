@@ -18,6 +18,8 @@ export type ThemesObject = {
       HELP_TEXT: string;
       HIGHLIGHT: string;
       INPUT_BACKGROUND: string;
+      INPUT_BORDER: string;
+      INPUT_FOCUSED_BORDER: string;
       PRIMARY_TEXT: string;
     };
     name: ThemeName;
