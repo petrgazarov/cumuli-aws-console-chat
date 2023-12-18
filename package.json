@@ -1,5 +1,5 @@
 {
-  "name": "aws-chrome-extension",
+  "name": "cumuli-aws-chrome-extension",
   "version": "0.1.2",
   "engines": {
     "node": ">20.0.0"
