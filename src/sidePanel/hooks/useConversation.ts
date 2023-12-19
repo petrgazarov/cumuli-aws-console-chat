@@ -38,6 +38,7 @@ const useConversation = () => {
     setLlmLoading(false);
     setLlmStreaming(false);
     setNewMessageTextareaValue("");
+
     newMessageTextareaRef.current?.focus();
   }, [
     newMessageTextareaRef,

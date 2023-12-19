@@ -45,6 +45,8 @@ const useCommandChannelListener = () => {
         return;
       }
 
+      textareaRef.current?.blur();
+
       setScreenshotChatMessageId(chatMessage?.id || null);
     },
     [llmLoading, llmStreaming, focusedTextarea, setScreenshotChatMessageId]
