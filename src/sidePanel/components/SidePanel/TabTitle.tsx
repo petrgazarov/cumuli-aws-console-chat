@@ -24,6 +24,7 @@ const TabTitle = ({ children, tab }: TabTitleProps) => {
     if (currentTab !== tab) {
       setCurrentTab(tab);
 
+      // If navigating away from chat tab, reset the streaming error
       if (tab === TabTitlesEnum.chat) {
         setLlmStreamingError(null);
       }
