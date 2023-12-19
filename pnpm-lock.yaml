@@ -4,11 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-patchedDependencies:
-  openai@4.18.0:
-    hash: nxm3y7wvl53oaq53cil2ohrp3m
-    path: patches/openai@4.18.0.patch
-
 dependencies:
   date-fns:
     specifier: ^2.30.0
@@ -23,8 +18,8 @@ dependencies:
     specifier: ^4.0.8
     version: 4.0.8
   openai:
-    specifier: ^4.18.0
-    version: 4.18.0(patch_hash=nxm3y7wvl53oaq53cil2ohrp3m)
+    specifier: ^4.23.0
+    version: 4.23.0
   react:
     specifier: ^18.2.0
     version: 18.2.0
@@ -110,7 +105,7 @@ devDependencies:
     version: 4.0.1(eslint@8.54.0)(webpack@5.89.0)
   postcss-styled-syntax:
     specifier: ^0.5.0
-    version: 0.5.0(postcss@8.4.31)
+    version: 0.5.0(postcss@8.4.32)
   raw-loader:
     specifier: ^4.0.2
     version: 4.0.2(webpack@5.89.0)
@@ -3513,8 +3508,8 @@ packages:
       wrappy: 1.0.2
     dev: true
 
-  /openai@4.18.0(patch_hash=nxm3y7wvl53oaq53cil2ohrp3m):
-    resolution: {integrity: sha512-0C+waXoU7mvp/1QZzwnmPCkq4t02VJkjL1EXn0Pd7pFuTA0Y4y1LwzSZSiF/tpxw+Pr7diHVJjbfJ8QbdZnEcA==}
+  /openai@4.23.0:
+    resolution: {integrity: sha512-ey2CXh1OTcTUa0AWZWuTpgA9t5GuAG3DVU1MofCRUI7fQJij8XJ3Sr0VtgxoAE69C9wbHBMCux8Z/IQZfSwHiA==}
     hasBin: true
     dependencies:
       '@types/node': 18.18.9
@@ -3529,7 +3524,6 @@ packages:
     transitivePeerDependencies:
       - encoding
     dev: false
-    patched: true
 
   /optionator@0.9.3:
     resolution: {integrity: sha512-JjCoypp+jKn1ttEFExxhetCKeJt9zhAgAve5FXHixTvFDW/5aEktX9bufBKLRRMdU7bNtpLfcGu94B3cdEJgjg==}
@@ -3685,7 +3679,7 @@ packages:
       util-deprecate: 1.0.2
     dev: true
 
-  /postcss-styled-syntax@0.5.0(postcss@8.4.31):
+  /postcss-styled-syntax@0.5.0(postcss@8.4.32):
     resolution: {integrity: sha512-kgYPNbcppION92+tMNVtAPQK9PU24sZc6jAqdF64YlfXVNFx4zRuKEzqLJuC4rFhTTrxoR9dHXSAl/OIBshKRw==}
     engines: {node: '>=14.17'}
     peerDependencies:
@@ -3693,7 +3687,7 @@ packages:
     dependencies:
       '@typescript-eslint/typescript-estree': 5.62.0(typescript@5.1.6)
       estree-walker: 2.0.2
-      postcss: 8.4.31
+      postcss: 8.4.32
       typescript: 5.1.6
     transitivePeerDependencies:
       - supports-color
@@ -3709,6 +3703,15 @@ packages:
       nanoid: 3.3.7
       picocolors: 1.0.0
       source-map-js: 1.0.2
+
+  /postcss@8.4.32:
+    resolution: {integrity: sha512-D/kj5JNu6oo2EIy+XL/26JEDTlIbB8hw85G8StOE6L74RQAVVP5rej6wxCNqyMbR4RkPfqvezVbPw81Ngd6Kcw==}
+    engines: {node: ^10 || ^12 || >=14}
+    dependencies:
+      nanoid: 3.3.7
+      picocolors: 1.0.0
+      source-map-js: 1.0.2
+    dev: true
 
   /prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
