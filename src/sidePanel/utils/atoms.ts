@@ -68,6 +68,12 @@ export const focusedTextareaAtom = atom<{
   textareaRef?: React.RefObject<HTMLTextAreaElement>;
 }>({});
 
+/*
+ * screenshotChatMessageId of `undefined` means that no screenshot is being requested.
+ * `null` means that the screenshot is requested from the new message textarea
+ * (the new message does not yet have an id). A string value means that the screenshot
+ * is requested from an existing message textarea (the message has an id)
+ */
 export const screenshotChatMessageIdAtom = atom<string | null | undefined>(
   undefined
 );
