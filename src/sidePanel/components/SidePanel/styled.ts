@@ -1,7 +1,5 @@
 import styled from "styled-components";
 
-import { ThemeName } from "sidePanel/utils/types";
-
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -32,12 +30,8 @@ export const TabTitleContainer = styled.div<{ $active: boolean }>`
   padding: 0 5px;
   margin: 10px 0;
   cursor: pointer;
-  color: ${({ $active, theme }) => {
-    if (theme.name === ThemeName.dark) {
-      return theme.colors.PRIMARY_TEXT;
-    }
-    return $active ? theme.colors.ACTIVE_TEXT : theme.colors.PRIMARY_TEXT;
-  }};
+  color: ${({ $active, theme }) =>
+    $active ? theme.colors.ACTIVE_TEXT : theme.colors.PRIMARY_TEXT};
 
   &:hover,
   &:focus-visible {
