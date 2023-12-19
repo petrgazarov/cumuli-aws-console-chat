@@ -18,6 +18,10 @@ export const scrollToTop = () => {
   }
 };
 
+export const isAnyFocusableElementActive = () => {
+  return document.activeElement && document.activeElement !== document.body;
+};
+
 // https://tecadmin.net/javascript-detect-os/
 export const detectOS = () => {
   let os = OS.Unknown;

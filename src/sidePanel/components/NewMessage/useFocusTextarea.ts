@@ -10,7 +10,10 @@ import {
   newMessageTextareaRefAtom,
   scrollableContainerRefAtom,
 } from "sidePanel/utils/atoms";
-import { scrollToBottom } from "sidePanel/utils/helpers";
+import {
+  isAnyFocusableElementActive,
+  scrollToBottom,
+} from "sidePanel/utils/helpers";
 
 const useFocusTextarea = () => {
   const [newMessageTextareaRef] = useAtom(newMessageTextareaRefAtom);
@@ -42,10 +45,19 @@ const useFocusTextarea = () => {
       return;
     }
 
+    // Below is the logic for whether the new message textarea should be focused upon streaming finishing.
+
     const textarea = newMessageTextareaRef?.current;
     const container = scrollableContainerRef?.current;
 
     if (textarea && container) {
+      const isAnotherElementFocused =
+        isAnyFocusableElementActive() && document.activeElement !== textarea;
+
+      if (isAnotherElementFocused) {
+        return;
+      }
+
       const textareaRect = textarea.getBoundingClientRect();
       const containerRect = container.getBoundingClientRect();
 
