@@ -23,14 +23,14 @@ Install on the [Chrome web store](https://chromewebstore.google.com/detail/cumul
 
 ### Security & Privacy
 
-Efforts are made to keep the permissions list to the minimum.
+Efforts are made to keep the permissions list to a minimum.
 
-Calls to OpenAI API are made directly from the extension. Your data is never sent anywhere else, and is stored locally in the extension-specific browser storage. OpenAI Terms and policies apply to the data you send to their API.
+Calls to OpenAI API are made directly from the extension. Your data is never sent anywhere else and is stored locally in the extension-specific browser storage. OpenAI Terms and policies apply to the data you send to their API.
 
 ### Requirements
 
 - An OpenAI account and an API key are required to use this extension (get your API key [here](https://platform.openai.com/api-keys)).
-- Your OpenAI account must have access to the GPT-4 model. OpenAI automatically enables it in most cases, but it may be disabled if you never previously paid for API. It that's the case, you can purchase $5 in credits [here](https://platform.openai.com/account/billing/overview) and that should automatically enable it.
+- Your OpenAI account must have access to the GPT-4 model. OpenAI automatically enables it in most cases, but it may be disabled if you never previously paid for the API. If that's the case, you can purchase $5 in credits [here](https://platform.openai.com/account/billing/overview), and that should automatically enable it.
 
 ### Usage
 
@@ -48,11 +48,11 @@ Calls to OpenAI API are made directly from the extension. Your data is never sen
 
 - Why doesn't the keyboard shortcut work?
 
-  The provided keyboard shortcuts are suggested defaults and the bindings are handled by the browser. You can visit chrome://extensions/shortcuts and verify that the correct shortcuts are set for this extension. If there is a conflict with another extension, you can change the shortcuts to something else.
+  The provided keyboard shortcuts are suggested defaults, and the bindings are handled by the browser. You can visit chrome://extensions/shortcuts and verify that the correct shortcuts are set for this extension. If there is a conflict with another extension, you can change the shortcuts to something else.
 
 - I'm getting `` 404 The model `gpt-4-vision-preview` does not exist or you do not have access to it `` error.
 
-  This means GPT-4 is not enabled for your account. You can purchase $5 in credits [here](https://platform.openai.com/account/billing/overview) and that should automatically enable it.
+  This means GPT-4 is not enabled for your account. You can purchase $5 in credits [here](https://platform.openai.com/account/billing/overview), and that should automatically enable it.
 
 - Why doesn't clicking on the extension icon do anything?
 
@@ -63,8 +63,8 @@ Calls to OpenAI API are made directly from the extension. Your data is never sen
   - `amazonaws.cn`
   - `aws.training`
 
-    as well as the `.aws` top level domain. It is disabled on all other pages.
+    as well as the `.aws` top-level domain. It is disabled on all other pages.
 
-- I have another issue not listed here, or want to provide feedback.
+- I have another issue not listed here or want to provide feedback.
 
   Please open an issue on GitHub or DM me on X: [@petrgazarov](https://twitter.com/PetrGazarov)
