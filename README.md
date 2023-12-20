@@ -1,6 +1,8 @@
+![Logo](public/icons/logo48.png)
+
 # cumuli-aws-chrome-extension
 
-Cumuli extension helps you build, debug, and analyze your cloud infrastructure using AI without leaving the AWS console. Ask any questions about your current screen.
+Cumuli extension adds a side panel with LLM chat to all AWS pages. It's similar to Amazon Q but uses GPT-4 Turbo. Besides text messages, it allows to add screenshots of the current tab to the chat.
 
 ### Installation
 
@@ -15,28 +17,54 @@ Install on the [Chrome web store](https://chromewebstore.google.com/detail/cumul
 ### Features
 
 - AI Contextual Understanding: Pass screenshots as context to the language model.
-- Privacy-first: Data is processed and stored locally and is sent directly to OpenAI API. This extension doesn't have a server. OpenAI's privacy policy applies.
-- Strong Security: OpenAI API key and conversation history are stored locally in the extension-specific browser storage, following best practices.
 - Conversation History: View previous messages and resend with edits.
 - Adaptive UI: Dark and light mode theme selection is automatic based on your system settings.
 - Convenient layout: Toggle Chrome's Side panel with a keyboard shortcut (Ctrl/Cmd + B suggested).
 
+### Security & Privacy
+
+Efforts are made to keep the permissions list to the minimum.
+
+Calls to OpenAI API are made directly from the extension. Your data is never sent anywhere else, and is stored locally in the extension-specific browser storage. OpenAI Terms and policies apply to the data you send to their API.
+
 ### Requirements
 
-- An OpenAI account and an API key are required to use this extension (get your API key here: https://platform.openai.com/api-keys).
-- Your OpenAI account must have access to the GPT-4 model. There is no waitlist, but they do require a small purchase of credits in order to enable GPT-4, as of this writing.
+- An OpenAI account and an API key are required to use this extension (get your API key [here](https://platform.openai.com/api-keys)).
+- Your OpenAI account must have access to the GPT-4 model. OpenAI automatically enables it in most cases, but it may be disabled if you never previously paid for API. It that's the case, you can purchase $5 in credits [here](https://platform.openai.com/account/billing/overview) and that should automatically enable it.
 
 ### Usage
 
-1. Click on the extension icon or use a keyboard shortcut ("Cmd/Ctrl + B" suggested) to activate the extension. Activating the extension opens the Side panel. The extension can only be activated on AWS pages. The following domain namespaces are included:
+1. Activate the extension
 
-   - aws.amazon.com
-   - amazonaws-us-gov.com
-   - amazonaws.cn
-   - aws.training
-   - .aws
+   Click on the extension icon or use a keyboard shortcut (Mac: `Cmd + B`, Windows/Linux: `Ctrl + B`) to open the Side panel. The extension can only be activated on AWS pages.
 
-2. Add your OpenAI API key in the "Config" tab.
-3. The suggested keyboard shortcut for taking a screenshot is "Cmd/Ctrl + U".
+2. Add your OpenAI API key in the "Config" tab
 
-To troubleshoot or change any shortcut, visit the extension shortcuts settings in your browser: chrome://extensions/shortcuts and select the Cumuli extension.
+3. Chat
+
+   `Enter` key sends a text-only message. The model does _not_ get context about your screen by default. To include a screenshot with the message, press `Cmd + U` (Mac) or `Ctrl + U` (Linux/Windows).
+
+### FAQ
+
+- Why doesn't the keyboard shortcut work?
+
+  The provided keyboard shortcuts are suggested defaults and the bindings are handled by the browser. You can visit chrome://extensions/shortcuts and verify that the correct shortcuts are set for this extension. If there is a conflict with another extension, you can change the shortcuts to something else.
+
+- I'm getting `` 404 The model `gpt-4-vision-preview` does not exist or you do not have access to it `` error.
+
+  This means GPT-4 is not enabled for your account. You can purchase $5 in credits [here](https://platform.openai.com/account/billing/overview) and that should automatically enable it.
+
+- Why doesn't clicking on the extension icon do anything?
+
+  The extension can only be activated on AWS pages. These include the following domain namespaces:
+
+  - `aws.amazon.com`
+  - `amazonaws-us-gov.com`
+  - `amazonaws.cn`
+  - `aws.training`
+
+    as well as the `.aws` top level domain. It is disabled on all other pages.
+
+- I have another issue not listed here, or want to provide feedback.
+
+  Please open an issue on GitHub or DM me on X: [@petrgazarov](https://twitter.com/PetrGazarov)
