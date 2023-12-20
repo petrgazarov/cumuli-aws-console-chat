@@ -1,8 +1,8 @@
 ![Logo](public/icons/logo48.png)
 
-# cumuli-aws-console-chat
+# Cumuli AWS Console Chat
 
-Cumuli extension adds a side panel with LLM chat to all AWS pages. It's similar to Amazon Q but uses GPT-4 Turbo. Besides text messages, it allows to add screenshots of the current tab to the chat.
+Cumuli Chrome extension adds a side panel with LLM chat to all AWS pages, and lets you add screenshots of the console to your queries to get context-aware responses. It's similar to Amazon Q but uses GPT-4 Turbo with vision.
 
 ### Installation
 
