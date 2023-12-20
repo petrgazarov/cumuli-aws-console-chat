@@ -40,7 +40,7 @@ Calls to OpenAI API are made directly from the extension. Your data is never sen
 
 2. Add your OpenAI API key in the "Config" tab
 
-3. Chat
+3. Start chatting
 
    `Enter` key sends a text-only message. The model does _not_ get context about your screen by default. To include a screenshot with the message, press `Cmd + U` (Mac) or `Ctrl + U` (Linux/Windows).
 
