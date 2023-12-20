@@ -1,5 +1,5 @@
 {
-  "name": "cumuli-aws-chrome-extension",
+  "name": "cumuli-aws-console-chat",
   "version": "0.1.2",
   "engines": {
     "node": ">20.0.0"
