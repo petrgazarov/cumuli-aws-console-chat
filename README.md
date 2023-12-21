@@ -4,6 +4,8 @@
 
 Cumuli Chrome extension adds a side panel with LLM chat to all AWS pages, and lets you add screenshots of the console to your queries to get context-aware responses. It's similar to Amazon Q but uses GPT-4 Turbo with vision.
 
+![Screenshot](Cumuli_CloudFormation.jpg)
+
 ### Installation
 
 Install on the [Chrome web store](https://chromewebstore.google.com/detail/cumuli-aws-console-chat/ekdfdahmkpbenhccafhdkmjfgcioejbc)
