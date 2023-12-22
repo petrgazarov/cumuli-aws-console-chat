@@ -45,7 +45,7 @@ More comparisons below:
 | -------------------------------- | -------------------------------------------- | -------------------------------- |
 | Scope                            | Workplace assistant                          | AWS pages only                   |
 | Price                            | Free while in preview, $20 or 25/month after | Pay-as-you-go OpenAI API pricing |
-| LLM Model                        | Amazon Bedrock                               | GPT-4 Turbo with vision          |
+| LLM Model                        | Various, powered by Amazon Bedrock           | GPT-4 Turbo with vision          |
 | Share your screen with the model | No                                           | Yes                              |
 | Integration with AWS services    | Yes                                          | No                               |
 | LLM can reference real articles  | Yes                                          | No                               |
