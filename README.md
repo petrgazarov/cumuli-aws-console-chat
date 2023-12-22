@@ -25,14 +25,31 @@ Install on the [Chrome web store](https://chromewebstore.google.com/detail/cumul
 
 ### Security & Privacy
 
-Efforts are made to keep the permissions list to a minimum.
+The extension requests the minimum permissions required to function.
 
-Calls to OpenAI API are made directly from the extension. Your data is never sent anywhere else and is stored locally in the extension-specific browser storage. OpenAI Terms and policies apply to the data you send to their API.
+Calls to OpenAI API are made directly from the extension. Your data is never sent anywhere else and is stored locally in the extension-specific browser storage. The model does _not_ get context about your screen by default, and the screenshot feature is optional. OpenAI Terms and policies apply to the data you send to their API.
 
 ### Requirements
 
 - An OpenAI account and an API key are required to use this extension (get your API key [here](https://platform.openai.com/api-keys)).
 - Your OpenAI account must have access to the GPT-4 model. OpenAI automatically enables it in most cases, but it may be disabled if you never previously paid for the API. If that's the case, you can purchase $5 in credits [here](https://platform.openai.com/account/billing/overview), and that should automatically enable it.
+
+### Cumuli vs. Amazon Q
+
+Cumuli is a simple chat feature with a focus on the core use case of easily sharing your screen with the LLM and getting contextual help.
+Amazon Q cannot see your screen, but has a lot more other capabilities and integrations. In terms of the model quality, Cumuli uses GPT-4 Turbo which is the most capable LLM model available today. Amazon Q is powered by Bedrock, which has performance in the GPT-3.5 range (there are no official benchmarks for Amazon Q so this is somewhat arguable).
+
+More comparisons below:
+
+|                                  | Amazon Q                                     | Cumuli                           |
+| -------------------------------- | -------------------------------------------- | -------------------------------- |
+| Scope                            | Workplace assistant                          | AWS Console only                 |
+| Price                            | Free while in preview, $20 or 25/month after | Pay-as-you-go OpenAI API pricing |
+| LLM Model                        | Amazon Bedrock                               | GPT-4 Turbo with vision          |
+| Share your screen with the model | No                                           | Yes                              |
+| Integration with AWS services    | Yes                                          | No                               |
+| LLM can reference real articles  | Yes                                          | No                               |
+| Open source                      | No                                           | Yes                              |
 
 ### Usage
 
