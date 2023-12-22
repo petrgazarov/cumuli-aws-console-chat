@@ -36,14 +36,14 @@ Calls to OpenAI API are made directly from the extension. Your data is never sen
 
 ### Cumuli vs. Amazon Q
 
-Cumuli is a simple chat feature with a focus on the core use case of easily sharing your screen with the LLM and getting contextual help.
+Cumuli is a simple chat application with a focus on the core use case of easily sharing your screen with the LLM and getting contextual help.
 Amazon Q cannot see your screen, but has a lot more other capabilities and integrations. In terms of the model quality, Cumuli uses GPT-4 Turbo which is the most capable LLM model available today. Amazon Q is powered by Bedrock, which has performance in the GPT-3.5 range (there are no official benchmarks for Amazon Q so this is somewhat arguable).
 
 More comparisons below:
 
 |                                  | Amazon Q                                     | Cumuli                           |
 | -------------------------------- | -------------------------------------------- | -------------------------------- |
-| Scope                            | Workplace assistant                          | AWS Console only                 |
+| Scope                            | Workplace assistant                          | AWS pages only                   |
 | Price                            | Free while in preview, $20 or 25/month after | Pay-as-you-go OpenAI API pricing |
 | LLM Model                        | Amazon Bedrock                               | GPT-4 Turbo with vision          |
 | Share your screen with the model | No                                           | Yes                              |
