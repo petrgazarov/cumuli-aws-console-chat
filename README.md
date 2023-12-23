@@ -29,11 +29,6 @@ The extension requests the minimum permissions required to function.
 
 Calls to OpenAI API are made directly from the extension. Your data is never sent anywhere else and is stored locally in the extension-specific browser storage. The model does _not_ get context about your screen by default, and the screenshot feature is optional. OpenAI Terms and policies apply to the data you send to their API.
 
-### Requirements
-
-- An OpenAI account and an API key are required to use this extension (get your API key [here](https://platform.openai.com/api-keys)).
-- Your OpenAI account must have access to the GPT-4 model. OpenAI automatically enables it in most cases, but it may be disabled if you never previously paid for the API. If that's the case, you can purchase $5 in credits [here](https://platform.openai.com/account/billing/overview), and that should automatically enable it.
-
 ### Cumuli vs. Amazon Q
 
 Cumuli is a simple chat application with a focus on the core use case of easily sharing your screen with the LLM and getting contextual help.
@@ -50,6 +45,11 @@ More comparisons below:
 | Integration with AWS services    | Yes                                          | No                               |
 | LLM can reference real articles  | Yes                                          | No                               |
 | Open source                      | No                                           | Yes                              |
+
+### Requirements
+
+- An OpenAI account and an API key are required to use this extension (get your API key [here](https://platform.openai.com/api-keys)).
+- Your OpenAI account must have access to the GPT-4 model. OpenAI automatically enables it in most cases, but it may be disabled if you never previously paid for the API. If that's the case, you can purchase $5 in credits [here](https://platform.openai.com/account/billing/overview), and that should automatically enable it.
 
 ### Usage
 
