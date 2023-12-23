@@ -13,7 +13,8 @@ const useInitialData = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    Promise.all([getOpenaiApiKey(), getConversations()])
+    getConversations();
+    getOpenaiApiKey()
       .then(([apiKey]) => {
         setOpenaiApiKey(apiKey);
 

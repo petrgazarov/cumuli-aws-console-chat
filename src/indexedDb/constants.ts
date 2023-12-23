@@ -6,7 +6,7 @@ export const CONVERSATION_STORE = "conversations";
 
 export const CONVERSATION_STORE_INDEX = "updatedAtIndex";
 
-export const CONVERSATION_PAGE_SIZE = 25;
+export const CONVERSATION_PAGE_SIZE = 500;
 
 export const CONVERSATION_PREVIEW_CHARACTER_LIMIT = 300;
 
