@@ -15,7 +15,7 @@ const useInitialData = () => {
   useEffect(() => {
     getConversations();
     getOpenaiApiKey()
-      .then(([apiKey]) => {
+      .then((apiKey) => {
         setOpenaiApiKey(apiKey);
 
         if (!apiKey) {
