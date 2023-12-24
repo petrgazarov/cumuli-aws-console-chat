@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Cumuli - AWS Console Chat",
   "description": "Chat with GPT-4 turbo on any AWS page",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "action": {
     "default_title": "Cumuli - AWS Console Chat"
   },
@@ -26,7 +26,7 @@
   ],
   "commands": {
     "submit_with_screenshot": {
-      "suggested_key": "Ctrl+U",
+      "suggested_key": "Ctrl+I",
       "description": "Submit message with screenshot"
     },
     "_execute_action": {

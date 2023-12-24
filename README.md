@@ -61,7 +61,7 @@ More comparisons below:
 
 3. Start chatting
 
-   `Enter` key sends a text-only message. The model does _not_ get context about your screen by default. To include a screenshot with the message, press `Cmd + U` (Mac) or `Ctrl + U` (Linux/Windows).
+   `Enter` key sends a text-only message. The model does _not_ get context about your screen by default. To include a screenshot with the message, press `Cmd + I` (Mac) or `Ctrl + I` (Linux/Windows).
 
 ### FAQ
 

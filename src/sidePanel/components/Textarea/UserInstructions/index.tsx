@@ -1,8 +1,11 @@
 import { useMemo } from "react";
 
-import { getKeyboardShortcutModifierKey } from "sidePanel/utils/helpers";
+import EnterIcon from "sidePanel/components/icons/EnterIcon";
+import MacCmdIcon from "sidePanel/components/icons/MacCmdIcon";
+import { detectOS } from "sidePanel/utils/helpers";
+import { OS } from "sidePanel/utils/types";
 
-import { EnterKeyboardSymbol, HelpText, KeyboardSymbol } from "./styled";
+import { HelpText, KeySymbol, SpecialKeySymbol } from "./styled";
 
 export enum UserInstructionType {
   existingMessage = "existingMessage",
@@ -20,7 +23,20 @@ export const UserInstructions = ({
   messageType,
   show,
 }: UserInstructionsProps) => {
-  const modifierKey = useMemo(() => getKeyboardShortcutModifierKey(), []);
+  const os = detectOS();
+
+  const modifierIcon = useMemo(() => {
+    if (os === OS.MacOS) {
+      return <MacCmdIcon style={{ verticalAlign: "middle" }} />;
+    }
+
+    return "Ctrl";
+  }, [os]);
+
+  const enterIcon = useMemo(
+    () => <EnterIcon style={{ verticalAlign: "middle" }} />,
+    []
+  );
 
   if (!show) {
     return null;
@@ -28,16 +44,17 @@ export const UserInstructions = ({
 
   const newInstructions = (
     <>
-      <EnterKeyboardSymbol>{"\u23CE"}</EnterKeyboardSymbol> to send,{" "}
-      <KeyboardSymbol>{modifierKey} + U</KeyboardSymbol> to send with screenshot
+      <SpecialKeySymbol>{enterIcon}</SpecialKeySymbol> to send,{" "}
+      <SpecialKeySymbol>{modifierIcon}</SpecialKeySymbol>
+      <KeySymbol> + I</KeySymbol> to send with screenshot
     </>
   );
 
   const existingInstructions = (
     <>
-      <EnterKeyboardSymbol>{"\u23CE"}</EnterKeyboardSymbol> to resend,{" "}
-      <KeyboardSymbol>{modifierKey} + U</KeyboardSymbol> to resend with{" "}
-      {messageHasImage ? "new " : ""}
+      <SpecialKeySymbol>{enterIcon}</SpecialKeySymbol> to resend,{" "}
+      <SpecialKeySymbol>{modifierIcon}</SpecialKeySymbol>
+      <KeySymbol> + I</KeySymbol> to resend with {messageHasImage ? "new " : ""}
       screenshot
     </>
   );
