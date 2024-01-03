@@ -12,6 +12,7 @@ export const LoadingState = styled.div<{ $showAnimation: boolean }>`
   align-items: center;
   margin-left: 7px;
   height: 52px;
+  font-weight: bold;
 
   &::after {
     display: ${({ $showAnimation }) =>
