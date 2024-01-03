@@ -5,7 +5,7 @@ import MacCmdIcon from "sidePanel/components/icons/MacCmdIcon";
 import { detectOS } from "sidePanel/utils/helpers";
 import { OS } from "sidePanel/utils/types";
 
-import { HelpText, KeySymbol, SpecialKeySymbol } from "./styled";
+import { HelpText, KeySymbol } from "./styled";
 
 export enum UserInstructionType {
   existingMessage = "existingMessage",
@@ -27,10 +27,12 @@ export const UserInstructions = ({
 
   const modifierIcon = useMemo(() => {
     if (os === OS.MacOS) {
-      return <MacCmdIcon style={{ verticalAlign: "middle" }} />;
+      return (
+        <MacCmdIcon style={{ marginBottom: "2px", verticalAlign: "middle" }} />
+      );
     }
 
-    return "Ctrl";
+    return <KeySymbol>Ctrl</KeySymbol>;
   }, [os]);
 
   const enterIcon = useMemo(
@@ -44,16 +46,14 @@ export const UserInstructions = ({
 
   const newInstructions = (
     <>
-      <SpecialKeySymbol>{enterIcon}</SpecialKeySymbol> to send,{" "}
-      <SpecialKeySymbol>{modifierIcon}</SpecialKeySymbol>
+      {enterIcon} to send, {modifierIcon}
       <KeySymbol> + I</KeySymbol> to send with screenshot
     </>
   );
 
   const existingInstructions = (
     <>
-      <SpecialKeySymbol>{enterIcon}</SpecialKeySymbol> to resend,{" "}
-      <SpecialKeySymbol>{modifierIcon}</SpecialKeySymbol>
+      {enterIcon} to resend, {modifierIcon}
       <KeySymbol> + I</KeySymbol> to resend with {messageHasImage ? "new " : ""}
       screenshot
     </>

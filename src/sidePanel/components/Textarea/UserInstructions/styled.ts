@@ -10,11 +10,6 @@ export const HelpText = styled.div`
   user-select: none;
 `;
 
-export const SpecialKeySymbol = styled.span`
-  font-family: monospace, sans-serif;
-  font-size: 16px;
-`;
-
 export const KeySymbol = styled.span`
   font-family: monospace, sans-serif;
   font-size: 12px;
