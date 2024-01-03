@@ -81,8 +81,9 @@ More comparisons below:
   - `amazonaws-us-gov.com`
   - `amazonaws.cn`
   - `aws.training`
-
-    as well as the `.aws` top-level domain. It is disabled on all other pages.
+  -  `aws` (top-level domain)
+  
+  It is disabled on all other pages.
 
 - I have another issue not listed here or want to provide feedback.
 
