@@ -6,6 +6,7 @@ import {
   FONT_SIZE_PRIMARY,
   LINE_HEIGHT,
 } from "sidePanel/globalStyles";
+import { ThemeName } from "sidePanel/utils/types";
 
 export enum ContainerBottomMargin {
   default = "0px",
@@ -40,7 +41,10 @@ export const StyledTextarea = styled(TextareaAutosize)`
   }
 
   &:focus {
-    outline: 1px solid ${({ theme }) => theme.colors.FOCUS};
+    outline: ${({ theme }) =>
+      theme.name === ThemeName.dark
+        ? "none"
+        : `1px solid ${theme.colors.FOCUS}`};
     border: 1px solid ${({ theme }) => theme.colors.INPUT_FOCUSED_BORDER};
   }
 `;

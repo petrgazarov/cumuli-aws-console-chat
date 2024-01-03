@@ -8,6 +8,8 @@ import {
   LINE_HEIGHT,
 } from "sidePanel/globalStyles";
 
+import { ThemeName } from "../../utils/types";
+
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -33,7 +35,10 @@ export const StyledTextInput = styled.input`
   }
 
   &:focus {
-    outline: 1px solid ${({ theme }) => theme.colors.FOCUS};
+    outline: ${({ theme }) =>
+      theme.name === ThemeName.dark
+        ? "none"
+        : `1px solid ${theme.colors.FOCUS}`};
     border: 1px solid ${({ theme }) => theme.colors.INPUT_FOCUSED_BORDER};
   }
 
