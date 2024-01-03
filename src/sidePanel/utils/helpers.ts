@@ -58,6 +58,8 @@ export const getKeyboardShortcutModifierKey = (): string => {
 
 export const getAllNonCharacterKeys = (): string[] => {
   return [
+    "Escape",
+    "Enter",
     "Control",
     "Shift",
     "Alt",
