@@ -43,19 +43,6 @@ export const detectOS = () => {
   return os;
 };
 
-export const getKeyboardShortcutModifierKey = (): string => {
-  const os = detectOS();
-
-  switch (os) {
-    case OS.Windows:
-      return "Ctrl";
-    case OS.MacOS:
-      return "\u2318";
-    default:
-      return "Ctrl";
-  }
-};
-
 export const getAllNonCharacterKeys = (): string[] => {
   return [
     "Escape",
