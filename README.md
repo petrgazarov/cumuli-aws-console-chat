@@ -21,7 +21,6 @@ Install on the [Chrome web store](https://chromewebstore.google.com/detail/cumul
 - AI Contextual Understanding: Pass screenshots as context to the language model.
 - Conversation History: View previous messages and resend with edits.
 - Adaptive UI: Dark and light mode theme selection is automatic based on your system settings.
-- Convenient layout: Toggle Chrome's Side panel with a keyboard shortcut (Ctrl/Cmd + B suggested).
 
 ### Security & Privacy
 
@@ -55,19 +54,19 @@ More comparisons below:
 
 1. Activate the extension
 
-   Click on the extension icon or use a keyboard shortcut (Mac: `Cmd + B`, Windows/Linux: `Ctrl + B`) to open the Side panel. The extension can only be activated on AWS pages.
+   Click on the extension icon to open the Side panel. The extension can only be activated on AWS pages. Keyboard shortcut for the activation can be configured in chrome://extensions/shortcuts.
 
 2. Add your OpenAI API key in the "Config" tab
 
 3. Start chatting
 
-   `Enter` key sends a text-only message. The model does _not_ get context about your screen by default. To include a screenshot with the message, press `Cmd + I` (Mac) or `Ctrl + I` (Linux/Windows).
+   `Enter` key sends a text-only message. The model does _not_ get context about your screen by default. To include a screenshot with the message, press `Shift + Cmd + I` (Mac) or `Shift + Ctrl + I` (Linux/Windows).
 
 ### FAQ
 
 - Why doesn't the keyboard shortcut work?
 
-  The provided keyboard shortcuts are suggested defaults, and the bindings are handled by the browser. You can visit chrome://extensions/shortcuts and verify that the correct shortcuts are set for this extension. If there is a conflict with another extension, you can change the shortcuts to something else.
+  The provided keyboard shortcuts are suggested defaults, and the bindings are handled by the browser. You can visit chrome://extensions/shortcuts and verify that the correct shortcuts are set for this extension. If there is a conflict, you can change the shortcuts to something else.
 
 - I'm getting `` 404 The model `gpt-4-vision-preview` does not exist or you do not have access to it `` error.
 
@@ -81,8 +80,8 @@ More comparisons below:
   - `amazonaws-us-gov.com`
   - `amazonaws.cn`
   - `aws.training`
-  -  `aws` (top-level domain)
-  
+  - `aws` (top-level domain)
+
   It is disabled on all other pages.
 
 - I have another issue not listed here or want to provide feedback.

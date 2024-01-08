@@ -26,11 +26,9 @@
   ],
   "commands": {
     "submit_with_screenshot": {
-      "suggested_key": "Ctrl+I",
+      "suggested_key": "Shift+Ctrl+I",
       "description": "Submit message with screenshot"
     },
-    "_execute_action": {
-      "suggested_key": "Ctrl+B"
-    }
+    "_execute_action": {}
   }
 }

@@ -9,16 +9,6 @@ export const ConfigTabContent = styled.div`
   height: 100%;
 `;
 
-export const SubmitApiKeyButtonContainer = styled.div`
-  margin-left: 8px;
-`;
-
-export const ApiKeySection = styled.div`
-  display: flex;
-  align-items: end;
-  justify-content: space-between;
-`;
-
 export const StyledFooter = styled.div`
   display: flex;
   flex-grow: 1;

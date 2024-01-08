@@ -2,6 +2,7 @@ import { useMemo } from "react";
 
 import EnterIcon from "sidePanel/components/icons/EnterIcon";
 import MacCmdIcon from "sidePanel/components/icons/MacCmdIcon";
+import ShiftIcon from "sidePanel/components/icons/ShiftIcon";
 import { detectOS } from "sidePanel/utils/helpers";
 import { OS } from "sidePanel/utils/types";
 
@@ -25,14 +26,26 @@ export const UserInstructions = ({
 }: UserInstructionsProps) => {
   const os = detectOS();
 
-  const modifierIcon = useMemo(() => {
+  const modifierIcons = useMemo(() => {
     if (os === OS.MacOS) {
       return (
-        <MacCmdIcon style={{ marginBottom: "2px", verticalAlign: "middle" }} />
+        <>
+          <ShiftIcon style={{ marginBottom: "2px", verticalAlign: "middle" }} />
+          {" + "}
+          <MacCmdIcon
+            style={{ marginBottom: "2px", verticalAlign: "middle" }}
+          />
+        </>
       );
     }
 
-    return <KeySymbol>Ctrl</KeySymbol>;
+    return (
+      <>
+        <ShiftIcon style={{ marginBottom: "2px", verticalAlign: "middle" }} />
+        {" + "}
+        <KeySymbol>Ctrl</KeySymbol>
+      </>
+    );
   }, [os]);
 
   const enterIcon = useMemo(
@@ -46,15 +59,17 @@ export const UserInstructions = ({
 
   const newInstructions = (
     <>
-      {enterIcon} to send, {modifierIcon}
-      <KeySymbol> + I</KeySymbol> to send with screenshot
+      {enterIcon} to send, {modifierIcons}
+      {" + "}
+      <KeySymbol>I</KeySymbol> to send with screenshot
     </>
   );
 
   const existingInstructions = (
     <>
-      {enterIcon} to resend, {modifierIcon}
-      <KeySymbol> + I</KeySymbol> to resend with {messageHasImage ? "new " : ""}
+      {enterIcon} to resend, {modifierIcons}
+      {" + "}
+      <KeySymbol>I</KeySymbol> to resend with {messageHasImage ? "new " : ""}
       screenshot
     </>
   );

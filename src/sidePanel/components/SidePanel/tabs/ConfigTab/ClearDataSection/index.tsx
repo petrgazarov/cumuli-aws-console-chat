@@ -48,7 +48,7 @@ const ClearDataSection = () => {
         );
       case SectionState.after_delete:
         return (
-          <ClearDataButton disabled>Cleared all conversations</ClearDataButton>
+          <ClearDataButton disabled>Cleared</ClearDataButton>
         );
       default:
         return (
