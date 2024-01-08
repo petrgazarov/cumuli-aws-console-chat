@@ -24,6 +24,7 @@ export const StyledTabTitle = styled.div<{ $active: boolean }>`
   border-bottom: ${({ $active }) => ($active ? "2px" : "1px")} solid
     ${({ $active, theme }) =>
       $active ? theme.colors.ACTIVE_TEXT : theme.colors.PRIMARY_TEXT};
+  user-select: none;
 `;
 
 export const TabTitleContainer = styled.div<{ $active: boolean }>`
